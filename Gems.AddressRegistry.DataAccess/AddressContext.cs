@@ -1,5 +1,6 @@
 ﻿using Gems.AddressRegistry.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Gems.AddressRegistry.DataAccess
 {
@@ -7,11 +8,14 @@ namespace Gems.AddressRegistry.DataAccess
     {
         public DbSet<Address> Addresses { get; set; }
 
-        public AddressContext() => Database.EnsureCreated();
+        private readonly string _connectionString = "Host=localhost;Port=5432;Database=usersdb;Username=postgres;Password=admin";
+
+        public AddressContext()
+        { }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=usersdb;Username=postgres;Password=admin");
+            optionsBuilder.UseNpgsql(_connectionString);
         }
     }
 }

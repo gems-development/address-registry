@@ -2,9 +2,11 @@
 
 namespace Gems.AddressRegistry.Entities
 {
-    public class House : BaseAuditableEntity
+    public class Building : BaseAuditableEntity
     {
         public int Postcode { get; set; }
         public int Number { get; set; }
+
+        public enum Type { House, Apartament, etc }
     }
 }
