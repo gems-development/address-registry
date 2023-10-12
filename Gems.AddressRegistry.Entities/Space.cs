@@ -1,16 +1,14 @@
 ﻿using Gems.AddressRegistry.Entities.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Gems.AddressRegistry.Entities.DataSources;
+using Gems.AddressRegistry.Entities.Enums;
 
 namespace Gems.AddressRegistry.Entities
 {
     public class Space : BaseAuditableEntity
     {
+        public virtual ICollection<SpaceDataSource> DataSources { get; set; }
         public int Number { get; set; }
 
-        public enum Type { Room, Office, etc }
+        public SpaceType SpaceType { get; set; }
     }
 }

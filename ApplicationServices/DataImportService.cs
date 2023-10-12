@@ -5,19 +5,19 @@ namespace Gems.AddressRegistry.ApplicationServices
 {
     public class DataImportService
     {
-        AddressContext AddressContext = new AddressContext();
+        private AddressContext _addressContext = new AddressContext();
         public DataImportService() { }
 
-        public void ERNImport(ERN[] ERN)
+        public void ErnImport(RoadNetworkElement[] Ern)
         {
-            foreach(ERN eRNs in ERN) 
+            foreach(RoadNetworkElement eRNs in Ern) 
             {
-                if (AddressContext.Addresses.Any(ERN => ERN.Id == eRNs.Id))
-                    AddressContext.Update(eRNs);
+                if (_addressContext.Addresses.Any(Ern => Ern.Id == eRNs.Id))
+                    _addressContext.Update(eRNs);
                 else
-                AddressContext.Add(eRNs); 
+                _addressContext.Add(eRNs); 
             }
-            AddressContext.SaveChanges();
+            _addressContext.SaveChanges();
         }
 
         

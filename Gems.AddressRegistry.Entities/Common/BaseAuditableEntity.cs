@@ -3,7 +3,7 @@
     public abstract class BaseAuditableEntity : BaseIdentifiableEntity
     {
         public DateTime Created { get; set; }
-        public DateTime Apdated { get; set; }
+        public DateTime Updated { get; set; }
 
     }
 }

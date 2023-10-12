@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Gems.AddressRegistry.DataAccess.Migrations
 {
     [DbContext(typeof(AddressContext))]
-    [Migration("20231005074319_addNewEntities")]
-    partial class addNewEntities
+    [Migration("20231012064510_InitalCreate")]
+    partial class InitalCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -52,12 +52,8 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                     b.Property<Guid>("EPSId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("ERNId")
+                    b.Property<Guid>("ERNId")
                         .HasColumnType("uuid");
-
-                    b.Property<string>("ExternalId")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<Guid>("LandPlotId")
                         .HasColumnType("uuid");
@@ -169,6 +165,27 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("City");
+                });
+
+            modelBuilder.Entity("Gems.AddressRegistry.Entities.Common.DataSourceBase", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("SourceType")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DataSource", (string)null);
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("DataSourceBase");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Gems.AddressRegistry.Entities.Country", b =>
@@ -363,6 +380,18 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                     b.ToTable("Territory");
                 });
 
+            modelBuilder.Entity("Gems.AddressRegistry.Entities.DataSources.SpaceDataSource", b =>
+                {
+                    b.HasBaseType("Gems.AddressRegistry.Entities.Common.DataSourceBase");
+
+                    b.Property<Guid>("SpaceId")
+                        .HasColumnType("uuid");
+
+                    b.HasIndex("SpaceId");
+
+                    b.HasDiscriminator().HasValue("SpaceDataSource");
+                });
+
             modelBuilder.Entity("Gems.AddressRegistry.Entities.Address", b =>
                 {
                     b.HasOne("Gems.AddressRegistry.Entities.AdministrativeArea", "AdministrativeArea")
@@ -397,7 +426,9 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
 
                     b.HasOne("Gems.AddressRegistry.Entities.ERN", "ERN")
                         .WithMany()
-                        .HasForeignKey("ERNId");
+                        .HasForeignKey("ERNId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Gems.AddressRegistry.Entities.LandPlot", "LandPlot")
                         .WithMany()
@@ -458,6 +489,22 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                     b.Navigation("Space");
 
                     b.Navigation("Territory");
+                });
+
+            modelBuilder.Entity("Gems.AddressRegistry.Entities.DataSources.SpaceDataSource", b =>
+                {
+                    b.HasOne("Gems.AddressRegistry.Entities.Space", "Space")
+                        .WithMany("DataSources")
+                        .HasForeignKey("SpaceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Space");
+                });
+
+            modelBuilder.Entity("Gems.AddressRegistry.Entities.Space", b =>
+                {
+                    b.Navigation("DataSources");
                 });
 #pragma warning restore 612, 618
         }
