@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net6.0</TargetFramework>
+        <RootNamespace>OSM_client</RootNamespace>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <None Include="bin\Debug\net6.0\crimean.osm.pbf" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="bin\Debug\net6.0\export.geojson" />
+      <Content Include="bin\Debug\net6.0\overpass_data.xml" />
+      <Content Include="bin\Debug\net6.0\export.xml" />
+      <Content Include="bin\Debug\net6.0\export_01.pbf" />
+      <Content Include="bin\Debug\net6.0\map.osm" />
+    </ItemGroup>
+
+
+    <ItemGroup>
+      <PackageReference Include="OsmSharp" Version="7.0.0-pre022" />
+    </ItemGroup>
+
+
+
+    <ItemGroup>
+      <ProjectReference Include="..\Gems.AddressRegistry.Entities\Gems.AddressRegistry.Entities.csproj" />
+    </ItemGroup>
+
+
+
+    <ItemGroup>
+      <Folder Include="bin\Debug\net6.0\" />
+    </ItemGroup>
+
+
+</Project>
