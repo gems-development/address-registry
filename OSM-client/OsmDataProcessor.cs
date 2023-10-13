@@ -3,41 +3,35 @@ using OsmSharp.Streams;
 
 namespace OSM_client;
 
-public class OsmDataMiner
+public class OsmDataProcessor
 {
-    public void ParseOsmData(string filePath)
+    public void ProcessOsmData(string path)
     {
-        
-        var fileStream = new FileInfo(filePath).OpenRead();
-        // var source = new PBFOsmStreamSource(fileStream);
-            
+        var fileStream = new FileInfo(path).OpenRead();
         var osmStreamSource = new XmlOsmStreamSource(fileStream);
+        
         var nodes = new List<Node>();
         var ways = new List<Way>();
         var relations = new List<Relation>();
         
+        // сортируем объекты OSM-модели по категориям
         foreach (var element in osmStreamSource)
         {
             if (element.Type is OsmGeoType.Node)
-            {
                 nodes.Add((Node) element);
-            }
             
             else if (element.Type is OsmGeoType.Way)
-            {
                 ways.Add((Way) element);
-            }
             
             else if (element.Type is OsmGeoType.Relation)
-            {
                 relations.Add((Relation) element);
-            }
         }
 
+        // Выводим геометрию улиц
         var streets = GetStreetList(ways);
         foreach (var street in streets)
         {
-            Console.WriteLine("\nГеометрия улицы c Id: " + street.Id);
+            Console.WriteLine($"\nГеометрия улицы \"{street.Tags["name"]}\":");
             foreach (var nodeId in street.Nodes)
             {
                 foreach (var node in nodes.Where(node => node.Id == nodeId))
@@ -48,6 +42,7 @@ public class OsmDataMiner
         }
     }
 
+    // Получаем список всех улиц
     private List<Way> GetStreetList(List<Way> ways)
     {
         var streets = new List<Way>();
