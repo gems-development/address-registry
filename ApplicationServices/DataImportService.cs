@@ -8,14 +8,14 @@ namespace Gems.AddressRegistry.ApplicationServices
         private AddressContext _addressContext = new AddressContext();
         public DataImportService() { }
 
-        public void ErnImport(RoadNetworkElement[] Ern)
+        public void RoadNetworkElementImport(IReadOnlyCollection<RoadNetworkElement> Rne)
         {
-            foreach(RoadNetworkElement eRNs in Ern) 
+            foreach(RoadNetworkElement rNEs in Rne) 
             {
-                if (_addressContext.Addresses.Any(Ern => Ern.Id == eRNs.Id))
-                    _addressContext.Update(eRNs);
+                if (_addressContext.RoadNetworkElements.Any(RoadNetworkElement => RoadNetworkElement.Id == rNEs.Id))
+                    _addressContext.Update(rNEs);
                 else
-                _addressContext.Add(eRNs); 
+                _addressContext.Add(rNEs); 
             }
             _addressContext.SaveChanges();
         }

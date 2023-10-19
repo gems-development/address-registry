@@ -6,6 +6,6 @@ namespace Gems.AddressRegistry.Entities
     public class Territory : BaseAuditableEntity
     {
         public virtual ICollection<TerritoryDataSource> DataSources { get; set; }
-        public string Name { get; set; }
+        public String Name { get; set; }
     }
 }

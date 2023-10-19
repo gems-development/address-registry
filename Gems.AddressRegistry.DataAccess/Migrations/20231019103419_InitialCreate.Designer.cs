@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Gems.AddressRegistry.DataAccess.Migrations
 {
     [DbContext(typeof(AddressContext))]
-    [Migration("20231012090641_update")]
-    partial class update
+    [Migration("20231019103419_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,9 +33,6 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
 
                     b.Property<Guid?>("AdministrativeAreaId")
                         .HasColumnType("uuid");
-
-                    b.Property<DateTime>("Apdated")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid?>("BuildingId")
                         .HasColumnType("uuid");
@@ -73,6 +70,9 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                     b.Property<Guid>("TerritoryId")
                         .HasColumnType("uuid");
 
+                    b.Property<DateTime>("Updated")
+                        .HasColumnType("timestamp with time zone");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AdministrativeAreaId");
@@ -108,9 +108,6 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("Apdated")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<DateTime>("Created")
                         .HasColumnType("timestamp with time zone");
 
@@ -118,9 +115,12 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<DateTime>("Updated")
+                        .HasColumnType("timestamp with time zone");
+
                     b.HasKey("Id");
 
-                    b.ToTable("AdministrativeArea");
+                    b.ToTable("AdministrativeAreas");
                 });
 
             modelBuilder.Entity("Gems.AddressRegistry.Entities.Building", b =>
@@ -128,9 +128,6 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
-
-                    b.Property<DateTime>("Apdated")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("BuildingType")
                         .HasColumnType("integer");
@@ -144,9 +141,12 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                     b.Property<int>("Postcode")
                         .HasColumnType("integer");
 
+                    b.Property<DateTime>("Updated")
+                        .HasColumnType("timestamp with time zone");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Building");
+                    b.ToTable("Buildings");
                 });
 
             modelBuilder.Entity("Gems.AddressRegistry.Entities.City", b =>
@@ -155,9 +155,6 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("Apdated")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<DateTime>("Created")
                         .HasColumnType("timestamp with time zone");
 
@@ -165,9 +162,12 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<DateTime>("Updated")
+                        .HasColumnType("timestamp with time zone");
+
                     b.HasKey("Id");
 
-                    b.ToTable("City");
+                    b.ToTable("Cities");
                 });
 
             modelBuilder.Entity("Gems.AddressRegistry.Entities.Common.DataSourceBase", b =>
@@ -197,9 +197,6 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("Apdated")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<DateTime>("Created")
                         .HasColumnType("timestamp with time zone");
 
@@ -207,9 +204,12 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<DateTime>("Updated")
+                        .HasColumnType("timestamp with time zone");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Country");
+                    b.ToTable("Countries");
                 });
 
             modelBuilder.Entity("Gems.AddressRegistry.Entities.LandPlot", b =>
@@ -218,9 +218,6 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("Apdated")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<DateTime>("Created")
                         .HasColumnType("timestamp with time zone");
 
@@ -228,9 +225,12 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<DateTime>("Updated")
+                        .HasColumnType("timestamp with time zone");
+
                     b.HasKey("Id");
 
-                    b.ToTable("LandPlot");
+                    b.ToTable("LandPlots");
                 });
 
             modelBuilder.Entity("Gems.AddressRegistry.Entities.MunicipalArea", b =>
@@ -239,9 +239,6 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("Apdated")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<DateTime>("Created")
                         .HasColumnType("timestamp with time zone");
 
@@ -249,9 +246,12 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<DateTime>("Updated")
+                        .HasColumnType("timestamp with time zone");
+
                     b.HasKey("Id");
 
-                    b.ToTable("MunicipalArea");
+                    b.ToTable("MunicipalAreas");
                 });
 
             modelBuilder.Entity("Gems.AddressRegistry.Entities.PlaningStructureElement", b =>
@@ -260,9 +260,6 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("Apdated")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<DateTime>("Created")
                         .HasColumnType("timestamp with time zone");
 
@@ -270,9 +267,12 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<DateTime>("Updated")
+                        .HasColumnType("timestamp with time zone");
+
                     b.HasKey("Id");
 
-                    b.ToTable("PlaningStructureElement");
+                    b.ToTable("PlaningStructureElements");
                 });
 
             modelBuilder.Entity("Gems.AddressRegistry.Entities.Region", b =>
@@ -280,9 +280,6 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
-
-                    b.Property<DateTime>("Apdated")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Code")
                         .IsRequired()
@@ -295,9 +292,12 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<DateTime>("Updated")
+                        .HasColumnType("timestamp with time zone");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Region");
+                    b.ToTable("Regions");
                 });
 
             modelBuilder.Entity("Gems.AddressRegistry.Entities.RoadNetworkElement", b =>
@@ -305,9 +305,6 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
-
-                    b.Property<DateTime>("Apdated")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("timestamp with time zone");
@@ -319,9 +316,12 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                     b.Property<int>("RoadNetworkElementType")
                         .HasColumnType("integer");
 
+                    b.Property<DateTime>("Updated")
+                        .HasColumnType("timestamp with time zone");
+
                     b.HasKey("Id");
 
-                    b.ToTable("RoadNetworkElement");
+                    b.ToTable("RoadNetworkElements");
                 });
 
             modelBuilder.Entity("Gems.AddressRegistry.Entities.Settlement", b =>
@@ -330,9 +330,6 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("Apdated")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<DateTime>("Created")
                         .HasColumnType("timestamp with time zone");
 
@@ -340,9 +337,12 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<DateTime>("Updated")
+                        .HasColumnType("timestamp with time zone");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Settlement");
+                    b.ToTable("Settlements");
                 });
 
             modelBuilder.Entity("Gems.AddressRegistry.Entities.Space", b =>
@@ -350,9 +350,6 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
-
-                    b.Property<DateTime>("Apdated")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("timestamp with time zone");
@@ -363,9 +360,12 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                     b.Property<int>("SpaceType")
                         .HasColumnType("integer");
 
+                    b.Property<DateTime>("Updated")
+                        .HasColumnType("timestamp with time zone");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Space");
+                    b.ToTable("Spaces");
                 });
 
             modelBuilder.Entity("Gems.AddressRegistry.Entities.Territory", b =>
@@ -374,9 +374,6 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("Apdated")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<DateTime>("Created")
                         .HasColumnType("timestamp with time zone");
 
@@ -384,9 +381,12 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<DateTime>("Updated")
+                        .HasColumnType("timestamp with time zone");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Territory");
+                    b.ToTable("Territories");
                 });
 
             modelBuilder.Entity("Gems.AddressRegistry.Entities.DataSources.AddressDataSource", b =>

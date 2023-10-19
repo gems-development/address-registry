@@ -6,7 +6,7 @@ namespace Gems.AddressRegistry.Entities
     public class Region : BaseAuditableEntity
     {
         public virtual ICollection<RegionDataSource> DataSources { get; set; }
-        public string Name { get; set; }
-        public string Code { get; set; }
+        public String Name { get; set; }
+        public String Code { get; set; }
     }
 }

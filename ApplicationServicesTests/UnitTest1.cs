@@ -18,8 +18,8 @@ namespace ApplicationServicesTests
             RoadNetworkElement[] roadNetworkElements = new RoadNetworkElement[2] ;
             roadNetworkElements[0] = roadNetworkElement1;
             roadNetworkElements[1] = roadNetworkElement2;
-            dataImportService.ErnImport(roadNetworkElements);
-//            dataImportService.ErnImport(roadNetworkElements);
+            dataImportService.RoadNetworkElementImport(roadNetworkElements);
+            dataImportService.RoadNetworkElementImport(roadNetworkElements);
         }
     
     }
