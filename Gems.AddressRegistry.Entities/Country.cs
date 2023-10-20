@@ -6,6 +6,6 @@ namespace Gems.AddressRegistry.Entities
     public class Country : BaseAuditableEntity
     {
         public virtual ICollection<CountryDataSource> DataSources { get; set; }
-        public string Name { get; set; }
+        public String Name { get; set; }
     }
 }

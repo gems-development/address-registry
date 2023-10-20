@@ -8,6 +8,6 @@ namespace Gems.AddressRegistry.Entities
     {
         public virtual ICollection<ErnDataSource> DataSources { get; set; }
         public RoadNetworkElementType RoadNetworkElementType { get; set; }
-        public string Name { get; set; }
+        public String Name { get; set; }
     }
 }

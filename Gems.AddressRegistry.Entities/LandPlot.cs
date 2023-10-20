@@ -6,6 +6,6 @@ namespace Gems.AddressRegistry.Entities
     public class LandPlot : BaseAuditableEntity
     {
         public virtual ICollection<LandPlotDataSource> DataSources { get; set; }
-        public string Name { get; set; }
+        public String Name { get; set; }
     }
 }
