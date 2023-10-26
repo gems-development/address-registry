@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Gems.AddressRegistry.DataAccess.Migrations
 {
-    [DbContext(typeof(AddressContext))]
+    [DbContext(typeof(AppDbContext))]
     [Migration("20231019103419_InitialCreate")]
     partial class InitialCreate
     {

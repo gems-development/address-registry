@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Gems.AddressRegistry.DataAccess.Migrations
 {
-    [DbContext(typeof(AddressContext))]
+    [DbContext(typeof(AppDbContext))]
     partial class AddressContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

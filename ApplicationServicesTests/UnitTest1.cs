@@ -1,4 +1,5 @@
 using Gems.AddressRegistry.ApplicationServices;
+using Gems.AddressRegistry.DataAccess;
 using Gems.AddressRegistry.Entities;
 
 namespace ApplicationServicesTests
@@ -6,9 +7,10 @@ namespace ApplicationServicesTests
     public class UnitTest1
     {
         [Fact]
-        public void ErnImportTest()
+        public async Task ErnImportTest()
         {
-            DataImportService dataImportService = new DataImportService();
+            AppDbContext appDbContext = new AppDbContext();
+            DataImportService dataImportService = new DataImportService(appDbContext);
             RoadNetworkElement roadNetworkElement1 = new RoadNetworkElement();
             roadNetworkElement1.Name = "Lenina";
             roadNetworkElement1.RoadNetworkElementType = Gems.AddressRegistry.Entities.Enums.RoadNetworkElementType.Street;
@@ -18,8 +20,8 @@ namespace ApplicationServicesTests
             RoadNetworkElement[] roadNetworkElements = new RoadNetworkElement[2] ;
             roadNetworkElements[0] = roadNetworkElement1;
             roadNetworkElements[1] = roadNetworkElement2;
-            dataImportService.RoadNetworkElementImport(roadNetworkElements);
-            dataImportService.RoadNetworkElementImport(roadNetworkElements);
+            await dataImportService.RoadNetworkElementImportAsync(roadNetworkElements);
+            await dataImportService.RoadNetworkElementImportAsync(roadNetworkElements);
         }
     
     }

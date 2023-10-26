@@ -1,10 +1,10 @@
-﻿using Gems.AddressRegistry.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Gems.AddressRegistry.Entities;
 using Gems.AddressRegistry.Entities.Common;
-using Microsoft.EntityFrameworkCore;
 
 namespace Gems.AddressRegistry.DataAccess
 {
-    public class AddressContext : DbContext
+    public class AppDbContext : DbContext, IAppDbContext
     {
         public DbSet<Address> Addresses { get; set; }
         public DbSet<Country> Countries { get; set; }
@@ -20,9 +20,9 @@ namespace Gems.AddressRegistry.DataAccess
         public DbSet<Building> Buildings { get; set; }
         public DbSet<Space> Spaces { get; set; }
 
-        private readonly string _connectionString = "Host=localhost;Port=5432;Database=usersdb;Username=postgres;Password=admin";
+        private readonly string _connectionString = "Host=localhost;Port=5432;Database=addressdb;Username=postgres;Password=admin";
 
-        public AddressContext()
+        public AppDbContext()
         { }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -35,6 +35,31 @@ namespace Gems.AddressRegistry.DataAccess
             modelBuilder.Entity<DataSourceBase>().ToTable("DataSource");
 
         }
-       
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            FillAuditableFields();
+            return base.SaveChangesAsync(cancellationToken);
+        }
+
+        private void FillAuditableFields()
+        {
+            var auditableEntities = ChangeTracker
+              .Entries<BaseAuditableEntity>()
+              .Select(o => o.Entity)
+              .ToArray();
+
+            foreach (var entity in auditableEntities)
+                entity.Updated = DateTime.UtcNow;
+
+            var addedAuditableEntities = ChangeTracker
+              .Entries<BaseAuditableEntity>()
+              .Where(o => o.State == EntityState.Added)
+              .Select(o => o.Entity)
+              .ToArray();
+
+            foreach (var entity in addedAuditableEntities)
+                entity.Created = DateTime.UtcNow;
+        }
+
     }
 }
