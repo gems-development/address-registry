@@ -8,39 +8,38 @@ namespace OSM_client;
 
 public class OsmDataProcessor
 {
+    private List<Node> _nodes = new List<Node>();
+    private List<Way> _ways = new List<Way>();
+    private List<Relation> _relations = new List<Relation>();
+    
     public void ProcessOsmData(string path)
     {
         var outputFilePath = "streets.geojson";
-        
         var fileStream = new FileInfo(path).OpenRead();
         var osmStreamSource = new XmlOsmStreamSource(fileStream);
-        
-        var nodes = new List<Node>();
-        var ways = new List<Way>();
-        var relations = new List<Relation>();
         
         // сортируем объекты OSM-модели по категориям
         foreach (var element in osmStreamSource)
         {
             if (element.Type is OsmGeoType.Node)
-                nodes.Add((Node) element);
+                _nodes.Add((Node) element);
             
             else if (element.Type is OsmGeoType.Way)
-                ways.Add((Way) element);
+                _ways.Add((Way) element);
             
             else if (element.Type is OsmGeoType.Relation)
-                relations.Add((Relation) element);
+                _relations.Add((Relation) element);
         }
 
         // Выводим геометрию улиц в GeoJson
-        var streets = GetStreetList(ways);
+        var streets = GetStreetList(_ways);
         var streetCoordinates = new List<Position>();
         var features = new List<Feature>();
         foreach (var street in streets)
         {
             foreach (var nodeId in street.Nodes)
             {
-                foreach (var node in nodes.Where(node => node.Id == nodeId))
+                foreach (var node in _nodes.Where(node => node.Id == nodeId))
                     streetCoordinates.Add(new Position((double) node.Latitude, (double) node.Longitude));
             }
             
@@ -69,10 +68,16 @@ public class OsmDataProcessor
         foreach (var way in ways)
         {
             if (way.Tags.ContainsKey("highway") && way.Tags.ContainsKey("name"))
-            { 
                 streets.Add(way);
-            }   
         }
+
+        var streetGroup = streets.GroupBy(p => p.Tags["name"]);
+        
+        foreach (var street in streetGroup)
+        {
+            
+        }
+        
         return streets;
     }
 }
