@@ -72,12 +72,61 @@ public class OsmDataProcessor
         }
 
         var streetGroup = streets.GroupBy(p => p.Tags["name"]);
+        var sortingWays = new List<Way>();
         
         foreach (var street in streetGroup)
         {
-            
+            sortingWays.Add(MergeByMatchingId(street));
         }
         
         return streets;
+    }
+
+    private Way MergeByMatchingId(IGrouping<string, Way> street)
+    {
+        var group = street.ToList();
+        Way mergedWay = null;
+
+        if (group.Count < 1)
+            throw new ArgumentException("Empty street!");
+        
+        if (group.Count == 1)
+            mergedWay = group.FirstOrDefault();
+        
+        else if (group.Count > 1)
+        {
+            foreach (var way in group)
+            {
+                var currentIndex = group.FindIndex(n => n == way);
+            
+                if (currentIndex < group.Count - 1)
+                {
+                    var nextWay = group[currentIndex + 1];
+
+                    if (way.Nodes.FirstOrDefault() == nextWay.Nodes.LastOrDefault() || 
+                        way.Nodes.LastOrDefault() == nextWay.Nodes.FirstOrDefault())
+                    {
+                        mergedWay = MergeWays(way, nextWay); 
+                    }
+                    else
+                    {
+                        // to be continued
+                    }
+                }
+            }
+        }
+
+        return mergedWay;
+    }
+    
+    private Way MergeWays(Way way1, Way way2)
+    {
+        var mergedWay = new Way
+        {
+            Nodes = way1.Nodes.Concat(way2.Nodes).ToArray(),
+            Tags = way1.Tags
+        };
+
+        return mergedWay;
     }
 }
