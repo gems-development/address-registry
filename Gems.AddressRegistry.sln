@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gems.AddressRegistry.DataAc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApplicationServices", "ApplicationServices\ApplicationServices.csproj", "{AEE7188F-CD68-412B-8D60-E10BA6BE910D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApplicationServicesTests", "ApplicationServicesTests\ApplicationServicesTests.csproj", "{F39F141E-5211-4A1E-AE62-4D8FBCF2260C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApplicationServicesTests", "ApplicationServicesTests\ApplicationServicesTests.csproj", "{F39F141E-5211-4A1E-AE62-4D8FBCF2260C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApi", "WebApi\WebApi.csproj", "{EC6BDCAC-BE0C-41FF-A3A5-16390EA6B32B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OSM-client", "OSM-client\OSM-client.csproj", "{A19B3C08-BA26-4C27-A18F-33B18115119A}"
 EndProject
@@ -39,12 +41,10 @@ Global
 		{A19B3C08-BA26-4C27-A18F-33B18115119A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A19B3C08-BA26-4C27-A18F-33B18115119A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A19B3C08-BA26-4C27-A18F-33B18115119A}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {7C9009A4-2ABC-470C-AC52-5583A6303853}
+		{EC6BDCAC-BE0C-41FF-A3A5-16390EA6B32B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC6BDCAC-BE0C-41FF-A3A5-16390EA6B32B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC6BDCAC-BE0C-41FF-A3A5-16390EA6B32B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC6BDCAC-BE0C-41FF-A3A5-16390EA6B32B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

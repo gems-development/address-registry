@@ -1,6 +1,6 @@
 ﻿namespace Gems.AddressRegistry.Entities.Enums
 {
-    public enum RoadNetworkElementType 
+    public enum RoadNetworkElementType
     {
         Alley,
         Boulevard,

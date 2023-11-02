@@ -4,7 +4,7 @@ using Gems.AddressRegistry.Entities.Enums;
 
 namespace Gems.AddressRegistry.Entities
 {
-    public class RoadNetworkElement : BaseAuditableEntity
+    public class RoadNetworkElement : BaseGeoEntity
     {
         public virtual ICollection<ErnDataSource> DataSources { get; set; }
         public RoadNetworkElementType RoadNetworkElementType { get; set; }

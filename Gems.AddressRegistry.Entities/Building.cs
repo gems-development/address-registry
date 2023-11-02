@@ -4,7 +4,7 @@ using Gems.AddressRegistry.Entities.Enums;
 
 namespace Gems.AddressRegistry.Entities
 {
-    public class Building : BaseAuditableEntity
+    public class Building : BaseGeoEntity
     {
 
         public virtual ICollection<BuildingDataSource> DataSources { get; set; }
@@ -12,6 +12,6 @@ namespace Gems.AddressRegistry.Entities
         public int Number { get; set; }
         public BuildingType BuildingType { get; set; }
 
-        
+
     }
 }

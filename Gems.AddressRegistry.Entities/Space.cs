@@ -4,7 +4,7 @@ using Gems.AddressRegistry.Entities.Enums;
 
 namespace Gems.AddressRegistry.Entities
 {
-    public class Space : BaseAuditableEntity
+    public class Space : BaseGeoEntity
     {
         public virtual ICollection<SpaceDataSource> DataSources { get; set; }
         public int Number { get; set; }

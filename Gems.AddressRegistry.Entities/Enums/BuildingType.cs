@@ -1,6 +1,8 @@
 ﻿namespace Gems.AddressRegistry.Entities.Enums
 {
-    public enum BuildingType { Domain,
+    public enum BuildingType
+    {
+        Domain,
         House,
         Premises,
         Garage,
