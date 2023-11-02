@@ -2,6 +2,6 @@
 {
     abstract public class BaseGeoEntity : BaseAuditableEntity
     {
-        public String GeoJson { get; set; }
+        public String? GeoJson { get; set; }
     }
 }

@@ -1,5 +1,5 @@
-﻿
-using ApplicationServices.Services;
+﻿using ApplicationServices.Services;
+using MediatR;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -7,7 +7,11 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services) =>
            services
-            .AddScoped<DataImportService>();
-            
+            .AddScoped<DataImportService>()
+            //.AddMediatR(typeof(ServiceCollectionExtension));
+            .AddMediatR(cfg =>
+            {
+                cfg.RegisterServicesFromAssembly(typeof(ServiceCollectionExtension).Assembly);
+            });
     }
 }

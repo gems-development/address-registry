@@ -7,7 +7,7 @@ namespace Gems.AddressRegistry.Entities
     public class Space : BaseGeoEntity
     {
         public virtual ICollection<SpaceDataSource> DataSources { get; set; }
-        public int Number { get; set; }
+        public String Number { get; set; }
 
         public SpaceType SpaceType { get; set; }
     }

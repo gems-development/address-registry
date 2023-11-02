@@ -13,8 +13,8 @@ namespace Gems.AddressRegistry.Entities
         public Territory Territory { get; set; }
         public City? City { get; set; }
         public Settlement Settlement { get; set; }
-        public PlaningStructureElement? Eps { get; set; }
-        public RoadNetworkElement? Ern { get; set; }
+        public PlaningStructureElement? PlaningStructureElement { get; set; }
+        public RoadNetworkElement? RoadNetworkElement { get; set; }
         public LandPlot? LandPlot { get; set; }
         public Building? Building { get; set; }
         public Space? Space { get; set; }
