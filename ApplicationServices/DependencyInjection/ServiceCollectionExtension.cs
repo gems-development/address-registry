@@ -1,5 +1,5 @@
 ﻿
-using Gems.AddressRegistry.ApplicationServices;
+using ApplicationServices.Services;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -8,5 +8,6 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddApplicationServices(this IServiceCollection services) =>
            services
             .AddScoped<DataImportService>();
+            
     }
 }

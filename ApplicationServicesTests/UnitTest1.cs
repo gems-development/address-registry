@@ -1,4 +1,4 @@
-using Gems.AddressRegistry.ApplicationServices;
+using ApplicationServices.Services;
 using Gems.AddressRegistry.DataAccess;
 using Gems.AddressRegistry.Entities;
 
@@ -17,12 +17,12 @@ namespace ApplicationServicesTests
             RoadNetworkElement roadNetworkElement2 = new RoadNetworkElement();
             roadNetworkElement2.Name = "Lenina";
             roadNetworkElement2.RoadNetworkElementType = Gems.AddressRegistry.Entities.Enums.RoadNetworkElementType.Square;
-            RoadNetworkElement[] roadNetworkElements = new RoadNetworkElement[2] ;
+            RoadNetworkElement[] roadNetworkElements = new RoadNetworkElement[2];
             roadNetworkElements[0] = roadNetworkElement1;
             roadNetworkElements[1] = roadNetworkElement2;
             await dataImportService.RoadNetworkElementImportAsync(roadNetworkElements);
             await dataImportService.RoadNetworkElementImportAsync(roadNetworkElements);
         }
-    
+
     }
 }

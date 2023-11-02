@@ -1,12 +1,12 @@
 ﻿using Gems.AddressRegistry.DataAccess;
 using Gems.AddressRegistry.Entities;
 
-namespace Gems.AddressRegistry.ApplicationServices
-{ 
+namespace ApplicationServices.Services
+{
     public class DataImportService
     {
         private IAppDbContext _AppDbContext;
-        public DataImportService(AppDbContext appDbContext) 
+        public DataImportService(AppDbContext appDbContext)
         {
             _AppDbContext = appDbContext;
         }
@@ -20,7 +20,7 @@ namespace Gems.AddressRegistry.ApplicationServices
                 else
                     _AppDbContext.Add(SpaceImport);
             }
-            return _AppDbContext.SaveChangesAsync(cancellationToken);         
+            return _AppDbContext.SaveChangesAsync(cancellationToken);
         }
         public Task BuildingImportAsync(IReadOnlyCollection<Building> BuildingsImport, CancellationToken cancellationToken = default)
         {
@@ -153,7 +153,7 @@ namespace Gems.AddressRegistry.ApplicationServices
                     _AppDbContext.Add(AddressImport);
             }
             return _AppDbContext.SaveChangesAsync(cancellationToken);
-            
+
         }
 
 

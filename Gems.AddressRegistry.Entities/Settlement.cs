@@ -3,7 +3,7 @@ using Gems.AddressRegistry.Entities.DataSources;
 
 namespace Gems.AddressRegistry.Entities
 {
-    public class Settlement : BaseAuditableEntity
+    public class Settlement : BaseGeoEntity
     {
         public virtual ICollection<SettlementDataSource> DataSources { get; set; }
         public String Name { get; set; }
