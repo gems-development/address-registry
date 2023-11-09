@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Gems.AddressRegistry.DataAccess;
+using AplicationServices.Exceptions;
 
 namespace ApplicationServices.UseCases.Requests.GetAddressById
 {
@@ -13,7 +14,7 @@ namespace ApplicationServices.UseCases.Requests.GetAddressById
         public async Task<AddressResponseDto> Handle(GetAddressByIdRequest request, CancellationToken cancellationToken)
         {
             var foundAddress = await _context.Addresses.FindAsync(new object[] { request.addressId }, cancellationToken)
-                ??throw new KeyNotFoundException(request.addressId.ToString() + " - id not found");
+                ??throw new EntityNotFoundException(request.addressId);
         //    var foundAddress = await _context
         //.Addresses
         //.Include(o => o.Country)

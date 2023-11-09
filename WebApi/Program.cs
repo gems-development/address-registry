@@ -21,7 +21,7 @@ Log.Logger = new LoggerConfiguration()
 builder.Host.ConfigureLogging(logging =>
 {
     logging.AddSerilog();
-   // logging.SetMinimumLevel(LogLevel.Information);
+    logging.SetMinimumLevel(LogLevel.Information);
 })
 .UseSerilog();
 

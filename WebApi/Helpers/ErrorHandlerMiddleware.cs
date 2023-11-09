@@ -1,5 +1,6 @@
 namespace WebApi.Helpers;
 
+using AplicationServices.Exceptions;
 using Serilog;
 using System.Net;
 using System.Text.Json;
@@ -27,12 +28,8 @@ public class ErrorHandlerMiddleware
 
             switch (error)
             {
-                case AppException e:
+                case EntityNotFoundException e:
                     // custom application error
-                    response.StatusCode = (int)HttpStatusCode.BadRequest;
-                    break;
-                case KeyNotFoundException e:
-                    // not found error
                     response.StatusCode = (int)HttpStatusCode.NotFound;
                     break;
                 default:
