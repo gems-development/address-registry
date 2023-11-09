@@ -13,7 +13,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApplicationServicesTests", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApi", "WebApi\WebApi.csproj", "{EC6BDCAC-BE0C-41FF-A3A5-16390EA6B32B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OSM-client", "OSM-client\OSM-client.csproj", "{A19B3C08-BA26-4C27-A18F-33B18115119A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OsmClient", "OsmClient\OsmClient.csproj", "{A19B3C08-BA26-4C27-A18F-33B18115119A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OsmDataParser", "OsmDataParser\OsmDataParser.csproj", "{396DD623-4323-4604-B960-82862C628A9B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OsmDataParser.Tests", "OsmDataParser.Tests\OsmDataParser.Tests.csproj", "{B7CC5A44-4964-4CC3-A908-6859F6ED8C3E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +49,14 @@ Global
 		{EC6BDCAC-BE0C-41FF-A3A5-16390EA6B32B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EC6BDCAC-BE0C-41FF-A3A5-16390EA6B32B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EC6BDCAC-BE0C-41FF-A3A5-16390EA6B32B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{396DD623-4323-4604-B960-82862C628A9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{396DD623-4323-4604-B960-82862C628A9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{396DD623-4323-4604-B960-82862C628A9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{396DD623-4323-4604-B960-82862C628A9B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7CC5A44-4964-4CC3-A908-6859F6ED8C3E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7CC5A44-4964-4CC3-A908-6859F6ED8C3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7CC5A44-4964-4CC3-A908-6859F6ED8C3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7CC5A44-4964-4CC3-A908-6859F6ED8C3E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
