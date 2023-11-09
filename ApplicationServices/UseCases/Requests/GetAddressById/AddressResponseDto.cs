@@ -24,19 +24,19 @@ namespace ApplicationServices.UseCases.Requests.GetAddressById
         {
             NameOfCountry = address.Country.Name;
             NameOfRegion = address.Region.Name;
-            NameOfAdministrativeArea = address.AdministrativeArea.Name;
+            NameOfAdministrativeArea = address.AdministrativeArea?.Name;
             NameOfMunicipalArea = address.MunicipalArea.Name;
             NameOfTerritory = address.Territory.Name;
-            NameOfCity = address.City.Name;
+            NameOfCity = address.City?.Name;
             NameOfSettlement = address.Settlement.Name;
-            NameOfPlaningStructureElement = address.PlaningStructureElement.Name;
-            NameOfRoadNetworkElement = address.RoadNetworkElement.Name;
-            TypeOfRoadNetworkElement = address.RoadNetworkElement.RoadNetworkElementType.ToString();
-            NameOfLandPlot = address.LandPlot.Name;
-            NumberOfBuilding = address.Building.Number;
-            TypeOfBuilding = address.Building.BuildingType.ToString();
-            NumberOfSpace = address.Space.Number;
-            TypeOfSpace = address.Space.SpaceType.ToString();
+            NameOfPlaningStructureElement = address.PlaningStructureElement?.Name;
+            NameOfRoadNetworkElement = address.RoadNetworkElement?.Name;
+            TypeOfRoadNetworkElement = address.RoadNetworkElement?.RoadNetworkElementType.ToString();
+            NameOfLandPlot = address.LandPlot?.Name;
+            NumberOfBuilding = address.Building?.Number;
+            TypeOfBuilding = address.Building?.BuildingType.ToString();
+            NumberOfSpace = address.Space?.Number;
+            TypeOfSpace = address.Space?.SpaceType.ToString();
         }
     }
 

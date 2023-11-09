@@ -1,5 +1,4 @@
-﻿
-using Gems.AddressRegistry.DataAccess;
+﻿using Gems.AddressRegistry.DataAccess;
 
 namespace Microsoft.Extensions.DependencyInjection
 {

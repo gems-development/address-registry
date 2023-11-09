@@ -1,11 +1,9 @@
-﻿using ApplicationServices.UseCases.Requests.GetSpaceByCoordinates;
+﻿using MediatR;
 using Gems.AddressRegistry.DataAccess;
-using Gems.AddressRegistry.Entities;
-using MediatR;
 
 namespace ApplicationServices.UseCases.Requests.GetAddressById
 {
-    internal class GetAddressByIdHandler
+    internal class GetAddressByIdHandler : IRequestHandler<GetAddressByIdRequest, AddressResponseDto>
     {
         private readonly IAppDbContext _context;
         public GetAddressByIdHandler(IAppDbContextFactory appDbContextFactory)
@@ -15,7 +13,12 @@ namespace ApplicationServices.UseCases.Requests.GetAddressById
         public async Task<AddressResponseDto> Handle(GetAddressByIdRequest request, CancellationToken cancellationToken)
         {
             var foundAddress = await _context.Addresses.FindAsync(new object[] { request.addressId }, cancellationToken)
-                ??throw new Exception(request.addressId.ToString());
+                ??throw new KeyNotFoundException(request.addressId.ToString() + " - id not found");
+        //    var foundAddress = await _context
+        //.Addresses
+        //.Include(o => o.Country)
+        //.FirstOrDefaultAsync(o => o.Id == request.addressId, cancellationToken)
+
             AddressResponseDto addressResponseDto = new AddressResponseDto(foundAddress);
             return addressResponseDto;
         }

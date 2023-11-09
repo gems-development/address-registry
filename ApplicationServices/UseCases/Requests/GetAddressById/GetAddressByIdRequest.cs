@@ -1,5 +1,4 @@
-﻿using Gems.AddressRegistry.Entities;
-using MediatR;
+﻿using MediatR;
 
 namespace ApplicationServices.UseCases.Requests.GetAddressById
 {

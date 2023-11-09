@@ -1,5 +1,4 @@
 ﻿using ApplicationServices.Services;
-using MediatR;
 
 namespace Microsoft.Extensions.DependencyInjection
 {

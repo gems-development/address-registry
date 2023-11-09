@@ -1,6 +1,6 @@
-using ApplicationServices.UseCases.Requests.GetAddressById;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using MediatR;
+using ApplicationServices.UseCases.Requests.GetAddressById;
 
 namespace WebApi.Controllers
 {
