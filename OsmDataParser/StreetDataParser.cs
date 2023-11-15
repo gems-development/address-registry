@@ -1,4 +1,5 @@
-﻿using OsmSharp;
+﻿using OsmDataParser.model;
+using OsmSharp;
 using OsmSharp.Tags;
 
 namespace OsmDataParser;
@@ -6,8 +7,9 @@ namespace OsmDataParser;
 public class StreetDataParser
 {
     // Получаем список всех улиц
-    public List<Way> GetStreets(List<Way> ways)
+    public List<Street> GetStreets(OsmData osmData)
     {
+        var ways = osmData.Ways;
         var streets = new List<Way>();
         foreach (var way in ways)
         {
@@ -16,65 +18,101 @@ public class StreetDataParser
         }
 
         var streetGroup = streets.GroupBy(p => p.Tags["name"]);
-        var streetList = MergeByMatchingId(streetGroup);
+        var streetList = new List<Street>();
+        
+        foreach (var street in streetGroup)
+        {
+            var resultStreet = MergeByMatchingId(street);
+            streetList.Add(resultStreet);
+        }
         
         return streetList;
     }
 
     // Склеиваем пути в улицу по совпадающим nodeId
-    private List<Way> MergeByMatchingId(IEnumerable<IGrouping<string, Way>> streetGroup)
+    private Street MergeByMatchingId(IGrouping<string, Way> street)
     {
-        var sortedWays = new List<Way>();
-        
-        foreach (var street in streetGroup)
-        {
-            var group = street.ToList();
+        var resultStreet = new Street();
+        var group = street.ToList();
+        resultStreet.Name = group.First().Tags["name"];
 
-            if (group.Count < 1 || group == null)
-                throw new ArgumentException("Empty street!");
-        
-            if (group.Count == 1)
-                sortedWays.Add(group.First());
-        
-            else if (group.Count > 1)
-            {
-                var mergedWay = group[0];
+        if (group.Count < 1 || group is null)
+            throw new ArgumentException("Empty street!");
     
-                for (var i = 1; i < group.Count; i++)
+        if (group.Count == 1)
+            resultStreet.Components.Add(group.First());
+    
+        else if (group.Count > 1)
+        {
+            while (true)
+            {
+                var merged = false;
+
+                for (var i = 0; i < group.Count; i++)
                 {
-                    var currentWay = group[i];
-        
-                    if (mergedWay.Nodes.LastOrDefault() == currentWay.Nodes.FirstOrDefault())
+                    for (var j = 0; j < group.Count; j++)
                     {
-                        mergedWay = MergeWays(mergedWay, currentWay); 
+                        if (i != j)
+                        {
+                            if (group[i].Nodes.FirstOrDefault() == group[j].Nodes.LastOrDefault())
+                            {
+                                // Объединяем два пути
+                                var newWay = new Way();
+                                newWay = MergeWays(group[j], group[i]);
+
+                                // Удаляем старые пути и добавляем новый
+                                group.RemoveAt(i);
+                                group.RemoveAt(j - 1);
+                                group.Add(newWay);
+
+                                merged = true;
+                                break;
+                            }
+                            else if (group[i].Nodes.LastOrDefault() == group[j].Nodes.FirstOrDefault())
+                            {
+                                // Объединяем два пути
+                                var newWay = new Way();
+                                newWay = MergeWays(group[i], group[j]);
+
+                                // Удаляем старые пути и добавляем новый
+                                group.RemoveAt(i);
+                                group.RemoveAt(j - 1);
+                                group.Add(newWay);
+
+                                merged = true;
+                                break;
+                            }
+                        }
                     }
-                    else if (mergedWay.Nodes.FirstOrDefault() == currentWay.Nodes.LastOrDefault())
+
+                    if (merged)
                     {
-                        mergedWay = MergeWays(currentWay, mergedWay); 
-                    }
-                    else
-                    {
-                        // to do: Обработка разрывных улиц и допилить алгоритм
+                        break;
                     }
                 }
-                
-                sortedWays.Add(mergedWay);
+
+                if (!merged)
+                {
+                    break;
+                }
             }
+
+            resultStreet.Components.AddRange(group);
         }
-        
-        return sortedWays;
+                
+        return resultStreet;
     }
     
     private Way MergeWays(Way way1, Way way2)
     {
-        // var tagCollect = new TagsCollection();
-        // tagCollect.Add("highway", way1.Tags["highway"]);
-        // tagCollect.Add("name", way1.Tags["name"]);
+        var tagCollect = new TagsCollection();
+        tagCollect.Add("highway", way1.Tags["highway"]);
+        tagCollect.Add("name", way1.Tags["name"]);
         
         var mergedWay = new Way
         {
             Nodes = way1.Nodes.Concat(way2.Nodes.Skip(1)).ToArray(),
-            Tags = way1.Tags
+            Tags = tagCollect
         };
 
         return mergedWay;

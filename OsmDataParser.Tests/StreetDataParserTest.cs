@@ -5,7 +5,8 @@ namespace OsmDataParser.Tests;
 
 public class StreetDataParserTest
 {
-    private readonly StreetDataParser _streetDataParser = new StreetDataParser();
+    private StreetDataParser _streetDataParser = new StreetDataParser();
+    private OsmData _osmData = new OsmData();
     
     // Тест получения неразрывной улицы по 2-ум путям
     [Fact]
@@ -42,9 +43,10 @@ public class StreetDataParserTest
         };
 
         //Act.
-        var ways = new List<Way> { way1, way2 };
-        var streets = _streetDataParser.GetStreets(ways);
-        var nodeIds = streets.First().Nodes;
+        _osmData.Ways.Add(way1);
+        _osmData.Ways.Add(way2);
+        var streets = _streetDataParser.GetStreets(_osmData);
+        var nodeIds = streets.First().Components.First().Nodes;
         
         //Assert.
         Assert.Equal(121, nodeIds[0]);
@@ -101,9 +103,11 @@ public class StreetDataParserTest
         };
         
         //Act.
-        var ways = new List<Way> { way1, way2, way3 };
-        var streets = _streetDataParser.GetStreets(ways);
-        var nodeIds = streets.First().Nodes;
+        _osmData.Ways.Add(way1);
+        _osmData.Ways.Add(way2);
+        _osmData.Ways.Add(way3);
+        var streets = _streetDataParser.GetStreets(_osmData);
+        var nodeIds = streets.First().Components.First().Nodes;
         
         //Assert.
         Assert.Equal(988, nodeIds[0]);
@@ -162,9 +166,11 @@ public class StreetDataParserTest
         };
         
         //Act.
-        var ways = new List<Way> { way1, way2, way3 };
-        var streets = _streetDataParser.GetStreets(ways);
-        var nodeIds = streets.First().Nodes;
+        _osmData.Ways.Add(way1);
+        _osmData.Ways.Add(way2);
+        _osmData.Ways.Add(way3);
+        var streets = _streetDataParser.GetStreets(_osmData);
+        var nodeIds = streets.First().Components.First().Nodes;
         
         //Assert.
         Assert.Equal(315, nodeIds[0]);

@@ -21,6 +21,7 @@
         </PackageReference>
     </ItemGroup>
 
+
     <ItemGroup>
       <ProjectReference Include="..\OsmDataParser\OsmDataParser.csproj" />
     </ItemGroup>

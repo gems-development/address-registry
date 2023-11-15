@@ -4,5 +4,6 @@ namespace OsmDataParser.model;
 
 public class Street
 {
-    private string Name { get; set; }
+    public string Name { get; set; }
+    public List<Way> Components = new List<Way>();
 }
