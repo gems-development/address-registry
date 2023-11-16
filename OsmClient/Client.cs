@@ -1,4 +1,7 @@
-﻿using OsmDataParser;
+﻿using GeoJSON.Net.Feature;
+using GeoJSON.Net.Geometry;
+using Newtonsoft.Json;
+using OsmDataParser;
 using OsmSharp;
 using OsmSharp.Streams;
 
@@ -7,12 +10,45 @@ namespace OSM_client;
 public class Client
 {
     private const string Path = "osm_data.xml";
+    private const string OutputFilePath = "streets.geojson";
+    
 
     public static async Task Main(string[] args)
     {
         var osmData = await GetSortedOsmDataFromXml();
         var streetDataParser = new StreetDataParser();
-        var streetList = streetDataParser.GetStreets(osmData);
+        var streets = streetDataParser.GetStreets(osmData);
+        
+        var streetCoordinates = new List<Position>();
+        var features = new List<Feature>();
+
+        foreach (var street in streets)
+        {
+            foreach (var way in street.Components)
+            {
+                foreach (var nodeId in way.Nodes)
+                {
+                    foreach (var node in osmData.Nodes.Where(node => node.Id == nodeId))
+                        streetCoordinates.Add(new Position((double) node.Latitude, (double) node.Longitude));
+                }
+            }
+            
+            var properties = new Dictionary<string, object>
+            {
+                { "StreetName", street.Name }
+            };
+                
+            var lineString = new LineString(streetCoordinates);
+            var feature = new Feature(lineString, properties);
+            features.Add(feature);
+        }
+        
+        var featureCollection = new FeatureCollection(features);
+        var geoJson = JsonConvert.SerializeObject(featureCollection, Formatting.Indented);
+        
+        await File.WriteAllTextAsync(OutputFilePath, geoJson);
+
+        Console.WriteLine("Геометрия улиц записана в формате GeoJSON.");
     }
 
     private static async Task<OsmData> GetSortedOsmDataFromXml()
