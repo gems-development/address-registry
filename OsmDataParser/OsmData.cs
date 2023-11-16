@@ -1,10 +1,10 @@
 using OsmSharp;
 
-namespace OsmDataParser;
+namespace osmDataParser;
 
 public class OsmData
 {
-    public List<Node> Nodes = new List<Node>();
-    public List<Way> Ways = new List<Way>();
-    public List<Relation> Relations = new List<Relation>();
+    public ICollection<Node> Nodes { get; } = new List<Node>();
+    public ICollection<Way> Ways { get; } = new List<Way>();
+    public ICollection<Relation> Relations { get; } = new List<Relation>();
 }

@@ -1,14 +1,13 @@
 using OsmSharp;
 using OsmSharp.Tags;
 
-namespace OsmDataParser.Tests;
+namespace osmDataParser.Tests;
 
 public class StreetDataParserTest
 {
     private StreetDataParser _streetDataParser = new StreetDataParser();
     private OsmData _osmData = new OsmData();
     
-    // Тест получения неразрывной улицы по 2-ум путям
     [Fact]
     public void GetInseparableStreetByTwoWays()
     {
@@ -41,6 +40,8 @@ public class StreetDataParserTest
             Nodes = nodeIds2,
             Tags = tagCollect
         };
+        
+        var expectedNodeIds = new [] { 121L, 111, 123, 456, 789 };
 
         //Act.
         _osmData.Ways.Add(way1);
@@ -49,14 +50,9 @@ public class StreetDataParserTest
         var nodeIds = streets.First().Components.First().Nodes;
         
         //Assert.
-        Assert.Equal(121, nodeIds[0]);
-        Assert.Equal(111, nodeIds[1]);
-        Assert.Equal(123, nodeIds[2]);
-        Assert.Equal(456, nodeIds[3]);
-        Assert.Equal(789, nodeIds[4]);
+        Assert.Equal(expectedNodeIds, nodeIds);
     }
-
-    // Тест получения неразрывной улицы по нескольким послед. путям
+    
     [Fact]
     public void GetInseparableStreetBySeveralWays_Sequential()
     {
@@ -102,6 +98,8 @@ public class StreetDataParserTest
             Tags = tagCollect
         };
         
+        var expectedNodeIds = new [] { 988L, 353, 121, 111, 123, 456, 789 };
+        
         //Act.
         _osmData.Ways.Add(way1);
         _osmData.Ways.Add(way2);
@@ -110,16 +108,9 @@ public class StreetDataParserTest
         var nodeIds = streets.First().Components.First().Nodes;
         
         //Assert.
-        Assert.Equal(988, nodeIds[0]);
-        Assert.Equal(353, nodeIds[1]);
-        Assert.Equal(121, nodeIds[2]);
-        Assert.Equal(111, nodeIds[3]);
-        Assert.Equal(123, nodeIds[4]);
-        Assert.Equal(456, nodeIds[5]);
-        Assert.Equal(789, nodeIds[6]);
+        Assert.Equal(expectedNodeIds, nodeIds);
     }
-
-    // Тест получения неразрывной улицы по нескольким непослед. путям
+    
     [Fact]
     public void GetInseparableStreetBySeveralWays_NotSequential()
     {
@@ -165,6 +156,8 @@ public class StreetDataParserTest
             Tags = tagCollect
         };
         
+        var expectedNodeIds = new [] { 315L, 811, 563, 353, 123, 456, 789 };
+        
         //Act.
         _osmData.Ways.Add(way1);
         _osmData.Ways.Add(way2);
@@ -173,12 +166,6 @@ public class StreetDataParserTest
         var nodeIds = streets.First().Components.First().Nodes;
         
         //Assert.
-        Assert.Equal(315, nodeIds[0]);
-        Assert.Equal(811, nodeIds[1]);
-        Assert.Equal(563, nodeIds[2]);
-        Assert.Equal(353, nodeIds[3]);
-        Assert.Equal(123, nodeIds[4]);
-        Assert.Equal(456, nodeIds[5]);
-        Assert.Equal(789, nodeIds[6]);
+        Assert.Equal(expectedNodeIds, nodeIds);
     }
 }

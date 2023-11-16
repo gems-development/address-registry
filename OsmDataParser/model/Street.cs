@@ -1,9 +1,9 @@
 using OsmSharp;
 
-namespace OsmDataParser.model;
+namespace osmDataParser.model;
 
 public class Street
 {
-    public string Name { get; set; }
-    public List<Way> Components = new List<Way>();
+    public string Name { get; init; }
+    public ICollection<Way> Components { get; } = new List<Way>();
 }

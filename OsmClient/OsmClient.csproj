@@ -9,36 +9,34 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <None Include="bin\Debug\net6.0\crimean.osm.pbf" />
+        <None Include="bin\Debug\net6.0\crimean.osm.pbf"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="bin\Debug\net6.0\export.geojson" />
-      <Content Include="bin\Debug\net6.0\overpass_data.xml" />
-      <Content Include="bin\Debug\net6.0\export.xml" />
-      <Content Include="bin\Debug\net6.0\export_01.pbf" />
-      <Content Include="bin\Debug\net6.0\map.osm" />
+        <Content Include="bin\Debug\net6.0\export.geojson"/>
+        <Content Include="bin\Debug\net6.0\overpass_data.xml"/>
+        <Content Include="bin\Debug\net6.0\export.xml"/>
+        <Content Include="bin\Debug\net6.0\export_01.pbf"/>
+        <Content Include="bin\Debug\net6.0\map.osm"/>
     </ItemGroup>
 
 
     <ItemGroup>
-      <PackageReference Include="GeoJSON.Net" Version="1.2.19" />
-      <PackageReference Include="GeoJSON.Text" Version="1.0.2" />
-      <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-      <PackageReference Include="OsmSharp" Version="6.2.0" />
+        <PackageReference Include="GeoJSON.Net" Version="1.2.19"/>
+        <PackageReference Include="GeoJSON.Text" Version="1.0.2"/>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
+        <PackageReference Include="OsmSharp" Version="6.2.0"/>
     </ItemGroup>
 
 
-
     <ItemGroup>
-      <ProjectReference Include="..\Gems.AddressRegistry.Entities\Gems.AddressRegistry.Entities.csproj" />
-      <ProjectReference Include="..\OsmDataParser\OsmDataParser.csproj" />
+        <ProjectReference Include="..\Gems.AddressRegistry.Entities\Gems.AddressRegistry.Entities.csproj"/>
+        <ProjectReference Include="..\OsmDataParser\OsmDataParser.csproj"/>
     </ItemGroup>
 
 
-
     <ItemGroup>
-      <Folder Include="bin\Debug\net6.0\" />
+        <Folder Include="bin\Debug\net6.0\"/>
     </ItemGroup>
 
 
