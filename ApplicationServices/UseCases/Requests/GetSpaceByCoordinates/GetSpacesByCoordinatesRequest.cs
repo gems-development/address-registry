@@ -3,5 +3,5 @@ using Gems.AddressRegistry.Entities;
 
 namespace ApplicationServices.UseCases.Requests.GetSpaceByCoordinates
 {
-    public record GetSpacesByCoordinatesRequest : IRequest<IEnumerable<Space>>;
+    public record GetSpacesByCoordinatesRequest(String GeoJson) : IRequest<IEnumerable<Space>>;
 }

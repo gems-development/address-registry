@@ -9,7 +9,7 @@ namespace Gems.AddressRegistry.Entities
 
         public virtual ICollection<BuildingDataSource> DataSources { get; set; }
         public int Postcode { get; set; }
-        public int Number { get; set; }
+        public String Number { get; set; }
         public BuildingType BuildingType { get; set; }
 
 

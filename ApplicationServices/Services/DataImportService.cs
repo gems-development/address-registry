@@ -6,9 +6,9 @@ namespace ApplicationServices.Services
     public class DataImportService
     {
         private IAppDbContext _AppDbContext;
-        public DataImportService(AppDbContext appDbContext)
+        public DataImportService(IAppDbContextFactory appDbContextFactory)
         {
-            _AppDbContext = appDbContext;
+            _AppDbContext = appDbContextFactory.Create();
         }
 
         public Task SpaceImportAsync(IReadOnlyCollection<Space> spacesImport, CancellationToken cancellationToken = default)

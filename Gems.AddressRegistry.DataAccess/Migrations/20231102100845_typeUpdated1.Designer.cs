@@ -3,6 +3,7 @@ using System;
 using Gems.AddressRegistry.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Gems.AddressRegistry.DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AddressContextModelSnapshot : ModelSnapshot
+    [Migration("20231102100845_typeUpdated1")]
+    partial class typeUpdated1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
