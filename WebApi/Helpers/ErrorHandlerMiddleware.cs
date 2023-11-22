@@ -8,10 +8,12 @@ using System.Text.Json;
 public class ErrorHandlerMiddleware
 {
     private readonly RequestDelegate _next;
+    private readonly ILogger _logger;
 
-    public ErrorHandlerMiddleware(RequestDelegate next)
+    public ErrorHandlerMiddleware(RequestDelegate next, ILogger logger)
     {
         _next = next;
+        _logger = logger;
     }
 
     public async Task Invoke(HttpContext context)
@@ -22,7 +24,7 @@ public class ErrorHandlerMiddleware
         }
         catch (Exception error)
         {
-            Log.Information("Error");
+            _logger.Information("Error");
             var response = context.Response;
             response.ContentType = "application/json";
 

@@ -2,11 +2,11 @@ using ApplicationServices.Services;
 using Gems.AddressRegistry.DataAccess;
 using Gems.AddressRegistry.Entities;
 
-namespace ApplicationServicesTests
+namespace ApplicationServices.Tests
 {
     public class UnitTest1
     {
-        [Fact]
+        [RunnableInDebugOnlyFactAttribute]
         public async Task ErnImportTest()
         {
             IAppDbContextFactory appDbContextFactory = new AppDbContextFactory();
@@ -23,20 +23,10 @@ namespace ApplicationServicesTests
             address.MunicipalArea.Name = "Kalachinsky Rayon";
             address.Territory = new Territory();
             address.Territory.Name = "Terrytory";
-            Address[]addresses= new Address[] { address };
+            Address[] addresses = new Address[] { address };
             await dataImportService.AddressImportAsync(addresses);
             await dataImportService.AddressImportAsync(addresses);
-            /* RoadNetworkElement roadNetworkElement1 = new RoadNetworkElement();
-             roadNetworkElement1.Name = "Lenina";
-             roadNetworkElement1.RoadNetworkElementType = Gems.AddressRegistry.Entities.Enums.RoadNetworkElementType.Street;
-             RoadNetworkElement roadNetworkElement2 = new RoadNetworkElement();
-             roadNetworkElement2.Name = "Lenina";
-             roadNetworkElement2.RoadNetworkElementType = Gems.AddressRegistry.Entities.Enums.RoadNetworkElementType.Square;
-             RoadNetworkElement[] roadNetworkElements = new RoadNetworkElement[2];
-             roadNetworkElements[0] = roadNetworkElement1;
-             roadNetworkElements[1] = roadNetworkElement2;
-             await dataImportService.RoadNetworkElementImportAsync(roadNetworkElements);
-             await dataImportService.RoadNetworkElementImportAsync(roadNetworkElements);*/
+
         }
 
     }

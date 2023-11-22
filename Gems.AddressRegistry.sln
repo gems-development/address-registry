@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gems.AddressRegistry.DataAc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApplicationServices", "ApplicationServices\ApplicationServices.csproj", "{AEE7188F-CD68-412B-8D60-E10BA6BE910D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApplicationServicesTests", "ApplicationServicesTests\ApplicationServicesTests.csproj", "{F39F141E-5211-4A1E-AE62-4D8FBCF2260C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApplicationServices.Tests", "ApplicationServicesTests\ApplicationServices.Tests.csproj", "{F39F141E-5211-4A1E-AE62-4D8FBCF2260C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApi", "WebApi\WebApi.csproj", "{EC6BDCAC-BE0C-41FF-A3A5-16390EA6B32B}"
 EndProject

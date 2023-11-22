@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Gems.AddressRegistry.Entities;
+﻿using Gems.AddressRegistry.Entities;
 using Gems.AddressRegistry.Entities.Common;
+using Microsoft.EntityFrameworkCore;
 
 namespace Gems.AddressRegistry.DataAccess
 {

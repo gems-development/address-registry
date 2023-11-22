@@ -40,5 +40,5 @@ namespace ApplicationServices.UseCases.Requests.GetAddressById
         }
     }
 
-    
+
 }
