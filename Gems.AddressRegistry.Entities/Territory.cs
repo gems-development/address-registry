@@ -5,7 +5,7 @@ namespace Gems.AddressRegistry.Entities
 {
     public class Territory : BaseGeoEntity
     {
-        public virtual ICollection<TerritoryDataSource> DataSources { get; set; }
-        public String Name { get; set; }
+        public virtual ICollection<TerritoryDataSource> DataSources { get; set; } = new List<TerritoryDataSource>(0);
+        public String Name { get; set; } = null!;
     }
 }

@@ -7,9 +7,9 @@ namespace Gems.AddressRegistry.Entities
     public class Building : BaseGeoEntity
     {
 
-        public virtual ICollection<BuildingDataSource> DataSources { get; set; }
+        public virtual ICollection<BuildingDataSource> DataSources { get; set; } = new List<BuildingDataSource>(0);
         public int Postcode { get; set; }
-        public String Number { get; set; }
+        public String Number { get; set; } = null!;
         public BuildingType BuildingType { get; set; }
 
 

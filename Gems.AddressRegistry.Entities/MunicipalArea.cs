@@ -5,7 +5,7 @@ namespace Gems.AddressRegistry.Entities
 {
     public class MunicipalArea : BaseGeoEntity
     {
-        public virtual ICollection<MunicipalAreaDataSource> DataSources { get; set; }
-        public String Name { get; set; }
+        public virtual ICollection<MunicipalAreaDataSource> DataSources { get; set; } = null!;
+        public String Name { get; set; } = null!;
     }
 }

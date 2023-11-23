@@ -5,7 +5,7 @@ namespace Gems.AddressRegistry.Entities
 {
     public class AdministrativeArea : BaseGeoEntity
     {
-        public virtual ICollection<AdministrativeAreaDataSource> DataSources { get; set; }
-        public String Name { get; set; }
+        public virtual ICollection<AdministrativeAreaDataSource> DataSources { get; set; } = new List<AdministrativeAreaDataSource>(0);
+        public String Name { get; set; } = null!;
     }
 }
