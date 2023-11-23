@@ -10,7 +10,6 @@ namespace osm_client;
 
 public class Client
 {
-    private const string PathToXml = "osm_data.xml";
     private const string PathToPbf = "RU-OMS.osm.pbf";
     private const string OutputFilePath = "streets.geojson";
 
@@ -35,7 +34,7 @@ public class Client
                 var wayNodes = osmData.Nodes.Where(node => wayNodeIds.Contains(node.Id ?? -1)).ToArray();
                 
                 foreach (var node in wayNodes)
-                    borderCoordinates.Add(new Position((double)node.Latitude, (double)node.Longitude));
+                    borderCoordinates.Add(new Position((double)node.Latitude!, (double)node.Longitude!));
             }
             
             var properties = new Dictionary<string, object>
@@ -59,39 +58,6 @@ public class Client
             await File.WriteAllTextAsync(OutputFilePath, geoJson);
             Console.WriteLine("Граница {" + locality.Name + "} записана в формате GeoJSON.");
         }
-
-        // var streets = streetDataParser.GetStreets(osmData);
-        // var streetCoordinates = new List<Position>();
-        // var features = new List<Feature>();
-        //
-        // foreach (var street in streets)
-        // {
-        //     foreach (var way in street.Components)
-        //     foreach (var nodeId in way.Nodes)
-        //     foreach (var node in osmData.Nodes.Where(node => node.Id == nodeId))
-        //         streetCoordinates.Add(new Position((double)node.Latitude, (double)node.Longitude));
-        //
-        //     var properties = new Dictionary<string, object>
-        //     {
-        //         { "StreetName", street.Name }
-        //     };
-        //
-        //     var lineString = new LineString(streetCoordinates);
-        //     var feature = new Feature(lineString, properties);
-        //     features.Add(feature);
-        // }
-        //
-        // var featureCollection = new FeatureCollection(features);
-        //
-        // var options = new JsonSerializerOptions
-        // {
-        //     WriteIndented = true,
-        //     Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-        // };
-        // var geoJson = JsonSerializer.Serialize(featureCollection, options);
-        //
-        // await File.WriteAllTextAsync(OutputFilePath, geoJson);
-        // Console.WriteLine("Геометрия улиц записана в формате GeoJSON.");
     }
 
     private static async Task<OsmData> GetSortedOsmData()

@@ -4,6 +4,6 @@ namespace osmDataParser.model;
 
 public class Locality
 {
-    public string Name { get; set; }
+    public string Name { get; init; }
     public ICollection<Way> Components { get; } = new List<Way>();
 }

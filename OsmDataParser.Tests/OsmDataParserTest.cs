@@ -3,10 +3,10 @@ using OsmSharp.Tags;
 
 namespace osmDataParser.Tests;
 
-public class StreetDataParserTest
+public class OsmDataParserTest
 {
-    private OsmDataParser _osmDataParser = new OsmDataParser();
-    private OsmData _osmData = new OsmData();
+    private readonly OsmDataParser _osmDataParser = new OsmDataParser();
+    private readonly OsmData _osmData = new OsmData();
     
     [Fact]
     public void GetInseparableStreetByTwoWays()
