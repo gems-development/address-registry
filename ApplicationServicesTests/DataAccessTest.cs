@@ -2,14 +2,17 @@ using ApplicationServices.Services;
 using Gems.AddressRegistry.DataAccess;
 using Gems.AddressRegistry.Entities;
 
+
 namespace ApplicationServices.Tests
 {
-    public class UnitTest1
+    public class DataAccessTest
     {
+        
         [RunnableInDebugOnlyFactAttribute]
         public async Task ErnImportTest()
         {
-            IAppDbContextFactory appDbContextFactory = new AppDbContextFactory();
+            const string connectionString = "Host=localhost;Port=5432;Database=addressdb;Username=postgres;Password=admin";
+            IAppDbContextFactory appDbContextFactory = new AppDbContextFactory(connectionString);
             DataImportService dataImportService = new DataImportService(appDbContextFactory);
             Address address = new Address();
             address.Country = new Country();
