@@ -5,7 +5,7 @@ namespace osmDataParser.Tests;
 
 public class StreetDataParserTest
 {
-    private StreetDataParser _streetDataParser = new StreetDataParser();
+    private OsmDataParser _osmDataParser = new OsmDataParser();
     private OsmData _osmData = new OsmData();
     
     [Fact]
@@ -46,7 +46,7 @@ public class StreetDataParserTest
         //Act.
         _osmData.Ways.Add(way1);
         _osmData.Ways.Add(way2);
-        var streets = _streetDataParser.GetStreets(_osmData);
+        var streets = _osmDataParser.GetStreets(_osmData);
         var nodeIds = streets.First().Components.First().Nodes;
         
         //Assert.
@@ -104,7 +104,7 @@ public class StreetDataParserTest
         _osmData.Ways.Add(way1);
         _osmData.Ways.Add(way2);
         _osmData.Ways.Add(way3);
-        var streets = _streetDataParser.GetStreets(_osmData);
+        var streets = _osmDataParser.GetStreets(_osmData);
         var nodeIds = streets.First().Components.First().Nodes;
         
         //Assert.
@@ -162,7 +162,7 @@ public class StreetDataParserTest
         _osmData.Ways.Add(way1);
         _osmData.Ways.Add(way2);
         _osmData.Ways.Add(way3);
-        var streets = _streetDataParser.GetStreets(_osmData);
+        var streets = _osmDataParser.GetStreets(_osmData);
         var nodeIds = streets.First().Components.First().Nodes;
         
         //Assert.
