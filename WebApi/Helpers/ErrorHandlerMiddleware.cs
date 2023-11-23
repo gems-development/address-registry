@@ -24,7 +24,8 @@ public class ErrorHandlerMiddleware
         }
         catch (Exception error)
         {
-            _logger.Information("Error");
+            //Log.Logger.Information("Error");
+
             var response = context.Response;
             response.ContentType = "application/json";
 
@@ -41,6 +42,7 @@ public class ErrorHandlerMiddleware
             }
 
             var result = JsonSerializer.Serialize(new { message = error?.Message });
+            _logger.Error($"Error!: {result}");
             await response.WriteAsync(result);
         }
     }

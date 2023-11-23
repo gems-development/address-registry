@@ -1,4 +1,5 @@
 ﻿using Serilog;
+using Serilog.Events;
 
 namespace WebApi.Helpers
 {
@@ -7,13 +8,13 @@ namespace WebApi.Helpers
         public static IServiceCollection AddSerilogServices(
         this IServiceCollection services)
         {
-            Log.Logger = new LoggerConfiguration()
-            .Enrich.FromLogContext()
+            var logger = new LoggerConfiguration()
+            .MinimumLevel.Debug()
+            .WriteTo.File("/var/log/addressRegistryService.log", restrictedToMinimumLevel: LogEventLevel.Warning)
             .WriteTo.Console()
-            .WriteTo.File("/var/log/addressRegistryService.log")
             .CreateLogger();
 
-            return services.AddSingleton(Log.Logger);
+            return services.AddSingleton<Serilog.ILogger>(logger);
         }
 
     }

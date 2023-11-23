@@ -14,22 +14,6 @@ builder.Services.AddDataAccess();
 builder.Services.AddSerilogServices();
 
 
-//log.logger = new loggerconfiguration()
-//    .enrich.fromlogcontext()
-//    .writeto.console()
-//    .writeto.file("/var/log/addressregistryservice.log")
-//    .createlogger();
-
-//builder.host.configurelogging(logging =>
-//{
-//    logging.addserilog();
-//    logging.setminimumlevel(loglevel.information);
-//})
-//.useserilog();
-
-
-
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

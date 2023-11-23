@@ -7,7 +7,7 @@ namespace ApplicationServices.Tests
 {
     public class DataAccessTest
     {
-        
+
         [RunnableInDebugOnlyFactAttribute]
         public async Task ErnImportTest()
         {
