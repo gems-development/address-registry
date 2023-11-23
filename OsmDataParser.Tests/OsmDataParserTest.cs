@@ -168,4 +168,90 @@ public class OsmDataParserTest
         //Assert.
         Assert.Equal(expectedNodeIds, nodeIds);
     }
+
+    [Fact]
+    public void GetLocalities_Success()
+    {
+        //Arrange.
+        var node1 = new Node { Id = 123 };
+        var node2 = new Node { Id = 456 };
+        var node3 = new Node { Id = 789 };
+        
+        var node4 = new Node { Id = 315 };
+        var node5 = new Node { Id = 811 };
+        var node6 = new Node { Id = 563 };
+        
+        var node7 = new Node { Id = 563 };
+        var node8 = new Node { Id = 353 };
+        var node9 = new Node { Id = 123 };
+        
+        var node10 = new Node { Id = 315 };
+        var node11 = new Node { Id = 888 };
+        var node12 = new Node { Id = 789 };
+        
+        long[] nodeIds1 = { (long)node1.Id, (long)node2.Id, (long)node3.Id };
+        long[] nodeIds2 = { (long)node4.Id, (long)node5.Id, (long)node6.Id };
+        long[] nodeIds3 = { (long)node7.Id, (long)node8.Id, (long)node9.Id };
+        long[] nodeIds4 = { (long)node10.Id, (long)node11.Id, (long)node12.Id };
+        
+        var way1 = new Way
+        {
+            Id = 1,
+            Nodes = nodeIds1
+        };
+        
+        var way2 = new Way
+        {
+            Id = 2,
+            Nodes = nodeIds2
+        };
+        
+        var way3 = new Way
+        {
+            Id = 3,
+            Nodes = nodeIds3
+        };
+        
+        var way4 = new Way
+        {
+            Id = 4,
+            Nodes = nodeIds4
+        };
+        
+        var adminCenter = new Node { Id = 5 };
+        
+        var tagCollect = new TagsCollection();
+        tagCollect.AddOrReplace("boundary", "administrative");
+        tagCollect.AddOrReplace("admin_level", "8");
+        tagCollect.AddOrReplace("name", "Лежанское сельское поселение");
+        
+        var member1 = new RelationMember { Id = (long)way1.Id };
+        var member2 = new RelationMember { Id = (long)way2.Id };
+        var member3 = new RelationMember { Id = (long)way3.Id };
+        var member4 = new RelationMember { Id = (long)way4.Id };
+        var member5 = new RelationMember { Id = (long)adminCenter.Id };
+
+        RelationMember[] relationMembers = { member1, member2, member3, member4, member5 };
+        
+        var relation = new Relation
+        {
+            Id = 999,
+            Members = relationMembers,
+            Tags = tagCollect
+        };
+        
+        var expectedNodeIds = new [] { 789L, 888, 315, 811, 563, 353, 123, 456, 789 };
+        
+        //Act.
+        _osmData.Ways.Add(way1);
+        _osmData.Ways.Add(way2);
+        _osmData.Ways.Add(way3);
+        _osmData.Ways.Add(way4);
+        _osmData.Relations.Add(relation);
+        var localities = _osmDataParser.GetLocalities(_osmData);
+        var nodeIds = localities.First().Components.First().Nodes;
+        
+        //Assert.
+        Assert.Equal(expectedNodeIds, nodeIds);
+    }
 }
