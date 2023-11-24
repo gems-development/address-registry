@@ -18,8 +18,6 @@ public class Client
         var osmData = await GetSortedOsmData();
         var osmDataParser = new OsmDataParser();
         var localities = osmDataParser.GetLocalities(osmData);
-
-        var borderCoordinates = new List<Position>();
         var features = new List<Feature>();
 
         foreach (var locality in localities)
@@ -27,6 +25,7 @@ public class Client
             //var localityMemberIds = locality.Components.Members.Select(o => o.Id).ToHashSet();
             //var localityWays = osmData.Ways.Where(way => localityMemberIds.Contains(way.Id ?? -1)).ToArray();
             var localityWays = locality.Components;
+            var borderCoordinates = new List<Position>();
 
             foreach (var way in localityWays)
             {

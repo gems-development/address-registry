@@ -15,8 +15,7 @@ public class OsmDataParser
             if (relation.Tags.ContainsKey(OsmKeywords.Boundary) &&
                 relation.Tags[OsmKeywords.Boundary] == OsmKeywords.Administrative &&
                 relation.Tags.ContainsKey(OsmKeywords.AdminLevel) &&
-                relation.Tags[OsmKeywords.AdminLevel] == OsmKeywords.Level8 &&
-                relation.Tags[OsmKeywords.Name] == "Георгиевское сельское поселение")
+                relation.Tags[OsmKeywords.AdminLevel] == OsmKeywords.Level6)
             {
                 var locality = new Locality { Name = relation.Tags[OsmKeywords.Name] };
                 var relationMemberIds = relation.Members.Select(o => o.Id).ToHashSet();
