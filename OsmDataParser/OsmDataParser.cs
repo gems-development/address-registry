@@ -16,14 +16,11 @@ public class OsmDataParser
                 relation.Tags[OsmKeywords.Boundary] == OsmKeywords.Administrative &&
                 relation.Tags.ContainsKey(OsmKeywords.AdminLevel) &&
                 relation.Tags[OsmKeywords.AdminLevel] == OsmKeywords.Level8 &&
-                relation.Tags[OsmKeywords.Name] == "Лежанское сельское поселение")
+                relation.Tags[OsmKeywords.Name] == "Георгиевское сельское поселение")
             {
                 var locality = new Locality { Name = relation.Tags[OsmKeywords.Name] };
                 var relationMemberIds = relation.Members.Select(o => o.Id).ToHashSet();
                 var relationWays = osmData.Ways.Where(way => relationMemberIds.Contains(way.Id ?? -1)).ToList();
-                
-                if (relationWays.Count < 3)
-                    throw new ArgumentException("It's not a border");
                 
                 var osmObjects = MergeByMatchingId(relationWays);
         

@@ -11,7 +11,7 @@ namespace osm_client;
 public class Client
 {
     private const string PathToPbf = "RU-OMS.osm.pbf";
-    private const string OutputFilePath = "streets.geojson";
+    private const string OutputFilePath = "data.geojson";
 
     public static async Task Main(string[] args)
     {
@@ -31,10 +31,19 @@ public class Client
             foreach (var way in localityWays)
             {
                 var wayNodeIds = way.Nodes.ToHashSet();
-                var wayNodes = osmData.Nodes.Where(node => wayNodeIds.Contains(node.Id ?? -1)).ToArray();
-                
-                foreach (var node in wayNodes)
-                    borderCoordinates.Add(new Position((double)node.Latitude!, (double)node.Longitude!));
+                var wayNodes = wayNodeIds
+                    .Select(id => osmData.Nodes.FirstOrDefault(node => node.Id == id))
+                    .Where(node => node != null)
+                    .ToList();
+
+                if (wayNodes.Any())
+                {
+                    var firstNode = wayNodes.First();
+                    wayNodes.Add(firstNode);
+                    
+                    foreach (var node in wayNodes)
+                        borderCoordinates.Add(new Position((double)node.Latitude!, (double)node.Longitude!));
+                }
             }
             
             var properties = new Dictionary<string, object>
