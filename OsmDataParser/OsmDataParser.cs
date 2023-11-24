@@ -15,12 +15,12 @@ public class OsmDataParser
             if (relation.Tags.ContainsKey(OsmKeywords.Boundary) &&
                 relation.Tags[OsmKeywords.Boundary] == OsmKeywords.Administrative &&
                 relation.Tags.ContainsKey(OsmKeywords.AdminLevel) &&
-                relation.Tags[OsmKeywords.AdminLevel] == OsmKeywords.Level6)
+                relation.Tags[OsmKeywords.AdminLevel] == OsmKeywords.Level6 &&
+                relation.Tags.ContainsKey(OsmKeywords.Name))
             {
                 var locality = new Locality { Name = relation.Tags[OsmKeywords.Name] };
                 var relationMemberIds = relation.Members.Select(o => o.Id).ToHashSet();
                 var relationWays = osmData.Ways.Where(way => relationMemberIds.Contains(way.Id ?? -1)).ToList();
-                
                 var osmObjects = MergeByMatchingId(relationWays);
         
                 foreach (var way in osmObjects)
@@ -29,7 +29,6 @@ public class OsmDataParser
                 localities.Add(locality);
             }
         }
-
         return localities;
     }
     
@@ -67,7 +66,6 @@ public class OsmDataParser
             }
             streetList.Add(resultStreet);
         }
-
         return streetList;
     }
 
@@ -149,7 +147,6 @@ public class OsmDataParser
             }
             if (!merged) break;
         }
-        
         return osmObjects;
     }
 }

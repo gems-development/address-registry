@@ -22,8 +22,6 @@ public class Client
 
         foreach (var locality in localities)
         {
-            //var localityMemberIds = locality.Components.Members.Select(o => o.Id).ToHashSet();
-            //var localityWays = osmData.Ways.Where(way => localityMemberIds.Contains(way.Id ?? -1)).ToArray();
             var localityWays = locality.Components;
             var borderCoordinates = new List<Position>();
 
@@ -71,12 +69,6 @@ public class Client
     private static async Task<OsmData> GetSortedOsmData()
     {
         var osmData = new OsmData();
-
-        // var xmlData = await GetXmlFromOverpassApi();
-        // await File.WriteAllTextAsync(PathToXml, xmlData);
-        // var fileStream = new FileInfo(PathToXml).OpenRead();
-        // var osmStreamSource = new XmlOsmStreamSource(fileStream);
-
         await using var fileStream = new FileInfo(PathToPbf).OpenRead();
         using var osmStreamSource = new PBFOsmStreamSource(fileStream);
 
@@ -98,8 +90,7 @@ public class Client
     {
         const string url = "https://overpass-api.de/api/interpreter";
         var overpassClient = new OverpassApiClient(url);
-
-        // Запрос к Overpass API
+        
         const string query = "[out:xml];" +
                              "\nnode(54.979788, 73.414227, 54.983705, 73.423204);" +
                              "\nout body;" +
