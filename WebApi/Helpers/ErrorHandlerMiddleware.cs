@@ -1,6 +1,6 @@
 namespace WebApi.Helpers;
 
-using AplicationServices.Exceptions;
+using Gems.AplicationServices.Exceptions;
 using Serilog;
 using System.Net;
 using System.Text.Json;

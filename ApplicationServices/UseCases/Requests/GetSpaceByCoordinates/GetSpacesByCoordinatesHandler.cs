@@ -2,7 +2,7 @@
 using Gems.AddressRegistry.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace ApplicationServices.UseCases.Requests.GetSpaceByCoordinates
+namespace Gems.ApplicationServices.UseCases.Requests.GetSpaceByCoordinates
 {
     internal class GetSpacesByCoordinatesHandler
     {

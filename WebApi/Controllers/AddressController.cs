@@ -1,4 +1,4 @@
-using ApplicationServices.UseCases.Requests.GetAddressById;
+using Gems.ApplicationServices.UseCases.Requests.GetAddressById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

@@ -1,6 +1,6 @@
 ﻿using Gems.AddressRegistry.Entities;
 
-namespace ApplicationServices.UseCases.Requests.GetAddressById
+namespace Gems.ApplicationServices.UseCases.Requests.GetAddressById
 {
     public class AddressResponseDto
     {

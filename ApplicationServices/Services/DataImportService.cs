@@ -1,7 +1,7 @@
 ﻿using Gems.AddressRegistry.DataAccess;
 using Gems.AddressRegistry.Entities;
 
-namespace ApplicationServices.Services
+namespace Gems.ApplicationServices.Services
 {
     public class DataImportService
     {

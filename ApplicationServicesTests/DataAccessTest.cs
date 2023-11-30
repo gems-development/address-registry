@@ -1,4 +1,4 @@
-using ApplicationServices.Services;
+using Gems.ApplicationServices.Services;
 using Gems.AddressRegistry.DataAccess;
 using Gems.AddressRegistry.Entities;
 

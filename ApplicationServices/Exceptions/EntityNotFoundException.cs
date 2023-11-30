@@ -1,6 +1,6 @@
 using System.Globalization;
 
-namespace AplicationServices.Exceptions;
+namespace Gems.AplicationServices.Exceptions;
 
 public class EntityNotFoundException: Exception
 {
