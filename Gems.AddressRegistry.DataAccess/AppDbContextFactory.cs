@@ -1,9 +1,16 @@
 ﻿namespace Gems.AddressRegistry.DataAccess
 {
-    public class AppDbContextFactory : IAppDbContextFactory
+    internal class AppDbContextFactory : IAppDbContextFactory
     {
-        public IAppDbContext Create() 
-        { 
+        private readonly string _connectionString;
+
+
+        public AppDbContextFactory(string connectionString)
+        {
+            _connectionString = connectionString;
+        }
+        public IAppDbContext Create()
+        {
             return new AppDbContext();
         }
     }

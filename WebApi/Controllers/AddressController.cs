@@ -1,6 +1,6 @@
-using Microsoft.AspNetCore.Mvc;
-using MediatR;
 using ApplicationServices.UseCases.Requests.GetAddressById;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers
 {
@@ -10,15 +10,15 @@ namespace WebApi.Controllers
     {
         private readonly ISender _sender;
 
-        public AddressController(ISender sender) 
+        public AddressController(ISender sender)
         {
             _sender = sender;
         }
 
-        [HttpGet ("{addressId:guid}")]
+        [HttpGet("{addressId:guid}")]
         public Task<AddressResponseDto> Get(Guid addressId, CancellationToken cancellationToken)
         {
-           return _sender.Send(new GetAddressByIdRequest(addressId), cancellationToken);
+            return _sender.Send(new GetAddressByIdRequest(addressId), cancellationToken);
         }
     }
 

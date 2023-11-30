@@ -2,7 +2,7 @@
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class ServiceCollectionExtension
+    public static class ApplicationServicesServiceCollectionExtension
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services) =>
            services
@@ -10,7 +10,7 @@ namespace Microsoft.Extensions.DependencyInjection
             //.AddMediatR(typeof(ServiceCollectionExtension));
             .AddMediatR(cfg =>
             {
-                cfg.RegisterServicesFromAssembly(typeof(ServiceCollectionExtension).Assembly);
+                cfg.RegisterServicesFromAssembly(typeof(ApplicationServicesServiceCollectionExtension).Assembly);
             });
     }
 }

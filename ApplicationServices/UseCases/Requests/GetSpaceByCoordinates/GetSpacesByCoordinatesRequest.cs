@@ -1,5 +1,5 @@
-﻿using MediatR;
-using Gems.AddressRegistry.Entities;
+﻿using Gems.AddressRegistry.Entities;
+using MediatR;
 
 namespace ApplicationServices.UseCases.Requests.GetSpaceByCoordinates
 {

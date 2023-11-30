@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Gems.AddressRegistry.DataAccess;
+﻿using Gems.AddressRegistry.DataAccess;
 using Gems.AddressRegistry.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace ApplicationServices.UseCases.Requests.GetSpaceByCoordinates
 {

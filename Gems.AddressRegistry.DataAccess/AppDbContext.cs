@@ -1,10 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Gems.AddressRegistry.Entities;
+﻿using Gems.AddressRegistry.Entities;
 using Gems.AddressRegistry.Entities.Common;
+using Microsoft.EntityFrameworkCore;
 
 namespace Gems.AddressRegistry.DataAccess
 {
-    public class AppDbContext : DbContext, IAppDbContext
+    internal class AppDbContext : DbContext, IAppDbContext
     {
         public DbSet<Address> Addresses { get; set; }
         public DbSet<Country> Countries { get; set; }
@@ -24,6 +24,11 @@ namespace Gems.AddressRegistry.DataAccess
 
         public AppDbContext()
         { }
+
+        public AppDbContext(string connectionString)
+        {
+            _connectionString = connectionString;
+        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
