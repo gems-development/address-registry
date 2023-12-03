@@ -5,7 +5,7 @@ namespace Gems.AddressRegistry.Entities
 {
     public class Country : BaseGeoEntity
     {
-        public virtual ICollection<CountryDataSource> DataSources { get; set; }
-        public String Name { get; set; }
+        public virtual ICollection<CountryDataSource> DataSources { get; set; } = new List<CountryDataSource>(0);
+        public String Name { get; set; } = null!;
     }
 }
