@@ -15,18 +15,24 @@ public class OsmDataParser
             if (relation.Tags.ContainsKey(OsmKeywords.Boundary) &&
                 relation.Tags[OsmKeywords.Boundary] == OsmKeywords.Administrative &&
                 relation.Tags.ContainsKey(OsmKeywords.AdminLevel) &&
-                relation.Tags[OsmKeywords.AdminLevel] == OsmKeywords.Level6 &&
-                relation.Tags.ContainsKey(OsmKeywords.Name))
+                relation.Tags[OsmKeywords.AdminLevel] == OsmKeywords.Level4 &&
+                relation.Tags.ContainsKey(OsmKeywords.Name) &&
+                relation.Tags[OsmKeywords.Name] == "Омская область")
             {
-                var locality = new Locality { Name = relation.Tags[OsmKeywords.Name] };
                 var relationMemberIds = relation.Members.Select(o => o.Id).ToHashSet();
-                var relationWays = osmData.Ways.Where(way => relationMemberIds.Contains(way.Id ?? -1)).ToList();
-                var osmObjects = MergeByMatchingId(relationWays);
+                var districts = osmData.Relations.Where(rel => relationMemberIds.Contains(rel.Id ?? -1)).ToList();
+                foreach (var district in districts)
+                {
+                    var locality = new Locality { Name = district.Tags[OsmKeywords.Name] };
+                    var districtMemberIds = district.Members.Select(o => o.Id).ToHashSet();
+                    var relationWays = osmData.Ways.Where(way => districtMemberIds.Contains(way.Id ?? -1)).ToList();
+                    var osmObjects = MergeByMatchingId(relationWays);
         
-                foreach (var way in osmObjects)
-                    locality.Components.Add(way);
+                    foreach (var way in osmObjects)
+                        locality.Components.Add(way);
                 
-                localities.Add(locality);
+                    localities.Add(locality);
+                }
             }
         }
         return localities;
