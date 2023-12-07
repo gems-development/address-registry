@@ -194,7 +194,7 @@ public class OsmDataParserTest
         
         var adminCenter = TestHelper.CreateNode(5);
         
-        var relation = TestHelper.CreateRelation(999, tags, 
+        var districtRelation = TestHelper.CreateRelation(999, tags, 
             new []
             {
                 new RelationMember { Id = (long)way1.Id! },
@@ -205,6 +205,20 @@ public class OsmDataParserTest
             }
         );
         
+        var areaTags = new TagsCollection
+        {
+            {"boundary", "administrative"},
+            {"admin_level", "4"},
+            {"name", "Омская область"}
+        };
+
+        var areaRelation = TestHelper.CreateRelation(1, areaTags,
+            new[]
+            {
+                new RelationMember { Id = (long)districtRelation.Id! }
+            }
+        );
+        
         var expectedNodeIds = new [] { 789L, 888, 315, 811, 563, 353, 123, 456, 789 };
         
         //Act.
@@ -212,7 +226,8 @@ public class OsmDataParserTest
         _osmData.Ways.Add(way2);
         _osmData.Ways.Add(way3);
         _osmData.Ways.Add(way4);
-        _osmData.Relations.Add(relation);
+        _osmData.Relations.Add(areaRelation);
+        _osmData.Relations.Add(districtRelation);
         var localities = _osmDataParser.GetLocalities(_osmData);
         var nodeIds = localities.First().Components.First().Nodes;
         

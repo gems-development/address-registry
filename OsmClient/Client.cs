@@ -23,10 +23,11 @@ public class Client
         foreach (var locality in localities)
         {
             var localityWays = locality.Components;
-            var borderCoordinates = new List<Position>();
+            var totalBorder = new List<List<LineString>>();
 
             foreach (var way in localityWays)
             {
+                var coordinates = new List<Position>();
                 var wayNodeIds = way.Nodes.ToHashSet();
                 var wayNodes = wayNodeIds
                     .Select(id => osmData.Nodes.FirstOrDefault(node => node.Id == id))
@@ -39,17 +40,28 @@ public class Client
                     wayNodes.Add(firstNode);
                     
                     foreach (var node in wayNodes)
-                        borderCoordinates.Add(new Position((double)node.Latitude!, (double)node.Longitude!));
+                        coordinates.Add(new Position((double)node.Latitude!, (double)node.Longitude!));
                 }
+                
+                var borderPart = new List<LineString> { new LineString(coordinates) };
+                totalBorder.Add(borderPart);
             }
             
             var properties = new Dictionary<string, object>
             {
                 { "LocalityName", locality.Name }
             };
+            
+            var polygonList = new List<Polygon>();
+            foreach (var borderPart in totalBorder)
+            {
+                var polygon = new Polygon(borderPart);
+                polygonList.Add(polygon);
+            }
 
-            var lineString = new LineString(borderCoordinates);
-            var feature = new Feature(lineString, properties);
+            var multiPolygon = new MultiPolygon(polygonList);
+            
+            var feature = new Feature(multiPolygon, properties);
             features.Add(feature);
 
             var featureCollection = new FeatureCollection(features);
