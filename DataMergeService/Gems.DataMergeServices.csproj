@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="NUnit" Version="4.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Gems.AddressRegistry.Entities\Gems.AddressRegistry.Entities.csproj" />
   </ItemGroup>
 
