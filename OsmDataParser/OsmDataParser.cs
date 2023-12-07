@@ -7,37 +7,51 @@ public class OsmDataParser
 {
     public List<District> GetDistricts(OsmData osmData, string areaName)
     {
-        var relations = osmData.Relations;
         var districtList = new List<District>();
-    
-        foreach (var relation in relations)
-        {
-            if (relation.Tags.ContainsKey(OsmKeywords.Boundary) &&
-                relation.Tags[OsmKeywords.Boundary] == OsmKeywords.Administrative &&
-                relation.Tags.ContainsKey(OsmKeywords.AdminLevel) &&
-                relation.Tags[OsmKeywords.AdminLevel] == OsmKeywords.Level4 &&
-                relation.Tags.ContainsKey(OsmKeywords.Name) &&
-                relation.Tags[OsmKeywords.Name] == areaName)
-            {
-                var areaMemberIds = relation.Members.Select(o => o.Id).ToHashSet();
-                var districts = osmData.Relations.Where(rel => areaMemberIds.Contains(rel.Id ?? -1)).ToList();
-                foreach (var district in districts)
-                {
-                    var resultDistrict = new District { Name = district.Tags[OsmKeywords.Name] };
-                    var districtMemberIds = district.Members.Select(o => o.Id).ToHashSet();
-                    var relationWays = osmData.Ways.Where(way => districtMemberIds.Contains(way.Id ?? -1)).ToList();
-                    var osmObjects = MergeByMatchingId(relationWays);
+        var districts = GetDistrictRelations(osmData, areaName);
         
-                    foreach (var way in osmObjects)
-                        resultDistrict.Components.Add(way);
-                
-                    districtList.Add(resultDistrict);
-                }
-            }
+        foreach (var district in districts)
+        {
+            var resultDistrict = new District { Name = district.Tags[OsmKeywords.Name] };
+            var districtMemberIds = district.Members.Select(o => o.Id).ToHashSet();
+            var relationWays = osmData.Ways.Where(way => districtMemberIds.Contains(way.Id ?? -1)).ToList();
+            var osmObjects = MergeByMatchingId(relationWays);
+
+            foreach (var way in osmObjects)
+                resultDistrict.Components.Add(way);
+        
+            districtList.Add(resultDistrict);
         }
+            
         return districtList;
     }
-    
+
+    public List<Settlement> GetSettlements(OsmData osmData, string areaName)
+    {
+        var settlementList = new List<Settlement>();
+        var districts = GetDistrictRelations(osmData, areaName);
+
+        foreach (var district in districts)
+        {
+            var districtMemberIds = district.Members.Select(o => o.Id).ToHashSet();
+            var settlements = osmData.Relations.Where(rel => districtMemberIds.Contains(rel.Id ?? -1)).ToList();
+
+            foreach (var settlement in settlements)
+            {
+                var resultSettlement = new Settlement { Name = settlement.Tags[OsmKeywords.Name] };
+                var settlementMemberIds = settlement.Members.Select(o => o.Id).ToHashSet();
+                var relationWays = osmData.Ways.Where(way => settlementMemberIds.Contains(way.Id ?? -1)).ToList();
+                var osmObjects = MergeByMatchingId(relationWays);
+                
+                foreach (var way in osmObjects)
+                    resultSettlement.Components.Add(way);
+        
+                settlementList.Add(resultSettlement);
+            }
+        }
+        return settlementList;
+    }
+
     public List<Street> GetStreets(OsmData osmData)
     {
         var ways = osmData.Ways;
@@ -73,6 +87,27 @@ public class OsmDataParser
             streetList.Add(resultStreet);
         }
         return streetList;
+    }
+
+    private List<Relation> GetDistrictRelations(OsmData osmData, string areaName)
+    {
+        var relations = osmData.Relations;
+        var districts = new List<Relation>();
+
+        foreach (var relation in relations)
+        {
+            if (relation.Tags.ContainsKey(OsmKeywords.Boundary) &&
+                relation.Tags[OsmKeywords.Boundary] == OsmKeywords.Administrative &&
+                relation.Tags.ContainsKey(OsmKeywords.AdminLevel) &&
+                relation.Tags[OsmKeywords.AdminLevel] == OsmKeywords.Level4 &&
+                relation.Tags.ContainsKey(OsmKeywords.Name) &&
+                relation.Tags[OsmKeywords.Name] == areaName)
+            {
+                var areaMemberIds = relation.Members.Select(o => o.Id).ToHashSet();
+                districts = osmData.Relations.Where(rel => areaMemberIds.Contains(rel.Id ?? -1)).ToList();
+            }
+        }
+        return districts;
     }
 
     private List<Way> MergeByMatchingId(List<Way> osmObjects)

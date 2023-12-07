@@ -10,14 +10,14 @@ namespace osm_client;
 
 public class Client
 {
-    private const string PathToPbf = "RU-OMS.osm.pbf";
+    private const string PathToPbf = "RU-YEV.osm.pbf";
     private const string OutputFilePath = "data.geojson";
 
     public static async Task Main(string[] args)
     {
         var osmData = await GetSortedOsmData();
         var osmDataParser = new OsmDataParser();
-        var districts = osmDataParser.GetDistricts(osmData, "Омская область");
+        var districts = osmDataParser.GetDistricts(osmData, "Еврейская автономная область");
         var features = new List<Feature>();
 
         foreach (var district in districts)
