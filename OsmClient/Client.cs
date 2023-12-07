@@ -17,15 +17,15 @@ public class Client
     {
         var osmData = await GetSortedOsmData();
         var osmDataParser = new OsmDataParser();
-        var localities = osmDataParser.GetLocalities(osmData);
+        var districts = osmDataParser.GetDistricts(osmData, "Омская область");
         var features = new List<Feature>();
 
-        foreach (var locality in localities)
+        foreach (var district in districts)
         {
-            var localityWays = locality.Components;
+            var districtWays = district.Components;
             var totalBorder = new List<List<LineString>>();
 
-            foreach (var way in localityWays)
+            foreach (var way in districtWays)
             {
                 var coordinates = new List<Position>();
                 var wayNodeIds = way.Nodes.ToHashSet();
@@ -49,7 +49,7 @@ public class Client
             
             var properties = new Dictionary<string, object>
             {
-                { "LocalityName", locality.Name }
+                { "LocalityName", district.Name }
             };
             
             var polygonList = new List<Polygon>();
@@ -74,7 +74,7 @@ public class Client
             var geoJson = JsonSerializer.Serialize(featureCollection, options);
 
             await File.WriteAllTextAsync(OutputFilePath, geoJson);
-            Console.WriteLine("Граница {" + locality.Name + "} записана в формате GeoJSON.");
+            Console.WriteLine("Граница {" + district.Name + "} записана в формате GeoJSON.");
         }
     }
 

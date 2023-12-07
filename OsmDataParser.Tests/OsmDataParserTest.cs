@@ -228,7 +228,7 @@ public class OsmDataParserTest
         _osmData.Ways.Add(way4);
         _osmData.Relations.Add(areaRelation);
         _osmData.Relations.Add(districtRelation);
-        var localities = _osmDataParser.GetLocalities(_osmData);
+        var localities = _osmDataParser.GetDistricts(_osmData, "Омская область");
         var nodeIds = localities.First().Components.First().Nodes;
         
         //Assert.
