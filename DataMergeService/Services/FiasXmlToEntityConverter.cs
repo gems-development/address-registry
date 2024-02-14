@@ -18,12 +18,15 @@ namespace Gems.DataMergeServices.Services
             settings.Async = true;
 
             Region region = new Region();
-            List<AdministrativeArea> administrativeAreas = new List<AdministrativeArea>();
-            List<MunicipalArea> municipalAreas = new List<MunicipalArea>();
+            List<AdministrativeArea> administrativeAreaList = new List<AdministrativeArea>();
+            List<MunicipalArea> municipalAreaList = new List<MunicipalArea>();
+            List<Territory> territoryList = new List<Territory>();
             List<City> cityList = new List<City>();
-            List<PlaningStructureElement> planingStructureElements = new List<PlaningStructureElement>();
-            List<RoadNetworkElement> roadNetworkElements = new List<RoadNetworkElement>;
-            List<Building> buildings = new List<Building>();
+            List<Settlement> settlementList = new List<Settlement>();
+            List<PlaningStructureElement> planingStructureElementList = new List<PlaningStructureElement>();
+            List<RoadNetworkElement> roadNetworkElementList = new List<RoadNetworkElement>();
+            List<LandPlot> landPlotList = new List<LandPlot>();
+
 
 
             using (XmlReader reader = XmlReader.Create(uri, settings))
@@ -35,29 +38,112 @@ namespace Gems.DataMergeServices.Services
                     switch (reader.NodeType)
                     {
                         case XmlNodeType.Element:
-                            if (reader.GetAttribute("NEXTID") != "0" && reader.GetAttribute("OPERTYPEID") != "20")
+                            
+                            if (reader.GetAttribute("ISACTUAL") != "1" || reader.GetAttribute("ISACTIVE") != "1")
                                 break;
-                            switch (reader.GetAttribute("TYPENAME"))
+                            switch (reader.GetAttribute("LEVEL"))
                             {
-                                case "обл":
+                                case ("1"):
+                                    region.Name = reader.GetAttribute("NAME");
+                                    RegionDataSource regionDataSource = new RegionDataSource();
+                                    regionDataSource.Region = region;
+                                    regionDataSource.Id = reader.GetAttribute("OBJECTID");
+                                    regionDataSource.SourceType = AddressRegistry.Entities.Enums.SourceType.Fias;
+                                    region.DataSources.Add(regionDataSource);
+                                    Debug.WriteLine(region.Name);
                                     break;
 
-                                case ("г"):
+                                case ("2"):
+                                    AdministrativeArea administrativeArea = new AdministrativeArea();
+                                    administrativeArea.Name = reader.GetAttribute("NAME");
+                                    AdministrativeAreaDataSource administrativeAreaDataSource = new AdministrativeAreaDataSource();
+                                    administrativeAreaDataSource.AdministrativeArea = administrativeArea;
+                                    administrativeAreaDataSource.Id = reader.GetAttribute("OBJECTID");
+                                    administrativeAreaDataSource.SourceType = AddressRegistry.Entities.Enums.SourceType.Fias;
+                                    administrativeArea.DataSources.Add(administrativeAreaDataSource);
+                                    administrativeAreaList.Add(administrativeArea);
+                                    Debug.WriteLine(administrativeArea.Name);
+                                    break;
+
+                                case ("3"):
+                                    MunicipalArea municipalArea = new MunicipalArea();
+                                    municipalArea.Name = reader.GetAttribute("NAME");
+                                    MunicipalAreaDataSource municipalAreaDataSource = new MunicipalAreaDataSource();
+                                    municipalAreaDataSource.MunicipalArea = municipalArea;
+                                    municipalAreaDataSource.Id = reader.GetAttribute("OBJECTID");
+                                    municipalAreaDataSource.SourceType = AddressRegistry.Entities.Enums.SourceType.Fias;
+                                    municipalArea.DataSources.Add(municipalAreaDataSource);
+                                    municipalAreaList.Add(municipalArea);
+                                    Debug.WriteLine(municipalArea.Name);
+                                    break;
+                                case ("4"):
+                                    Territory territory = new Territory();
+                                    territory.Name = reader.GetAttribute("NAME");
+                                    TerritoryDataSource terrytoryDataSource = new TerritoryDataSource();
+                                    terrytoryDataSource.Territory = territory;
+                                    terrytoryDataSource.Id = reader.GetAttribute("OBJECTID");
+                                    terrytoryDataSource.SourceType = AddressRegistry.Entities.Enums.SourceType.Fias;
+                                    territory.DataSources.Add(terrytoryDataSource);
+                                    territoryList.Add(territory);
+                                    Debug.WriteLine(territory.Name);
+                                    break;    
+                                case ("5"):
                                     City city = new City();
                                     city.Name = reader.GetAttribute("NAME");
                                     CityDataSource cityDataSource = new CityDataSource();
                                     cityDataSource.City = city;
-                                    cityDataSource.Id = reader.GetAttribute("OBJECTGUID");
+                                    cityDataSource.Id = reader.GetAttribute("OBJECTID");
                                     cityDataSource.SourceType = AddressRegistry.Entities.Enums.SourceType.Fias;
                                     city.DataSources.Add(cityDataSource);
                                     cityList.Add(city);
                                     Debug.WriteLine(city.Name);
                                     break;
-                                case (""):
+                                case("6"):
+                                    Settlement settlement = new Settlement();
+                                    settlement.Name = reader.GetAttribute("NAME");
+                                    SettlementDataSource settlementDataSource = new SettlementDataSource();
+                                    settlementDataSource.Settlement = settlement;
+                                    settlementDataSource.Id = reader.GetAttribute("OBJECTID");
+                                    settlementDataSource.SourceType = AddressRegistry.Entities.Enums.SourceType.Fias;
+                                    settlement.DataSources.Add(settlementDataSource);
+                                    settlementList.Add(settlement);
+                                    Debug.WriteLine(settlement.Name);
                                     break;
-                                case ("ул"):
-                                    Debug.WriteLine("Улица");
+                                case ("7"):
+                                    PlaningStructureElement planingStructure = new PlaningStructureElement();
+                                    planingStructure.Name = reader.GetAttribute("NAME");
+                                    EpsDataSource epsDataSource = new EpsDataSource();
+                                    epsDataSource.Eps = planingStructure;
+                                    epsDataSource.Id = reader.GetAttribute("OBJECTID");
+                                    epsDataSource.SourceType = AddressRegistry.Entities.Enums.SourceType.Fias;
+                                    planingStructure.DataSources.Add(epsDataSource);
+                                    planingStructureElementList.Add(planingStructure);
+                                    Debug.WriteLine(planingStructure.Name);
                                     break;
+                                case ("8"):
+                                    RoadNetworkElement roadNetworkElement = new RoadNetworkElement();
+                                    roadNetworkElement.Name = reader.GetAttribute("NAME");
+                                    ErnDataSource ernDataSource = new ErnDataSource();
+                                    ernDataSource.Ern = roadNetworkElement;
+                                    ernDataSource.Id = reader.GetAttribute("OBJECTID");
+                                    ernDataSource.SourceType = AddressRegistry.Entities.Enums.SourceType.Fias;
+                                    roadNetworkElement.DataSources.Add(ernDataSource);
+                                    roadNetworkElementList.Add(roadNetworkElement);
+                                    Debug.WriteLine(roadNetworkElement.Name);
+                                    break;
+                                    // В другом файле участки
+                                //case ("9"):
+                                //    LandPlot landPlot = new LandPlot();
+                                //    landPlot.Name = reader.GetAttribute("NAME");
+                                //    LandPlotDataSource landPlotDataSource = new LandPlotDataSource();
+                                //    landPlotDataSource.LandPlot = landPlot;
+                                //    landPlotDataSource.Id = reader.GetAttribute("OBJECTGUID");
+                                //    landPlotDataSource.SourceType = AddressRegistry.Entities.Enums.SourceType.Fias;
+                                //    landPlot.DataSources.Add(landPlotDataSource);
+                                //    landPlotList.Add(landPlot);
+                                //    Debug.WriteLine(landPlot.Name);
+                                //    break;
+
 
                             }
                                 
@@ -79,7 +165,26 @@ namespace Gems.DataMergeServices.Services
                     }
                 }
             }
-
+            Debug.WriteLine("_______________________________________________");
+            Debug.WriteLine("Region");
+            Debug.WriteLine(region.Name);
+            Debug.WriteLine("A area");
+            Debug.WriteLine(administrativeAreaList.Count);
+            Debug.WriteLine("M area");
+            Debug.WriteLine(municipalAreaList.Count);
+            Debug.WriteLine("Territory");
+            Debug.WriteLine(territoryList.Count);
+            Debug.WriteLine("City");
+            Debug.WriteLine(cityList.Count);
+            Debug.WriteLine("Settlement");
+            Debug.WriteLine(settlementList.Count);
+            Debug.WriteLine("PSE");
+            Debug.WriteLine(planingStructureElementList.Count);
+            Debug.WriteLine("RNE");
+            Debug.WriteLine(roadNetworkElementList.Count);
+            Debug.WriteLine("Landplots");
+            Debug.WriteLine(landPlotList.Count);
+            Debug.WriteLine("_______________________________________________");
 
             return region;
         }

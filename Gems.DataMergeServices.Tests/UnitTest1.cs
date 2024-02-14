@@ -10,8 +10,8 @@ namespace Gems.DataMergeServices.Tests
         {
             FiasXmlToEntityConverter fiasXmlToEntityConverter = new FiasXmlToEntityConverter();
 
-            await fiasXmlToEntityConverter.ConvertRegion("C:/Users/user/Desktop/AS_ADDR_OBJ_20231120_0a177ef4-4611-43ce-b9ab-c03b5b266d9a.XML");
-            
+            await fiasXmlToEntityConverter.ConvertRegion("C:/Users/user/Desktop/AS_ADDR_OBJ_20231120_38a14e2c-9609-44e0-8688-edb6afc8cea1.XML");
+             
         }
     }
 }
