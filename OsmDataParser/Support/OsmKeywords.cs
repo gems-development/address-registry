@@ -1,4 +1,4 @@
-namespace osmDataParser;
+namespace OsmDataParser.Support;
 
 internal static class OsmKeywords
 {

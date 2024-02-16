@@ -1,11 +1,16 @@
+using osmDataParser.Interfaces;
+using OsmDataParser.Parsers;
+using OsmDataParser.Support;
 using OsmSharp;
 using OsmSharp.Tags;
 
 namespace osmDataParser.Tests;
 
-public class OsmDataParserTest
+public class OsmParserCoreTest
 {
-    private readonly OsmDataParser _osmDataParser = new OsmDataParser();
+    private readonly IDistrictParser _districtParser = new DistrictParser();
+    private readonly ISettlementParser _settlementParser = new SettlementParser();
+    private readonly IStreetParser _streetParser = new StreetParser();
     private readonly OsmData _osmData = new OsmData();
     
     [Fact]
@@ -39,7 +44,7 @@ public class OsmDataParserTest
         //Act.
         _osmData.Ways.Add(way1);
         _osmData.Ways.Add(way2);
-        var streets = _osmDataParser.GetStreets(_osmData);
+        var streets = _streetParser.GetStreets(_osmData);
         var nodeIds = streets.First().Components.First().Nodes;
         
         //Assert.
@@ -88,7 +93,7 @@ public class OsmDataParserTest
         _osmData.Ways.Add(way1);
         _osmData.Ways.Add(way2);
         _osmData.Ways.Add(way3);
-        var streets = _osmDataParser.GetStreets(_osmData);
+        var streets = _streetParser.GetStreets(_osmData);
         var nodeIds = streets.First().Components.First().Nodes;
         
         //Assert.
@@ -138,7 +143,7 @@ public class OsmDataParserTest
         _osmData.Ways.Add(way1);
         _osmData.Ways.Add(way2);
         _osmData.Ways.Add(way3);
-        var streets = _osmDataParser.GetStreets(_osmData);
+        var streets = _streetParser.GetStreets(_osmData);
         var nodeIds = streets.First().Components.First().Nodes;
         
         //Assert.
@@ -228,7 +233,7 @@ public class OsmDataParserTest
         _osmData.Ways.Add(way4);
         _osmData.Relations.Add(areaRelation);
         _osmData.Relations.Add(districtRelation);
-        var localities = _osmDataParser.GetDistricts(_osmData, "Омская область");
+        var localities = _districtParser.GetDistricts(_osmData, "Омская область");
         var nodeIds = localities.First().Components.First().Nodes;
         
         //Assert.

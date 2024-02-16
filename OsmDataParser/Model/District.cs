@@ -2,8 +2,6 @@ using OsmSharp;
 
 namespace osmDataParser.model;
 
-public class District
+public class District : RealObject
 {
-    public string Name { get; init; }
-    public ICollection<Way> Components { get; } = new List<Way>();
 }

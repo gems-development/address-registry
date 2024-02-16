@@ -1,6 +1,6 @@
 using OsmSharp;
 
-namespace osmDataParser;
+namespace OsmDataParser.Support;
 
 public class OsmData
 {
