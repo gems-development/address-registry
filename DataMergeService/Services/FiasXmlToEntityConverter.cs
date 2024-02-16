@@ -11,7 +11,7 @@ namespace Gems.DataMergeServices.Services
     {
         public FiasXmlToEntityConverter() { }
 
-        async public Task<Region> ConvertRegion(String uri)
+        async public void ConvertRegion(String uri)
         {
 
             XmlReaderSettings settings = new XmlReaderSettings();
@@ -131,20 +131,6 @@ namespace Gems.DataMergeServices.Services
                                     roadNetworkElementList.Add(roadNetworkElement);
                                     Debug.WriteLine(roadNetworkElement.Name);
                                     break;
-                                    // В другом файле участки
-                                //case ("9"):
-                                //    LandPlot landPlot = new LandPlot();
-                                //    landPlot.Name = reader.GetAttribute("NAME");
-                                //    LandPlotDataSource landPlotDataSource = new LandPlotDataSource();
-                                //    landPlotDataSource.LandPlot = landPlot;
-                                //    landPlotDataSource.Id = reader.GetAttribute("OBJECTGUID");
-                                //    landPlotDataSource.SourceType = AddressRegistry.Entities.Enums.SourceType.Fias;
-                                //    landPlot.DataSources.Add(landPlotDataSource);
-                                //    landPlotList.Add(landPlot);
-                                //    Debug.WriteLine(landPlot.Name);
-                                //    break;
-
-
                             }
                                 
                             Debug.WriteLine($"Start Element {reader.GetAttribute("OBJECTGUID")} {reader.GetAttribute("NAME")}");
@@ -186,7 +172,67 @@ namespace Gems.DataMergeServices.Services
             Debug.WriteLine(landPlotList.Count);
             Debug.WriteLine("_______________________________________________");
 
-            return region;
+            /*Сборка иерархии
+             * Берем PARENTID = OBJECTID Региона(1ур)
+             * от него ищем всех потомков(2ур - административные и 3ур - муниципальные) 
+             * у 3ур ищем потомков 4ур(территории)
+             * у 2ур ищем потомков 5ур(города)
+             * у 4ур ищем потомков 5ур(города) и 6ур(нас.пункты)
+             * у 5ур и 6ур ищем потомков 7ур(ЭПС) и 8ур(ЭУДС)
+             * у 7ур ищем потомков 8ур(ЭУДС)
+             * у 8ур потомки - строения, тоже можем найти
+              */
+            
+
         }
-    }
+
+        async public void ConvertBuildings(String uri) {
+            XmlReaderSettings settings = new XmlReaderSettings();
+            settings.Async = true;
+
+            List<LandPlot> landPlotList = new List<LandPlot>();
+
+            using (XmlReader reader = XmlReader.Create(uri, settings))
+            {
+                reader.MoveToContent();
+                while (await reader.ReadAsync())
+                {
+
+                    switch (reader.NodeType)
+                    {
+                        case XmlNodeType.Element:
+
+                            if (reader.GetAttribute("ISACTUAL") != "1" || reader.GetAttribute("ISACTIVE") != "1")
+                                break;
+                            Building building = new Building();
+                            building.Number = reader.GetAttribute("HOUSENUM");
+                            BuildingDataSource buildingDataSource = new BuildingDataSource();
+                            buildingDataSource.Building = building;
+                            buildingDataSource.Id = reader.GetAttribute("OBJECTID");
+                            buildingDataSource.SourceType = AddressRegistry.Entities.Enums.SourceType.Fias;
+                            building.DataSources.Add(buildingDataSource);
+                            Debug.WriteLine(building.Number);
+
+                            Debug.WriteLine($"Start Element {reader.GetAttribute("OBJECTGUID")} {reader.GetAttribute("NAME")}");
+                            break;
+                        case XmlNodeType.Text:
+                            Console.WriteLine("Text Node: {0}",
+                                     await reader.GetValueAsync());
+                            break;
+                        case XmlNodeType.EndElement:
+                            Console.WriteLine("End Element {0}", reader.Name);
+                            break;
+                        default:
+                            Console.WriteLine("Other node {0} with value {1}",
+                                            reader.NodeType, reader.Value);
+                            break;
+
+
+                    }
+                }
+            }
+
+        }
+        
+        }
 }
