@@ -1,21 +1,26 @@
-using osmDataParser.model;
 using System.Text.Encodings.Web;
 using System.Text.Json;
+using Gems.AddressRegistry.OsmDataParser.Model;
+using Gems.AddressRegistry.OsmDataParser.Support;
 using GeoJSON.Text.Feature;
 using GeoJSON.Text.Geometry;
-using OsmDataParser.Support;
 
-namespace osm_client;
+namespace Gems.AddressRegistry.OsmDataGroupingService.Serializers;
 
-public class OsmDataSerializer
+public class MultiLineSerializer
 {
-    public string SerializeDistrict(District district, OsmData osmData)
+    public static string Serialize(RealObject realObject, OsmData osmData)
     {
+        if (realObject == null || realObject.GetType() == typeof(District)
+                               || realObject.GetType() == typeof(Settlement)
+                               || realObject.GetType() == typeof(City))
+            throw new ArgumentException("Object can not be serialized");
+        
         var features = new List<Feature>();
-        var districtWays = district.Components;
-        var totalBorder = new List<List<LineString>>();
+        var ways = realObject.Components;
+        var totalStreet = new List<LineString>();
 
-        foreach (var way in districtWays)
+        foreach (var way in ways)
         {
             var coordinates = new List<Position>();
             var wayNodeIds = way.Nodes.ToHashSet();
@@ -26,32 +31,23 @@ public class OsmDataSerializer
 
             if (wayNodes.Any())
             {
-                var firstNode = wayNodes.First();
-                wayNodes.Add(firstNode);
-
                 foreach (var node in wayNodes)
                     coordinates.Add(new Position((double)node.Latitude!, (double)node.Longitude!));
             }
 
-            var borderPart = new List<LineString> { new LineString(coordinates) };
-            totalBorder.Add(borderPart);
+            var streetPart = new LineString(coordinates);
+            totalStreet.Add(streetPart);
         }
 
         var properties = new Dictionary<string, object>
         {
-            { "LocalityName", district.Name }
+            { "ObjectName", realObject.Name }
         };
+        
+        
+        var multiLine = new MultiLineString(totalStreet);
 
-        var polygonList = new List<Polygon>();
-        foreach (var borderPart in totalBorder)
-        {
-            var polygon = new Polygon(borderPart);
-            polygonList.Add(polygon);
-        }
-
-        var multiPolygon = new MultiPolygon(polygonList);
-
-        var feature = new Feature(multiPolygon, properties);
+        var feature = new Feature(multiLine, properties);
         features.Add(feature);
 
         var featureCollection = new FeatureCollection(features);

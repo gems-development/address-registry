@@ -1,7 +1,7 @@
 using OsmSharp;
 using OsmSharp.Tags;
 
-namespace osmDataParser.Tests;
+namespace Gems.AddressRegistry.OsmDataParser.Tests;
 
 public static class TestHelper
 {

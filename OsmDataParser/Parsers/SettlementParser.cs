@@ -1,9 +1,8 @@
-using osmDataParser;
-using osmDataParser.Interfaces;
-using osmDataParser.model;
-using OsmDataParser.Support;
+using Gems.AddressRegistry.OsmDataParser.Interfaces;
+using Gems.AddressRegistry.OsmDataParser.Model;
+using Gems.AddressRegistry.OsmDataParser.Support;
 
-namespace OsmDataParser.Parsers;
+namespace Gems.AddressRegistry.OsmDataParser.Parsers;
 
 public class SettlementParser : ISettlementParser
 {

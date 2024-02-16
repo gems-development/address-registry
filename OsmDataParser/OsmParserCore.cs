@@ -1,8 +1,7 @@
-﻿using osmDataParser.model;
-using OsmDataParser.Support;
+﻿using Gems.AddressRegistry.OsmDataParser.Support;
 using OsmSharp;
 
-namespace osmDataParser;
+namespace Gems.AddressRegistry.OsmDataParser;
 
 public class OsmParserCore
 {

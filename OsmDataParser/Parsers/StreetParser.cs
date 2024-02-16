@@ -1,13 +1,25 @@
-using osmDataParser;
-using osmDataParser.Interfaces;
-using osmDataParser.model;
-using OsmDataParser.Support;
+using Gems.AddressRegistry.OsmDataParser.Interfaces;
+using Gems.AddressRegistry.OsmDataParser.Model;
+using Gems.AddressRegistry.OsmDataParser.Support;
 using OsmSharp;
 
-namespace OsmDataParser.Parsers;
+namespace Gems.AddressRegistry.OsmDataParser.Parsers;
 
 public class StreetParser : IStreetParser
 {
+    public Street GetStreet(OsmData osmData, string streetName)
+    {
+        var resultStreet = new Street();
+        var streets = GetStreets(osmData);
+        foreach (var street in streets)
+        {
+            if (street.Name == streetName)
+                resultStreet = street;
+        }
+
+        return resultStreet;
+    }
+    
     public List<Street> GetStreets(OsmData osmData)
     {
         var ways = osmData.Ways;

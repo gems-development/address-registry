@@ -1,10 +1,10 @@
-using osmDataParser.Interfaces;
-using OsmDataParser.Parsers;
-using OsmDataParser.Support;
+using Gems.AddressRegistry.OsmDataParser.Interfaces;
+using Gems.AddressRegistry.OsmDataParser.Parsers;
+using Gems.AddressRegistry.OsmDataParser.Support;
 using OsmSharp;
 using OsmSharp.Tags;
 
-namespace osmDataParser.Tests;
+namespace Gems.AddressRegistry.OsmDataParser.Tests;
 
 public class OsmParserCoreTest
 {

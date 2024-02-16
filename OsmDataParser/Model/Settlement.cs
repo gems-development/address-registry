@@ -1,6 +1,4 @@
-using OsmSharp;
-
-namespace osmDataParser.model;
+namespace Gems.AddressRegistry.OsmDataParser.Model;
 
 public class Settlement : RealObject
 {

@@ -1,7 +1,7 @@
-using osmDataParser.model;
-using OsmDataParser.Support;
+using Gems.AddressRegistry.OsmDataParser.Model;
+using Gems.AddressRegistry.OsmDataParser.Support;
 
-namespace osmDataParser.Interfaces;
+namespace Gems.AddressRegistry.OsmDataParser.Interfaces;
 
 public interface ISettlementParser
 {

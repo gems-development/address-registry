@@ -1,9 +1,9 @@
 using OsmSharp;
 
-namespace osmDataParser.model;
+namespace Gems.AddressRegistry.OsmDataParser.Model;
 
 public class RealObject
 {
     public string Name { get; init; }
-    public ICollection<Way> Components { get; } = new List<Way>();
+    public ICollection<Way> Components { get; set; } = new List<Way>();
 }

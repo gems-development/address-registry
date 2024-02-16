@@ -1,10 +1,11 @@
-﻿using osmDataParser.Interfaces;
-using OsmDataParser.Parsers;
-using OsmDataParser.Support;
+﻿using Gems.AddressRegistry.OsmDataGroupingService;
+using Gems.AddressRegistry.OsmDataParser.Interfaces;
+using Gems.AddressRegistry.OsmDataParser.Parsers;
+using Gems.AddressRegistry.OsmDataParser.Support;
 using OsmSharp;
 using OsmSharp.Streams;
 
-namespace osm_client;
+namespace Gems.AddressRegistry.OsmClient;
 
 public class Client
 {
@@ -14,16 +15,16 @@ public class Client
     public static async Task Main(string[] args)
     {
         var osmData = await GetSortedOsmData();
-        IDistrictParser districtParser = new DistrictParser();
-        var districts = districtParser.GetDistricts(osmData, "Еврейская автономная область");
-        var osmDataSerializer = new OsmDataSerializer();
+        IStreetParser streetParser = new StreetParser();
+        ICityParser cityParser = new CityParser();
 
-        foreach (var district in districts)
-        {
-            var geoJson = osmDataSerializer.SerializeDistrict(district, osmData);
-            await File.WriteAllTextAsync(OutputFilePath, geoJson);
-            Console.WriteLine("Граница {" + district.Name + "} записана в формате GeoJSON.");
-        }
+        var grouper = new CityAndStreetGrouper(cityParser, streetParser);
+        var isStreetInCity = grouper.Group(osmData, "Биробиджан", "Транспортная улица");
+
+        if (isStreetInCity) 
+            Console.WriteLine("Есть такая улица в городе");
+        else 
+            Console.WriteLine("Нет такой улицы в этом городе");
     }
 
     private static async Task<OsmData> GetSortedOsmData()

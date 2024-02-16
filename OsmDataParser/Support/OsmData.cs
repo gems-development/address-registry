@@ -1,6 +1,6 @@
 using OsmSharp;
 
-namespace OsmDataParser.Support;
+namespace Gems.AddressRegistry.OsmDataParser.Support;
 
 public class OsmData
 {

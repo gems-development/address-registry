@@ -1,9 +1,10 @@
-using osmDataParser.model;
-using OsmDataParser.Support;
+using Gems.AddressRegistry.OsmDataParser.Model;
+using Gems.AddressRegistry.OsmDataParser.Support;
 
-namespace osmDataParser.Interfaces;
+namespace Gems.AddressRegistry.OsmDataParser.Interfaces;
 
 public interface IDistrictParser
 {
     List<District> GetDistricts(OsmData osmData, string areaName);
+    District GetDistrict(OsmData osmData, string areaName, string districtName);
 }

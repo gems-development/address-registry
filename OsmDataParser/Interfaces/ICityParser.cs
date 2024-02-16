@@ -3,8 +3,7 @@ using Gems.AddressRegistry.OsmDataParser.Support;
 
 namespace Gems.AddressRegistry.OsmDataParser.Interfaces;
 
-public interface IStreetParser
+public interface ICityParser
 {
-    Street GetStreet(OsmData osmData, string street);
-    List<Street> GetStreets(OsmData osmData);
+    City GetCity(OsmData osmData, string areaName);
 }
