@@ -1,10 +1,10 @@
-﻿using System.Text.Encodings.Web;
-using System.Text.Json;
-using GeoJSON.Text.Feature;
+﻿using GeoJSON.Text.Feature;
 using GeoJSON.Text.Geometry;
 using osmDataParser;
 using OsmSharp;
 using OsmSharp.Streams;
+using System.Text.Encodings.Web;
+using System.Text.Json;
 
 namespace osm_client;
 
@@ -38,20 +38,20 @@ public class Client
                 {
                     var firstNode = wayNodes.First();
                     wayNodes.Add(firstNode);
-                    
+
                     foreach (var node in wayNodes)
                         coordinates.Add(new Position((double)node.Latitude!, (double)node.Longitude!));
                 }
-                
+
                 var borderPart = new List<LineString> { new LineString(coordinates) };
                 totalBorder.Add(borderPart);
             }
-            
+
             var properties = new Dictionary<string, object>
             {
                 { "LocalityName", locality.Name }
             };
-            
+
             var polygonList = new List<Polygon>();
             foreach (var borderPart in totalBorder)
             {
@@ -60,7 +60,7 @@ public class Client
             }
 
             var multiPolygon = new MultiPolygon(polygonList);
-            
+
             var feature = new Feature(multiPolygon, properties);
             features.Add(feature);
 
@@ -102,7 +102,7 @@ public class Client
     {
         const string url = "https://overpass-api.de/api/interpreter";
         var overpassClient = new OverpassApiClient(url);
-        
+
         const string query = "[out:xml];" +
                              "\nnode(54.979788, 73.414227, 54.983705, 73.423204);" +
                              "\nout body;" +

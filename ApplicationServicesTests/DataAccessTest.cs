@@ -1,6 +1,6 @@
-using Gems.ApplicationServices.Services;
 using Gems.AddressRegistry.DataAccess;
 using Gems.AddressRegistry.Entities;
+using Gems.ApplicationServices.Services;
 
 
 namespace ApplicationServices.Tests

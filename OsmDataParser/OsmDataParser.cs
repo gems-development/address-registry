@@ -9,7 +9,7 @@ public class OsmDataParser
     {
         var relations = osmData.Relations;
         var localities = new List<Locality>();
-    
+
         foreach (var relation in relations)
         {
             if (relation.Tags.ContainsKey(OsmKeywords.Boundary) &&
@@ -27,22 +27,22 @@ public class OsmDataParser
                     var districtMemberIds = district.Members.Select(o => o.Id).ToHashSet();
                     var relationWays = osmData.Ways.Where(way => districtMemberIds.Contains(way.Id ?? -1)).ToList();
                     var osmObjects = MergeByMatchingId(relationWays);
-        
+
                     foreach (var way in osmObjects)
                         locality.Components.Add(way);
-                
+
                     localities.Add(locality);
                 }
             }
         }
         return localities;
     }
-    
+
     public List<Street> GetStreets(OsmData osmData)
     {
         var ways = osmData.Ways;
         var streets = new List<Way>();
-        
+
         foreach (var way in ways)
         {
             if (way.Tags.ContainsKey(OsmKeywords.Highway) && way.Tags.ContainsKey(OsmKeywords.Name))
@@ -56,13 +56,13 @@ public class OsmDataParser
         {
             var group = street.ToList();
             var resultStreet = new Street { Name = group.First().Tags[OsmKeywords.Name] };
-            
+
             if (group.Count < 1 || group is null)
                 throw new ArgumentException("Empty street");
-            
+
             if (group.Count == 1)
                 resultStreet.Components.Add(group.First());
-            
+
             else if (group.Count > 1)
             {
                 var osmObjects = MergeByMatchingId(group);
@@ -109,7 +109,7 @@ public class OsmDataParser
                             {
                                 Nodes = osmObjects[i].Nodes.Concat(osmObjects[j].Nodes.Skip(1)).ToArray()
                             };
-                            
+
                             osmObjects.RemoveAt(i);
                             osmObjects.RemoveAt(j - 1);
                             osmObjects.Add(newWay);
@@ -117,14 +117,14 @@ public class OsmDataParser
                             merged = true;
                             break;
                         }
-                        
+
                         if (osmObjects[i].Nodes.FirstOrDefault() == osmObjects[j].Nodes.FirstOrDefault())
                         {
                             var newWay = new Way
                             {
                                 Nodes = osmObjects[j].Nodes.Reverse().Concat(osmObjects[i].Nodes.Skip(1)).ToArray(),
                             };
-                            
+
                             osmObjects.RemoveAt(i);
                             osmObjects.RemoveAt(j - 1);
                             osmObjects.Add(newWay);
@@ -132,7 +132,7 @@ public class OsmDataParser
                             merged = true;
                             break;
                         }
-                    
+
                         if (osmObjects[i].Nodes.LastOrDefault() == osmObjects[j].Nodes.LastOrDefault())
                         {
                             var newWay = new Way
@@ -140,7 +140,7 @@ public class OsmDataParser
                                 Nodes = osmObjects[i].Nodes.
                                     Concat(osmObjects[j].Nodes.Take(osmObjects[j].Nodes.Length - 1).Reverse()).ToArray(),
                             };
-                            
+
                             osmObjects.RemoveAt(i);
                             osmObjects.RemoveAt(j - 1);
                             osmObjects.Add(newWay);

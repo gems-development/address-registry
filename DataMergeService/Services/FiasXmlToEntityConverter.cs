@@ -1,14 +1,28 @@
 ﻿using Gems.AddressRegistry.Entities;
 using Gems.AddressRegistry.Entities.DataSources;
 using System.Diagnostics;
-using System.IO;
-using System.Reflection.PortableExecutable;
 using System.Xml;
 
 namespace Gems.DataMergeServices.Services
 {
     public class FiasXmlToEntityConverter
     {
+
+        Region region = new Region();
+        Dictionary<int, AdministrativeArea> administrativeAreaDictionary = new Dictionary<int, AdministrativeArea>();
+        Dictionary<int, MunicipalArea> municipalAreaDictionary = new Dictionary<int, MunicipalArea>();
+        Dictionary<int, Territory> territoryDictionary = new Dictionary<int, Territory>();
+        Dictionary<int, City> cityDictionary = new Dictionary<int, City>();
+        Dictionary<int, Settlement> settlementDictionary = new Dictionary<int, Settlement>();
+        Dictionary<int, PlaningStructureElement> planingStructureElementDictionary = new Dictionary<int, PlaningStructureElement>();
+        Dictionary<int, RoadNetworkElement> roadNetworkElementDictionary = new Dictionary<int, RoadNetworkElement>();
+        List<Building> buildingList = new List<Building>();
+
+        Dictionary<int,int> AdmHierarchy = new Dictionary<int, int>();
+        Dictionary<int,int> MunHierarchy = new Dictionary<int, int>();
+
+        List<Address> addresses = new List<Address>();
+
         public FiasXmlToEntityConverter() { }
 
         async public void ConvertRegion(String uri)
@@ -17,28 +31,16 @@ namespace Gems.DataMergeServices.Services
             XmlReaderSettings settings = new XmlReaderSettings();
             settings.Async = true;
 
-            Region region = new Region();
-            List<AdministrativeArea> administrativeAreaList = new List<AdministrativeArea>();
-            List<MunicipalArea> municipalAreaList = new List<MunicipalArea>();
-            List<Territory> territoryList = new List<Territory>();
-            List<City> cityList = new List<City>();
-            List<Settlement> settlementList = new List<Settlement>();
-            List<PlaningStructureElement> planingStructureElementList = new List<PlaningStructureElement>();
-            List<RoadNetworkElement> roadNetworkElementList = new List<RoadNetworkElement>();
-            List<LandPlot> landPlotList = new List<LandPlot>();
-
-
-
             using (XmlReader reader = XmlReader.Create(uri, settings))
             {
-            reader.MoveToContent();
+                reader.MoveToContent();
                 while (await reader.ReadAsync())
                 {
 
                     switch (reader.NodeType)
                     {
                         case XmlNodeType.Element:
-                            
+
                             if (reader.GetAttribute("ISACTUAL") != "1" || reader.GetAttribute("ISACTIVE") != "1")
                                 break;
                             switch (reader.GetAttribute("LEVEL"))
@@ -61,7 +63,7 @@ namespace Gems.DataMergeServices.Services
                                     administrativeAreaDataSource.Id = reader.GetAttribute("OBJECTID");
                                     administrativeAreaDataSource.SourceType = AddressRegistry.Entities.Enums.SourceType.Fias;
                                     administrativeArea.DataSources.Add(administrativeAreaDataSource);
-                                    administrativeAreaList.Add(administrativeArea);
+                                    administrativeAreaDictionary.Add(int.Parse(administrativeAreaDataSource.Id), administrativeArea);
                                     Debug.WriteLine(administrativeArea.Name);
                                     break;
 
@@ -73,7 +75,7 @@ namespace Gems.DataMergeServices.Services
                                     municipalAreaDataSource.Id = reader.GetAttribute("OBJECTID");
                                     municipalAreaDataSource.SourceType = AddressRegistry.Entities.Enums.SourceType.Fias;
                                     municipalArea.DataSources.Add(municipalAreaDataSource);
-                                    municipalAreaList.Add(municipalArea);
+                                    municipalAreaDictionary.Add(int.Parse(municipalAreaDataSource.Id), municipalArea);
                                     Debug.WriteLine(municipalArea.Name);
                                     break;
                                 case ("4"):
@@ -84,9 +86,9 @@ namespace Gems.DataMergeServices.Services
                                     terrytoryDataSource.Id = reader.GetAttribute("OBJECTID");
                                     terrytoryDataSource.SourceType = AddressRegistry.Entities.Enums.SourceType.Fias;
                                     territory.DataSources.Add(terrytoryDataSource);
-                                    territoryList.Add(territory);
+                                    territoryDictionary.Add(int.Parse(terrytoryDataSource.Id), territory);
                                     Debug.WriteLine(territory.Name);
-                                    break;    
+                                    break;
                                 case ("5"):
                                     City city = new City();
                                     city.Name = reader.GetAttribute("NAME");
@@ -95,10 +97,10 @@ namespace Gems.DataMergeServices.Services
                                     cityDataSource.Id = reader.GetAttribute("OBJECTID");
                                     cityDataSource.SourceType = AddressRegistry.Entities.Enums.SourceType.Fias;
                                     city.DataSources.Add(cityDataSource);
-                                    cityList.Add(city);
+                                    cityDictionary.Add(int.Parse(cityDataSource.Id), city);
                                     Debug.WriteLine(city.Name);
                                     break;
-                                case("6"):
+                                case ("6"):
                                     Settlement settlement = new Settlement();
                                     settlement.Name = reader.GetAttribute("NAME");
                                     SettlementDataSource settlementDataSource = new SettlementDataSource();
@@ -106,7 +108,7 @@ namespace Gems.DataMergeServices.Services
                                     settlementDataSource.Id = reader.GetAttribute("OBJECTID");
                                     settlementDataSource.SourceType = AddressRegistry.Entities.Enums.SourceType.Fias;
                                     settlement.DataSources.Add(settlementDataSource);
-                                    settlementList.Add(settlement);
+                                    settlementDictionary.Add(int.Parse(settlementDataSource.Id), settlement);
                                     Debug.WriteLine(settlement.Name);
                                     break;
                                 case ("7"):
@@ -117,7 +119,7 @@ namespace Gems.DataMergeServices.Services
                                     epsDataSource.Id = reader.GetAttribute("OBJECTID");
                                     epsDataSource.SourceType = AddressRegistry.Entities.Enums.SourceType.Fias;
                                     planingStructure.DataSources.Add(epsDataSource);
-                                    planingStructureElementList.Add(planingStructure);
+                                    planingStructureElementDictionary.Add(int.Parse(epsDataSource.Id), planingStructure);
                                     Debug.WriteLine(planingStructure.Name);
                                     break;
                                 case ("8"):
@@ -128,11 +130,11 @@ namespace Gems.DataMergeServices.Services
                                     ernDataSource.Id = reader.GetAttribute("OBJECTID");
                                     ernDataSource.SourceType = AddressRegistry.Entities.Enums.SourceType.Fias;
                                     roadNetworkElement.DataSources.Add(ernDataSource);
-                                    roadNetworkElementList.Add(roadNetworkElement);
+                                    roadNetworkElementDictionary.Add(int.Parse(ernDataSource.Id), roadNetworkElement);
                                     Debug.WriteLine(roadNetworkElement.Name);
                                     break;
                             }
-                                
+
                             Debug.WriteLine($"Start Element {reader.GetAttribute("OBJECTGUID")} {reader.GetAttribute("NAME")}");
                             break;
                         case XmlNodeType.Text:
@@ -151,46 +153,13 @@ namespace Gems.DataMergeServices.Services
                     }
                 }
             }
-            Debug.WriteLine("_______________________________________________");
-            Debug.WriteLine("Region");
-            Debug.WriteLine(region.Name);
-            Debug.WriteLine("A area");
-            Debug.WriteLine(administrativeAreaList.Count);
-            Debug.WriteLine("M area");
-            Debug.WriteLine(municipalAreaList.Count);
-            Debug.WriteLine("Territory");
-            Debug.WriteLine(territoryList.Count);
-            Debug.WriteLine("City");
-            Debug.WriteLine(cityList.Count);
-            Debug.WriteLine("Settlement");
-            Debug.WriteLine(settlementList.Count);
-            Debug.WriteLine("PSE");
-            Debug.WriteLine(planingStructureElementList.Count);
-            Debug.WriteLine("RNE");
-            Debug.WriteLine(roadNetworkElementList.Count);
-            Debug.WriteLine("Landplots");
-            Debug.WriteLine(landPlotList.Count);
-            Debug.WriteLine("_______________________________________________");
-
-            /*Сборка иерархии
-             * Берем PARENTID = OBJECTID Региона(1ур)
-             * от него ищем всех потомков(2ур - административные и 3ур - муниципальные) 
-             * у 3ур ищем потомков 4ур(территории)
-             * у 2ур ищем потомков 5ур(города)
-             * у 4ур ищем потомков 5ур(города) и 6ур(нас.пункты)
-             * у 5ур и 6ур ищем потомков 7ур(ЭПС) и 8ур(ЭУДС)
-             * у 7ур ищем потомков 8ур(ЭУДС)
-             * у 8ур потомки - строения, тоже можем найти
-              */
-            
 
         }
 
-        async public void ConvertBuildings(String uri) {
+        async public void ConvertBuildings(String uri)
+        {
             XmlReaderSettings settings = new XmlReaderSettings();
             settings.Async = true;
-
-            List<LandPlot> landPlotList = new List<LandPlot>();
 
             using (XmlReader reader = XmlReader.Create(uri, settings))
             {
@@ -211,6 +180,7 @@ namespace Gems.DataMergeServices.Services
                             buildingDataSource.Id = reader.GetAttribute("OBJECTID");
                             buildingDataSource.SourceType = AddressRegistry.Entities.Enums.SourceType.Fias;
                             building.DataSources.Add(buildingDataSource);
+                            buildingList.Add(building);
                             Debug.WriteLine(building.Number);
 
                             Debug.WriteLine($"Start Element {reader.GetAttribute("OBJECTGUID")} {reader.GetAttribute("NAME")}");
@@ -227,12 +197,95 @@ namespace Gems.DataMergeServices.Services
                                             reader.NodeType, reader.Value);
                             break;
 
+                    }
+                }
+            }
+
+        }
+
+        async public void ReadAdmHierarchy(String uri)
+        {
+            XmlReaderSettings settings = new XmlReaderSettings();
+            settings.Async = true;
+
+            using (XmlReader reader = XmlReader.Create(uri, settings))
+            {
+                reader.MoveToContent();
+                while (await reader.ReadAsync())
+                {
+
+                    switch (reader.NodeType)
+                    {
+                        case XmlNodeType.Element:
+
+                            if (reader.GetAttribute("ISACTUAL") != "1" || reader.GetAttribute("ISACTIVE") != "1")
+                                break;
+                            AdmHierarchy.Add(int.Parse(reader.GetAttribute("OBJECTID")), int.Parse(reader.GetAttribute("PARENTOBJID")));
+                            Debug.WriteLine($"Start Element {reader.GetAttribute("OBJECTGUID")} {reader.GetAttribute("NAME")}");
+                            break;
+                        case XmlNodeType.Text:
+                            Console.WriteLine("Text Node: {0}",
+                                     await reader.GetValueAsync());
+                            break;
+                        case XmlNodeType.EndElement:
+                            Console.WriteLine("End Element {0}", reader.Name);
+                            break;
+                        default:
+                            Console.WriteLine("Other node {0} with value {1}",
+                                            reader.NodeType, reader.Value);
+                            break;
+
+                    }
+                }
+            }
+        }
+        async public void ReadMunHierarchy(String uri)
+        {
+            XmlReaderSettings settings = new XmlReaderSettings();
+            settings.Async = true;
+
+            using (XmlReader reader = XmlReader.Create(uri, settings))
+            {
+                reader.MoveToContent();
+                while (await reader.ReadAsync())
+                {
+
+                    switch (reader.NodeType)
+                    {
+                        case XmlNodeType.Element:
+
+                            if (reader.GetAttribute("ISACTUAL") != "1" || reader.GetAttribute("ISACTIVE") != "1")
+                                break;
+                            MunHierarchy.Add(int.Parse(reader.GetAttribute("OBJECTID")), int.Parse(reader.GetAttribute("PARENTOBJID")));
+                            Debug.WriteLine($"Start Element {reader.GetAttribute("OBJECTGUID")} {reader.GetAttribute("NAME")}");
+                            break;
+                        case XmlNodeType.Text:
+                            Console.WriteLine("Text Node: {0}",
+                                     await reader.GetValueAsync());
+                            break;
+                        case XmlNodeType.EndElement:
+                            Console.WriteLine("End Element {0}", reader.Name);
+                            break;
+                        default:
+                            Console.WriteLine("Other node {0} with value {1}",
+                                            reader.NodeType, reader.Value);
+                            break;
 
                     }
                 }
             }
 
         }
-        
+
+        async public void BuildHierarchy()
+        {
+            foreach(Building building in buildingList)
+            {
+                Address address = new Address();
+                address.Building = building;
+                address.RoadNetworkElement = 
+
+            }
         }
+    }
 }

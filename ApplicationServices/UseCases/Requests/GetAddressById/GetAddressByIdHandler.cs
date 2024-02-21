@@ -1,5 +1,5 @@
-﻿using Gems.AplicationServices.Exceptions;
-using Gems.AddressRegistry.DataAccess;
+﻿using Gems.AddressRegistry.DataAccess;
+using Gems.AplicationServices.Exceptions;
 using MediatR;
 
 namespace Gems.ApplicationServices.UseCases.Requests.GetAddressById
