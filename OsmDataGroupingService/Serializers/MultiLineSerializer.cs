@@ -28,13 +28,16 @@ public class MultiLineSerializer
                 .Select(id => osmData.Nodes.FirstOrDefault(node => node.Id == id))
                 .Where(node => node != null)
                 .ToList();
+            
+            if (wayNodes.Count < 2)
+                continue;
 
             if (wayNodes.Any())
             {
                 foreach (var node in wayNodes)
                     coordinates.Add(new Position((double)node.Latitude!, (double)node.Longitude!));
             }
-
+            
             var streetPart = new LineString(coordinates);
             totalStreet.Add(streetPart);
         }

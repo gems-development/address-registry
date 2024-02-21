@@ -10,23 +10,8 @@ namespace Gems.AddressRegistry.OsmDataGroupingService;
 
 public class CityAndStreetGrouper
 {
-    private readonly IOsmParser<City> _cityParser;
-    private readonly IOsmParser<Street> _streetParser;
-
-    public CityAndStreetGrouper(IOsmParser<City> cityParser, IOsmParser<Street> streetParser)
+    public bool Group(string cityGeoJson, string streetGeoJson)
     {
-        _cityParser = cityParser;
-        _streetParser = streetParser;
-    }
-
-    public bool Group(OsmData osmData, string cityName, string streetName)
-    {
-        var city = _cityParser.Parse(osmData, cityName, null);
-        var cityGeoJson = MultiPolygonSerializer.Serialize(city, osmData);
-        
-        var street = _streetParser.Parse(osmData, streetName, null);
-        var streetGeoJson = MultiLineSerializer.Serialize(street, osmData);
-        
         var reader = new GeoJsonReader();
         var cityGeometry = reader.Read<FeatureCollection>(cityGeoJson);
         var streetGeometry = reader.Read<FeatureCollection>(streetGeoJson);

@@ -1,4 +1,5 @@
 ﻿using Gems.AddressRegistry.OsmDataGroupingService;
+using Gems.AddressRegistry.OsmDataGroupingService.Serializers;
 using Gems.AddressRegistry.OsmDataParser;
 using Gems.AddressRegistry.OsmDataParser.Model;
 using Gems.AddressRegistry.OsmDataParser.Support;
@@ -15,16 +16,26 @@ public class Client
     public static async Task Main(string[] args)
     {
         var osmData = await GetSortedOsmData();
+        
+        var grouper = new CityAndStreetGrouper();
         var streetParser = OsmParserFactory.Create<Street>();
         var cityParser = OsmParserFactory.Create<City>();
+        
+        var city = cityParser.Parse(osmData, "Биробиджан", null);
+        var cityGeoJson = MultiPolygonSerializer.Serialize(city, osmData);
 
-        var grouper = new CityAndStreetGrouper(cityParser, streetParser);
-        var isStreetInCity = grouper.Group(osmData, "Биробиджан", "Транспортная улица");
-
-        if (isStreetInCity) 
-            Console.WriteLine("Есть такая улица в городе");
-        else 
-            Console.WriteLine("Нет такой улицы в этом городе");
+        var streets = streetParser.ParseAll(osmData, null);
+        
+        await using var streamWriter = new StreamWriter(OutputFilePath, false);
+        foreach (var street in streets)
+        {
+            var streetGeoJson = MultiLineSerializer.Serialize(street, osmData);
+            if (grouper.Group(cityGeoJson, streetGeoJson))
+            {
+                await streamWriter.WriteLineAsync(streetGeoJson);
+                Console.WriteLine("Объект {" + street.Name + "} записывается в формат GeoJSON.");
+            }
+        }
     }
 
     private static async Task<OsmData> GetSortedOsmData()
