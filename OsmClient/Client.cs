@@ -1,4 +1,8 @@
-﻿using Gems.AddressRegistry.OsmDataGroupingService;
+﻿using System.Text.Encodings.Web;
+using System.Text.Json;
+using GeoJSON.Text.Feature;
+using GeoJSON.Text.Geometry;
+using Gems.AddressRegistry.OsmDataGroupingService;
 using Gems.AddressRegistry.OsmDataGroupingService.Serializers;
 using Gems.AddressRegistry.OsmDataParser;
 using Gems.AddressRegistry.OsmDataParser.Model;
@@ -25,17 +29,30 @@ public class Client
         var cityGeoJson = MultiPolygonSerializer.Serialize(city, osmData);
 
         var streets = streetParser.ParseAll(osmData, null);
+        var features = new List<Feature>();
         
-        await using var streamWriter = new StreamWriter(OutputFilePath, false);
         foreach (var street in streets)
         {
             var streetGeoJson = MultiLineSerializer.Serialize(street, osmData);
             if (grouper.Group(cityGeoJson, streetGeoJson))
             {
-                await streamWriter.WriteLineAsync(streetGeoJson);
+                var streetGeometry = JsonSerializer.Deserialize<FeatureCollection>(streetGeoJson);
+                var streetFeature = streetGeometry.Features.First();
+                features.Add(streetFeature);
                 Console.WriteLine("Объект {" + street.Name + "} записывается в формат GeoJSON.");
             }
         }
+        
+        var featureCollection = new FeatureCollection(features);
+
+        var options = new JsonSerializerOptions
+        {
+            WriteIndented = true,
+            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+        };
+        
+        var geoJson = JsonSerializer.Serialize(featureCollection, options);
+        await File.WriteAllTextAsync(OutputFilePath, geoJson);
     }
 
     private static async Task<OsmData> GetSortedOsmData()

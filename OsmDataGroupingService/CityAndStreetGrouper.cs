@@ -1,7 +1,3 @@
-using Gems.AddressRegistry.OsmDataGroupingService.Serializers;
-using Gems.AddressRegistry.OsmDataParser.Interfaces;
-using Gems.AddressRegistry.OsmDataParser.Model;
-using Gems.AddressRegistry.OsmDataParser.Support;
 using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
 using NetTopologySuite.IO;
