@@ -4,9 +4,9 @@ using Gems.AddressRegistry.OsmDataParser.Support;
 
 namespace Gems.AddressRegistry.OsmDataParser.Parsers;
 
-public class CityParser : ICityParser
+internal sealed class CityParser : IOsmParser<City>
 {
-    public City GetCity(OsmData osmData, string cityName)
+    public City Parse(OsmData osmData, string cityName, string? districtName = null)
     {
         var resultCity = new City { Name = cityName };
         var relations = osmData.Relations;
@@ -27,5 +27,10 @@ public class CityParser : ICityParser
         }
 
         return resultCity;
+    }
+    
+    public IReadOnlyCollection<City> ParseAll(OsmData osmData, string? areaName = null)
+    {
+        throw new NotImplementedException();
     }
 }

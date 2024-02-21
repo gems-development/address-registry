@@ -1,5 +1,5 @@
 using Gems.AddressRegistry.OsmDataParser.Interfaces;
-using Gems.AddressRegistry.OsmDataParser.Parsers;
+using Gems.AddressRegistry.OsmDataParser.Model;
 using Gems.AddressRegistry.OsmDataParser.Support;
 using OsmSharp;
 using OsmSharp.Tags;
@@ -8,9 +8,9 @@ namespace Gems.AddressRegistry.OsmDataParser.Tests;
 
 public class OsmParserCoreTest
 {
-    private readonly IDistrictParser _districtParser = new DistrictParser();
-    private readonly ISettlementParser _settlementParser = new SettlementParser();
-    private readonly IStreetParser _streetParser = new StreetParser();
+    private readonly IOsmParser<District> _districtParser = OsmParserFactory.Create<District>();
+    private readonly IOsmParser<Settlement> _settlementParser = OsmParserFactory.Create<Settlement>();
+    private readonly IOsmParser<Street> _streetParser = OsmParserFactory.Create<Street>();
     private readonly OsmData _osmData = new OsmData();
     
     [Fact]
@@ -44,7 +44,7 @@ public class OsmParserCoreTest
         //Act.
         _osmData.Ways.Add(way1);
         _osmData.Ways.Add(way2);
-        var streets = _streetParser.GetStreets(_osmData);
+        var streets = _streetParser.ParseAll(_osmData, null);
         var nodeIds = streets.First().Components.First().Nodes;
         
         //Assert.
@@ -93,7 +93,7 @@ public class OsmParserCoreTest
         _osmData.Ways.Add(way1);
         _osmData.Ways.Add(way2);
         _osmData.Ways.Add(way3);
-        var streets = _streetParser.GetStreets(_osmData);
+        var streets = _streetParser.ParseAll(_osmData, null);
         var nodeIds = streets.First().Components.First().Nodes;
         
         //Assert.
@@ -143,7 +143,7 @@ public class OsmParserCoreTest
         _osmData.Ways.Add(way1);
         _osmData.Ways.Add(way2);
         _osmData.Ways.Add(way3);
-        var streets = _streetParser.GetStreets(_osmData);
+        var streets = _streetParser.ParseAll(_osmData, null);
         var nodeIds = streets.First().Components.First().Nodes;
         
         //Assert.
@@ -233,7 +233,7 @@ public class OsmParserCoreTest
         _osmData.Ways.Add(way4);
         _osmData.Relations.Add(areaRelation);
         _osmData.Relations.Add(districtRelation);
-        var localities = _districtParser.GetDistricts(_osmData, "Омская область");
+        var localities = _districtParser.ParseAll(_osmData, "Омская область");
         var nodeIds = localities.First().Components.First().Nodes;
         
         //Assert.

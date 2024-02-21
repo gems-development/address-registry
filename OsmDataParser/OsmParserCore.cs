@@ -3,7 +3,7 @@ using OsmSharp;
 
 namespace Gems.AddressRegistry.OsmDataParser;
 
-public class OsmParserCore
+internal class OsmParserCore
 {
     public static List<Relation> GetDistrictRelations(OsmData osmData, string areaName)
     {

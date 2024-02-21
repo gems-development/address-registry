@@ -5,12 +5,12 @@ using OsmSharp;
 
 namespace Gems.AddressRegistry.OsmDataParser.Parsers;
 
-public class StreetParser : IStreetParser
+internal sealed class StreetParser : IOsmParser<Street>
 {
-    public Street GetStreet(OsmData osmData, string streetName)
+    public Street Parse(OsmData osmData, string streetName, string? districtName = null)
     {
         var resultStreet = new Street();
-        var streets = GetStreets(osmData);
+        var streets = ParseAll(osmData);
         foreach (var street in streets)
         {
             if (street.Name == streetName)
@@ -20,7 +20,7 @@ public class StreetParser : IStreetParser
         return resultStreet;
     }
     
-    public List<Street> GetStreets(OsmData osmData)
+    public IReadOnlyCollection<Street> ParseAll(OsmData osmData, string? areaName = null)
     {
         var ways = osmData.Ways;
         var streets = new List<Way>();

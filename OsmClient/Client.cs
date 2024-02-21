@@ -1,6 +1,6 @@
 ﻿using Gems.AddressRegistry.OsmDataGroupingService;
-using Gems.AddressRegistry.OsmDataParser.Interfaces;
-using Gems.AddressRegistry.OsmDataParser.Parsers;
+using Gems.AddressRegistry.OsmDataParser;
+using Gems.AddressRegistry.OsmDataParser.Model;
 using Gems.AddressRegistry.OsmDataParser.Support;
 using OsmSharp;
 using OsmSharp.Streams;
@@ -15,8 +15,8 @@ public class Client
     public static async Task Main(string[] args)
     {
         var osmData = await GetSortedOsmData();
-        IStreetParser streetParser = new StreetParser();
-        ICityParser cityParser = new CityParser();
+        var streetParser = OsmParserFactory.Create<Street>();
+        var cityParser = OsmParserFactory.Create<City>();
 
         var grouper = new CityAndStreetGrouper(cityParser, streetParser);
         var isStreetInCity = grouper.Group(osmData, "Биробиджан", "Транспортная улица");

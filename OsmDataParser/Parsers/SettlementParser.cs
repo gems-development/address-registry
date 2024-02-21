@@ -4,9 +4,14 @@ using Gems.AddressRegistry.OsmDataParser.Support;
 
 namespace Gems.AddressRegistry.OsmDataParser.Parsers;
 
-public class SettlementParser : ISettlementParser
+internal sealed class SettlementParser : IOsmParser<Settlement>
 {
-    public List<Settlement> GetSettlements(OsmData osmData, string areaName)
+    public Settlement Parse(OsmData osmData, string areaName, string districtName)
+    {
+        throw new NotImplementedException();
+    }
+    
+    public IReadOnlyCollection<Settlement> ParseAll(OsmData osmData, string areaName)
     {
         var settlementList = new List<Settlement>();
         var districts = OsmParserCore.GetDistrictRelations(osmData, areaName);
