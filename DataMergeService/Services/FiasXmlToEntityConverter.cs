@@ -1,4 +1,5 @@
 ﻿using Gems.AddressRegistry.Entities;
+using Gems.AddressRegistry.Entities.Common;
 using Gems.AddressRegistry.Entities.DataSources;
 using System.Diagnostics;
 using System.Xml;
@@ -16,14 +17,63 @@ namespace Gems.DataMergeServices.Services
         Dictionary<int, Settlement> settlementDictionary = new Dictionary<int, Settlement>();
         Dictionary<int, PlaningStructureElement> planingStructureElementDictionary = new Dictionary<int, PlaningStructureElement>();
         Dictionary<int, RoadNetworkElement> roadNetworkElementDictionary = new Dictionary<int, RoadNetworkElement>();
-        List<Building> buildingList = new List<Building>();
+        Dictionary<int, Building> buildingList = new Dictionary<int, Building>();
 
-        Dictionary<int,int> AdmHierarchy = new Dictionary<int, int>();
-        Dictionary<int,int> MunHierarchy = new Dictionary<int, int>();
+        Dictionary<int, int> AdmHierarchy = new Dictionary<int, int>();
+        Dictionary<int, int> MunHierarchy = new Dictionary<int, int>();
+
+        Dictionary<int, Func<int, (BaseIdentifiableEntity BaseEntity, int LevelNumber)?>[]> levelToParentMap =
+            new Dictionary<int, Func<int, (BaseIdentifiableEntity BaseEntity, int LevelNumber)?>[]>();
 
         List<Address> addresses = new List<Address>();
 
-        public FiasXmlToEntityConverter() { }
+        public FiasXmlToEntityConverter()
+        {
+            levelToParentMap.Add(
+                9,
+                new Func<int, (BaseIdentifiableEntity BaseEntity, int LevelNumber)?>[]
+                {
+                    key => planingStructureElementDictionary.TryGetValue(key, out var result) ? (result, 7) : null,
+                    key => roadNetworkElementDictionary.TryGetValue(key, out var result) ? (result, 8) : null,
+                });
+            levelToParentMap.Add(
+               8,
+               new Func<int, (BaseIdentifiableEntity BaseEntity, int LevelNumber)?>[]
+               {
+                    key => planingStructureElementDictionary.TryGetValue(key, out var result) ? (result, 7) : null,
+                    key => settlementDictionary.TryGetValue(key, out var result) ? (result, 6) : null,
+                    key => cityDictionary.TryGetValue(key, out var result) ? (result, 5) : null,
+               });
+            levelToParentMap.Add(
+               7,
+               new Func<int, (BaseIdentifiableEntity BaseEntity, int LevelNumber)?>[]
+               {
+                    key => settlementDictionary.TryGetValue(key, out var result) ? (result, 6) : null,
+                    key => cityDictionary.TryGetValue(key, out var result) ? (result, 5) : null,
+               });
+            levelToParentMap.Add(
+               6,
+               new Func<int, (BaseIdentifiableEntity BaseEntity, int LevelNumber)?>[]
+               {
+                    key => territoryDictionary.TryGetValue(key, out var result) ? (result, 4) : null,
+                    key => cityDictionary.TryGetValue(key, out var result) ? (result, 5) : null,
+               });
+            levelToParentMap.Add(
+               5,
+               new Func<int, (BaseIdentifiableEntity BaseEntity, int LevelNumber)?>[]
+               {
+                    key => territoryDictionary.TryGetValue(key, out var result) ? (result, 4) : null,
+                    key => administrativeAreaDictionary.TryGetValue(key, out var result) ? (result, 2) : null,
+               });
+            levelToParentMap.Add(
+               4,
+               new Func<int, (BaseIdentifiableEntity BaseEntity, int LevelNumber)?>[]
+               {
+                    key => municipalAreaDictionary.TryGetValue(key, out var result) ? (result, 3) : null,
+               });
+            // 3 и 2 уровень всегда ссылаются на единственный элемент первого уровня
+
+        }
 
         async public void ConvertRegion(String uri)
         {
@@ -180,7 +230,7 @@ namespace Gems.DataMergeServices.Services
                             buildingDataSource.Id = reader.GetAttribute("OBJECTID");
                             buildingDataSource.SourceType = AddressRegistry.Entities.Enums.SourceType.Fias;
                             building.DataSources.Add(buildingDataSource);
-                            buildingList.Add(building);
+                            buildingList.Add(int.Parse(buildingDataSource.Id), building);
                             Debug.WriteLine(building.Number);
 
                             Debug.WriteLine($"Start Element {reader.GetAttribute("OBJECTGUID")} {reader.GetAttribute("NAME")}");
@@ -239,7 +289,7 @@ namespace Gems.DataMergeServices.Services
                 }
             }
         }
-        async public void ReadMunHierarchy(String uri)
+        public async Task ReadMunHierarchy(String uri)
         {
             XmlReaderSettings settings = new XmlReaderSettings();
             settings.Async = true;
@@ -277,15 +327,132 @@ namespace Gems.DataMergeServices.Services
 
         }
 
-        async public void BuildHierarchy()
-        {
-            foreach(Building building in buildingList)
-            {
-                Address address = new Address();
-                address.Building = building;
-                address.RoadNetworkElement = 
 
+        public void BuildAddresses()
+        {
+            List<Address> addresses = new List<Address>();
+            foreach(var item in buildingList)
+            {
+                var address = new Address();
+                address.Building = item.Value;
+                address.Region = region;
+                FindParents(9, address);
+                addresses.Add(address);
             }
         }
+
+        public void FindParents(int level, Address address)
+        {
+            int objId;
+            int parentObjId;
+            int parentMunicipalityObjId;
+            Func<int, (BaseIdentifiableEntity BaseEntity, int LevelNumber)?>[] levelEntryParentMappings;
+
+            switch (level)
+            {
+                case (9):
+                    objId = int.Parse(address.Building.DataSources.FirstOrDefault().Id);
+                    AdmHierarchy.TryGetValue(objId, out parentObjId);
+                    if (parentObjId != 0)
+                    {
+                        levelEntryParentMappings = levelToParentMap[9];
+                        foreach (var mapper in levelEntryParentMappings)
+                        {
+                            var entry = mapper(parentObjId);
+                            
+
+                            if (entry is not null)
+                            {
+                                var LevelNumber = entry.Value.LevelNumber;
+                                if (LevelNumber == 8)
+                                    address.RoadNetworkElement = (RoadNetworkElement)entry.Value.BaseEntity;
+                                else if(LevelNumber == 7)
+                                    address.PlaningStructureElement = (PlaningStructureElement)entry.Value.BaseEntity;
+                            }
+                        }
+                    }
+                    break;
+                case (8):
+                    objId = int.Parse(address.RoadNetworkElement.DataSources.FirstOrDefault().Id);
+                    AdmHierarchy.TryGetValue(objId, out parentObjId);
+                    levelEntryParentMappings = levelToParentMap[8];
+                    foreach (var mapper in levelEntryParentMappings)
+                    {
+                        var entry = mapper(parentObjId);
+
+                        if (entry is not null)
+                        {
+
+                        }
+                    }
+                    break;
+                case (7):
+                    objId = int.Parse(address.PlaningStructureElement.DataSources.FirstOrDefault().Id);
+                    AdmHierarchy.TryGetValue(objId, out parentObjId);
+                    levelEntryParentMappings = levelToParentMap[7];
+                    foreach (var mapper in levelEntryParentMappings)
+                    {
+                        var entry = mapper(parentObjId);
+
+                        if (entry is not null)
+                        {
+
+                        }
+                    }
+                    break;
+                case (6):
+                    objId = int.Parse(address.Settlement.DataSources.FirstOrDefault().Id);
+                    AdmHierarchy.TryGetValue(objId, out parentObjId);
+                    levelEntryParentMappings = levelToParentMap[6];
+                    foreach (var mapper in levelEntryParentMappings)
+                    {
+                        var entry = mapper(parentObjId);
+
+                        if (entry is not null)
+                        {
+
+                        }
+                    }
+                    break;
+                case (5):
+                    objId = int.Parse(address.City.DataSources.FirstOrDefault().Id);
+                    AdmHierarchy.TryGetValue(objId, out parentObjId);
+                    MunHierarchy.TryGetValue(objId, out parentMunicipalityObjId);
+                    levelEntryParentMappings = levelToParentMap[5];
+                    foreach (var mapper in levelEntryParentMappings)
+                    {
+                        var entry = mapper(parentObjId);
+                        var entryMunicipal = mapper(parentMunicipalityObjId);
+
+                        if (entry is not null)
+                        {
+
+                        }
+
+                        if (entryMunicipal is not null)
+                        {
+
+                        }
+
+
+                    }
+                    break;
+                case (4):
+                    objId = int.Parse(address.Territory.DataSources.FirstOrDefault().Id);
+                    MunHierarchy.TryGetValue(objId, out parentMunicipalityObjId);
+                    levelEntryParentMappings = levelToParentMap[4];
+                    foreach (var mapper in levelEntryParentMappings)
+                    {
+                        var entryMunicipal = mapper(parentMunicipalityObjId);
+
+                        if (entryMunicipal is not null)
+                        {
+
+                        }
+                    }
+                    break;
+            }
+        }
+
     }
 }
