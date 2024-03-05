@@ -1,12 +1,18 @@
 using Gems.AddressRegistry.OsmDataParser.Interfaces;
 using Gems.AddressRegistry.OsmDataParser.Model;
 using Gems.AddressRegistry.OsmDataParser.Support;
+using NetTopologySuite.Geometries;
+using NetTopologySuite.Geometries.Prepared;
+using NetTopologySuite.Operation.Distance;
 using OsmSharp;
 
 namespace Gems.AddressRegistry.OsmDataParser.Parsers;
 
 internal sealed class StreetParser : IOsmParser<Street>
 {
+    private const float BufferRadius = 0.045F; // 5км
+    private readonly Dictionary<long, Node> _nodeCache = new Dictionary<long, Node>();
+    
     public Street Parse(OsmData osmData, string streetName, string? districtName = null)
     {
         var resultStreet = new Street();
@@ -37,23 +43,75 @@ internal sealed class StreetParser : IOsmParser<Street>
         foreach (var street in streetGroup)
         {
             var group = street.ToList();
-            var resultStreet = new Street { Name = group.First().Tags[OsmKeywords.Name] };
             
             if (group.Count < 1 || group is null)
                 throw new ArgumentException("Empty street");
-            
+
             if (group.Count == 1)
+            {
+                var resultStreet = new Street { Name = street.Key };
                 resultStreet.Components.Add(group.First());
+                streetList.Add(resultStreet);
+            }
             
             else if (group.Count > 1)
             {
                 var osmObjects = OsmParserCore.MergeByMatchingId(group);
 
-                foreach (var way in osmObjects)
-                    resultStreet.Components.Add(way);
+                for (int i = 0; i < osmObjects.Count; i++)
+                {
+                    var osmObject = osmObjects[i];
+                    var newStreet = new Street { Name = street.Key };
+                    newStreet.Components.Add(osmObject);
+
+                    for (int j = i + 1; j < osmObjects.Count; j++)
+                    {
+                        var otherOsmObject = osmObjects[j];
+
+                        var wayNode1 = GetWayNode(osmData, osmObject);
+                        var wayNode2 = GetWayNode(osmData, otherOsmObject);
+
+                        if (wayNode1 != null && wayNode2 != null)
+                        {
+                            var point1 = new Point(new Coordinate((double)wayNode1.Longitude!, (double)wayNode1.Latitude!));
+                            var point2 = new Point(new Coordinate((double)wayNode2.Longitude!, (double)wayNode2.Latitude!));
+                            var buffer = point1.Buffer(BufferRadius, 8);
+
+                            if (buffer.Contains(point2))
+                            {
+                                newStreet.Components.Add(otherOsmObject);
+                                osmObjects.RemoveAt(j);
+                                j--;
+                            }
+                        }
+                    }
+
+                    osmObjects.RemoveAt(i);
+                    i--;
+                    streetList.Add(newStreet);
+                    Console.WriteLine("Объект {" + newStreet.Name + "} добавлен в коллекцию улиц.");
+                }
             }
-            streetList.Add(resultStreet);
         }
         return streetList;
+    }
+
+    private Node? GetWayNode(OsmData osmData, Way way)
+    {
+        foreach (var nodeId in way.Nodes)
+        {
+            if (_nodeCache.TryGetValue(nodeId, out var cachedNode))
+                return cachedNode;
+            
+            var wayNode = osmData.Nodes.FirstOrDefault(node => node.Id == nodeId);
+
+            if (wayNode != null)
+            {
+                _nodeCache[nodeId] = wayNode;
+                return wayNode;
+            }
+        }
+
+        return null;
     }
 }

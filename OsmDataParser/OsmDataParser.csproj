@@ -9,6 +9,7 @@
 
     <ItemGroup>
         <PackageReference Include="GeoJSON.Net" Version="1.2.19"/>
+        <PackageReference Include="NetTopologySuite" Version="2.5.0" />
         <PackageReference Include="OsmSharp" Version="6.2.0"/>
     </ItemGroup>
 

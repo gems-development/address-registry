@@ -4,11 +4,14 @@ using Gems.AddressRegistry.OsmDataParser.Model;
 using Gems.AddressRegistry.OsmDataParser.Support;
 using GeoJSON.Text.Feature;
 using GeoJSON.Text.Geometry;
+using OsmSharp;
 
 namespace Gems.AddressRegistry.OsmDataGroupingService.Serializers;
 
 public class MultiLineSerializer
 {
+    private static readonly Dictionary<long, Node> NodeCache = new Dictionary<long, Node>();
+    
     public static string Serialize(RealObject realObject, OsmData osmData)
     {
         if (realObject == null || realObject.GetType() == typeof(District)
@@ -23,11 +26,21 @@ public class MultiLineSerializer
         foreach (var way in ways)
         {
             var coordinates = new List<Position>();
-            var wayNodeIds = way.Nodes.ToHashSet();
-            var wayNodes = wayNodeIds
-                .Select(id => osmData.Nodes.FirstOrDefault(node => node.Id == id))
-                .Where(node => node != null)
-                .ToList();
+            var wayNodes = new List<Node>();
+            
+            foreach (var nodeId in way.Nodes)
+            {
+                if (NodeCache.TryGetValue(nodeId, out var cachedNode))
+                    wayNodes.Add(cachedNode);
+            
+                var wayNode = osmData.Nodes.FirstOrDefault(node => node.Id == nodeId);
+
+                if (wayNode != null)
+                {
+                    wayNodes.Add(wayNode);
+                    NodeCache[nodeId] = wayNode;
+                }
+            }
             
             if (wayNodes.Count < 2)
                 continue;
