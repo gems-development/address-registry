@@ -27,7 +27,7 @@ namespace Gems.DataMergeServices.Services
 
         List<Address> addresses = new List<Address>();
 
-        public FiasXmlToEntityConverter()
+    public FiasXmlToEntityConverter()
         {
             levelToParentMap.Add(
                 9,
@@ -328,7 +328,7 @@ namespace Gems.DataMergeServices.Services
         }
 
 
-        public void BuildAddresses()
+        public List<Address> BuildAddresses()
         {
             List<Address> addresses = new List<Address>();
             foreach(var item in buildingList)
@@ -336,9 +336,14 @@ namespace Gems.DataMergeServices.Services
                 var address = new Address();
                 address.Building = item.Value;
                 address.Region = region;
+                address.Region.Code = "99";
+                Country country = new Country();
+                country.Name = "Russia";
+                address.Country = country;
                 FindParents(9, address);
                 addresses.Add(address);
             }
+            return addresses;
         }
 
         public void FindParents(int level, Address address)
@@ -366,8 +371,10 @@ namespace Gems.DataMergeServices.Services
                                 var LevelNumber = entry.Value.LevelNumber;
                                 if (LevelNumber == 8)
                                     address.RoadNetworkElement = (RoadNetworkElement)entry.Value.BaseEntity;
+
                                 else if(LevelNumber == 7)
                                     address.PlaningStructureElement = (PlaningStructureElement)entry.Value.BaseEntity;
+                                FindParents(LevelNumber, address);
                             }
                         }
                     }
@@ -382,7 +389,14 @@ namespace Gems.DataMergeServices.Services
 
                         if (entry is not null)
                         {
-
+                            var LevelNumber = entry.Value.LevelNumber;
+                            if (LevelNumber == 7)
+                                address.PlaningStructureElement = (PlaningStructureElement)entry.Value.BaseEntity;
+                            else if (LevelNumber == 6)
+                                address.Settlement = (Settlement)entry.Value.BaseEntity;
+                            else if (LevelNumber == 5)
+                                address.City = (City)entry.Value.BaseEntity;
+                            FindParents(LevelNumber, address);
                         }
                     }
                     break;
@@ -396,7 +410,12 @@ namespace Gems.DataMergeServices.Services
 
                         if (entry is not null)
                         {
-
+                            var LevelNumber = entry.Value.LevelNumber;
+                            if (LevelNumber == 6)
+                                address.Settlement = (Settlement)entry.Value.BaseEntity;
+                            else if (LevelNumber == 5)
+                                address.City = (City)entry.Value.BaseEntity;
+                            FindParents(LevelNumber, address);
                         }
                     }
                     break;
@@ -410,7 +429,12 @@ namespace Gems.DataMergeServices.Services
 
                         if (entry is not null)
                         {
-
+                            var LevelNumber = entry.Value.LevelNumber;
+                            if (LevelNumber == 4)
+                                address.Territory = (Territory)entry.Value.BaseEntity;
+                            else if (LevelNumber == 5)
+                                address.City = (City)entry.Value.BaseEntity;
+                            FindParents(LevelNumber, address);
                         }
                     }
                     break;
@@ -426,15 +450,18 @@ namespace Gems.DataMergeServices.Services
 
                         if (entry is not null)
                         {
-
+                            var LevelNumber = entry.Value.LevelNumber;
+                            if (LevelNumber == 2)
+                                address.AdministrativeArea = (AdministrativeArea)entry.Value.BaseEntity;
                         }
 
                         if (entryMunicipal is not null)
                         {
-
+                            var LevelNumber = entryMunicipal.Value.LevelNumber;
+                            if (LevelNumber == 4)
+                                address.Territory = (Territory)entryMunicipal.Value.BaseEntity;
+                            FindParents(LevelNumber, address);
                         }
-
-
                     }
                     break;
                 case (4):
@@ -447,7 +474,9 @@ namespace Gems.DataMergeServices.Services
 
                         if (entryMunicipal is not null)
                         {
-
+                            var LevelNumber = entryMunicipal.Value.LevelNumber;
+                            if (LevelNumber == 3)
+                                address.MunicipalArea = (MunicipalArea)entryMunicipal.Value.BaseEntity;
                         }
                     }
                     break;
