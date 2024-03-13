@@ -16,7 +16,8 @@ public class MultiLineSerializer
     {
         if (realObject == null || realObject.GetType() == typeof(District)
                                || realObject.GetType() == typeof(Settlement)
-                               || realObject.GetType() == typeof(City))
+                               || realObject.GetType() == typeof(City)
+                               || realObject.GetType() == typeof(House))
             throw new ArgumentException("Object can not be serialized");
         
         var features = new List<Feature>();

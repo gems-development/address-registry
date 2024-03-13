@@ -9,6 +9,10 @@ internal static class OsmKeywords
     public const string Administrative = "administrative";
     public const string Place = "place";
     
+    public const string Building = "building";
+    public const string StreetName = "addr:street";
+    public const string HouseNumber = "addr:housenumber";
+    
     public const string Level2 = "2";
     public const string Level4 = "4";
     public const string Level6 = "6";

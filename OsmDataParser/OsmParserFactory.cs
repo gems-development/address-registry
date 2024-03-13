@@ -19,6 +19,9 @@ public static class OsmParserFactory
         
         if (typeof(TResult) == typeof(Street))
             return (new StreetParser() as IOsmParser<TResult>)!;
+        
+        if (typeof(TResult) == typeof(House))
+            return (new HouseParser() as IOsmParser<TResult>)!;
 
         throw new NotSupportedException($"No parser for {typeof(TResult)}");
     }

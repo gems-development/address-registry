@@ -21,26 +21,18 @@ public class Client
     {
         var osmData = await GetSortedOsmData();
         
-        var grouper = new CityAndStreetGrouper();
-        var streetParser = OsmParserFactory.Create<Street>();
-        var cityParser = OsmParserFactory.Create<City>();
-        
-        var city = cityParser.Parse(osmData, "Биробиджан", null);
-        var cityGeoJson = MultiPolygonSerializer.Serialize(city, osmData);
-
-        var streets = streetParser.ParseAll(osmData, null);
+        var houseParser = OsmParserFactory.Create<House>();
+        var houses = houseParser.ParseAll(osmData, "Пионерская улица");
         var features = new List<Feature>();
         
-        foreach (var street in streets)
+        foreach (var house in houses)
         {
-            var streetGeoJson = MultiLineSerializer.Serialize(street, osmData);
-            if (grouper.Group(cityGeoJson, streetGeoJson))
-            {
-                var streetGeometry = JsonSerializer.Deserialize<FeatureCollection>(streetGeoJson);
-                var streetFeature = streetGeometry.Features.First();
-                features.Add(streetFeature);
-                Console.WriteLine("Объект {" + street.Name + "} записывается в формат GeoJSON.");
-            }
+            var houseGeoJson = MultiPolygonSerializer.Serialize(house, osmData);
+            var houseGeometry = JsonSerializer.Deserialize<FeatureCollection>(houseGeoJson);
+            var houseFeature = houseGeometry!.Features.First();
+            features.Add(houseFeature);
+            Console.WriteLine($"Объект с адресом {house.Name}, " +
+                              $"д. {house.Number} записывается в формат GeoJson.");
         }
         
         var featureCollection = new FeatureCollection(features);

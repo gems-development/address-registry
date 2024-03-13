@@ -2,8 +2,6 @@ using Gems.AddressRegistry.OsmDataParser.Interfaces;
 using Gems.AddressRegistry.OsmDataParser.Model;
 using Gems.AddressRegistry.OsmDataParser.Support;
 using NetTopologySuite.Geometries;
-using NetTopologySuite.Geometries.Prepared;
-using NetTopologySuite.Operation.Distance;
 using OsmSharp;
 
 namespace Gems.AddressRegistry.OsmDataParser.Parsers;
