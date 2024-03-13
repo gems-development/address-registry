@@ -63,6 +63,7 @@ namespace Gems.DataMergeServices.Services
                new Func<int, (BaseIdentifiableEntity BaseEntity, int LevelNumber)?>[]
                {
                     key => territoryDictionary.TryGetValue(key, out var result) ? (result, 4) : null,
+                    key => municipalAreaDictionary.TryGetValue(key, out var result) ? (result, 3) : null,
                     key => administrativeAreaDictionary.TryGetValue(key, out var result) ? (result, 2) : null,
                });
             levelToParentMap.Add(
@@ -268,9 +269,12 @@ namespace Gems.DataMergeServices.Services
                     {
                         case XmlNodeType.Element:
 
-                            if (reader.GetAttribute("ISACTUAL") != "1" || reader.GetAttribute("ISACTIVE") != "1")
+                            if (reader.GetAttribute("ISACTIVE") != "1")
                                 break;
-                            AdmHierarchy.Add(int.Parse(reader.GetAttribute("OBJECTID")), int.Parse(reader.GetAttribute("PARENTOBJID")));
+                            var objId = reader.GetAttribute("OBJECTID");
+                            var parentObjId = reader.GetAttribute("PARENTOBJID");
+                            if(objId!= null && parentObjId != null)
+                            AdmHierarchy.Add(int.Parse(objId), int.Parse(parentObjId));
                             Debug.WriteLine($"Start Element {reader.GetAttribute("OBJECTGUID")} {reader.GetAttribute("NAME")}");
                             break;
                         case XmlNodeType.Text:
@@ -304,9 +308,12 @@ namespace Gems.DataMergeServices.Services
                     {
                         case XmlNodeType.Element:
 
-                            if (reader.GetAttribute("ISACTUAL") != "1" || reader.GetAttribute("ISACTIVE") != "1")
+                            if (reader.GetAttribute("ISACTIVE") != "1")
                                 break;
-                            MunHierarchy.Add(int.Parse(reader.GetAttribute("OBJECTID")), int.Parse(reader.GetAttribute("PARENTOBJID")));
+                            var objId = reader.GetAttribute("OBJECTID");
+                            var parentObjId = reader.GetAttribute("PARENTOBJID");
+                            if (objId != null && parentObjId != null)
+                                MunHierarchy.Add(int.Parse(objId), int.Parse(parentObjId));
                             Debug.WriteLine($"Start Element {reader.GetAttribute("OBJECTGUID")} {reader.GetAttribute("NAME")}");
                             break;
                         case XmlNodeType.Text:
@@ -422,24 +429,31 @@ namespace Gems.DataMergeServices.Services
                 case (6):
                     objId = int.Parse(address.Settlement.DataSources.FirstOrDefault().Id);
                     AdmHierarchy.TryGetValue(objId, out parentObjId);
+                    MunHierarchy.TryGetValue(objId, out parentMunicipalityObjId);
                     levelEntryParentMappings = levelToParentMap[6];
                     foreach (var mapper in levelEntryParentMappings)
                     {
                         var entry = mapper(parentObjId);
-
+                        var entryMunicipal = mapper(parentMunicipalityObjId);
                         if (entry is not null)
                         {
                             var LevelNumber = entry.Value.LevelNumber;
-                            if (LevelNumber == 4)
-                                address.Territory = (Territory)entry.Value.BaseEntity;
-                            else if (LevelNumber == 5)
+                           
+                             if (LevelNumber == 5)
                                 address.City = (City)entry.Value.BaseEntity;
+                            FindParents(LevelNumber, address);
+                        }
+                        if (entryMunicipal is not null)
+                        {
+                            var LevelNumber = entryMunicipal.Value.LevelNumber;
+                            if (LevelNumber == 4)
+                                address.Territory = (Territory)entryMunicipal.Value.BaseEntity;
                             FindParents(LevelNumber, address);
                         }
                     }
                     break;
                 case (5):
-                    objId = int.Parse(address.City.DataSources.FirstOrDefault().Id);
+                    objId = int.Parse(address.City.DataSources.First().Id);
                     AdmHierarchy.TryGetValue(objId, out parentObjId);
                     MunHierarchy.TryGetValue(objId, out parentMunicipalityObjId);
                     levelEntryParentMappings = levelToParentMap[5];
@@ -460,6 +474,9 @@ namespace Gems.DataMergeServices.Services
                             var LevelNumber = entryMunicipal.Value.LevelNumber;
                             if (LevelNumber == 4)
                                 address.Territory = (Territory)entryMunicipal.Value.BaseEntity;
+                            FindParents(LevelNumber, address);
+                            if (LevelNumber == 3)
+                                address.MunicipalArea = (MunicipalArea)entryMunicipal.Value.BaseEntity;
                             FindParents(LevelNumber, address);
                         }
                     }

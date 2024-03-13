@@ -12,13 +12,13 @@ namespace Gems.DataMergeServices.Tests
         {
             FiasXmlToEntityConverter fiasXmlToEntityConverter = new FiasXmlToEntityConverter();
 
-            fiasXmlToEntityConverter.ConvertRegion("C:/Users/user/Desktop/test/region_test.XML");
-            fiasXmlToEntityConverter.ConvertBuildings("C:/Users/user/Desktop/test/buildings_test.XML");
-            fiasXmlToEntityConverter.ReadAdmHierarchy("C:/Users/user/Desktop/test/adm_test.XML");
-            await fiasXmlToEntityConverter.ReadMunHierarchy("C:/Users/user/Desktop/test/mun_test.XML");
+            fiasXmlToEntityConverter.ConvertRegion("C:\\Users\\kds04\\source\\repos\\address-registry\\test_data/region_test79.XML");
+            fiasXmlToEntityConverter.ConvertBuildings("C:\\Users\\kds04\\source\\repos\\address-registry\\test_data/buildings_test79.XML");
+            fiasXmlToEntityConverter.ReadAdmHierarchy("C:\\Users\\kds04\\source\\repos\\address-registry\\test_data/adm_test79.XML");
+            await fiasXmlToEntityConverter.ReadMunHierarchy("C:\\Users\\kds04\\source\\repos\\address-registry\\test_data/mun_test79.XML");
             
 
-            const string connectionString = "Host=localhost;Port=5432;Database=addressdb;Username=postgres;Password=admin";
+            const string connectionString = "Host=localhost;Port=5432;Database=addressdb;Username=postgres;Password=postgres";
             IAppDbContextFactory appDbContextFactory = new AppDbContextFactory(connectionString);
             DataImportService dataImportService = new DataImportService(appDbContextFactory);
             await dataImportService.AddressImportAsync(fiasXmlToEntityConverter.BuildAddresses());

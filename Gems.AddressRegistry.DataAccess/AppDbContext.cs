@@ -20,7 +20,7 @@ namespace Gems.AddressRegistry.DataAccess
         public DbSet<Building> Buildings { get; set; }
         public DbSet<Space> Spaces { get; set; }
 
-        private readonly string _connectionString = "Host=localhost;Port=5432;Database=addressdb;Username=postgres;Password=admin";
+        private readonly string _connectionString = "Host=localhost;Port=5432;Database=addressdb;Username=postgres;Password=postgres";
 
         public AppDbContext()
         { }

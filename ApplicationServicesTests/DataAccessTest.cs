@@ -11,7 +11,7 @@ namespace ApplicationServices.Tests
         [RunnableInDebugOnlyFactAttribute]
         public async Task ErnImportTest()
         {
-            const string connectionString = "Host=localhost;Port=5432;Database=addressdb;Username=postgres;Password=admin";
+            const string connectionString = "Host=localhost;Port=5432;Database=addressdb;Username=postgres;Password=postgres";
             IAppDbContextFactory appDbContextFactory = new AppDbContextFactory(connectionString);
             DataImportService dataImportService = new DataImportService(appDbContextFactory);
             Address address = new Address();
