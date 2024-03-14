@@ -25,6 +25,7 @@ public class AreaParser : IOsmParser<Area>
                 resultArea.Components = OsmParserCore.MergeByMatchingId(areaWays);
             }
         }
+        Console.WriteLine("Объект {" + resultArea.Name + "} успешно получена.");
 
         return resultArea;
     }

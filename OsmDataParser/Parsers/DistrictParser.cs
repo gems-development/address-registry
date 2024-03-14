@@ -8,7 +8,7 @@ internal sealed class DistrictParser : IOsmParser<District>
 {
     public District Parse(OsmData osmData, string areaName, string districtName)
     {
-        var resultDistrict = new District { Name = districtName };
+        var resultDistrict = new District();
         var districts = ParseAll(osmData, areaName);
         foreach (var district in districts)
         {
@@ -35,6 +35,7 @@ internal sealed class DistrictParser : IOsmParser<District>
                 resultDistrict.Components.Add(way);
         
             districtList.Add(resultDistrict);
+            Console.WriteLine("Объект {" + resultDistrict.Name + "} добавлен в коллекцию районов.");
         }
             
         return districtList;

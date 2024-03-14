@@ -6,9 +6,17 @@ namespace Gems.AddressRegistry.OsmDataParser.Parsers;
 
 internal sealed class SettlementParser : IOsmParser<Settlement>
 {
-    public Settlement Parse(OsmData osmData, string areaName, string districtName)
+    public Settlement Parse(OsmData osmData, string areaName, string settlementName)
     {
-        throw new NotImplementedException();
+        var resultSettlement = new Settlement();
+        var settlements = ParseAll(osmData, areaName);
+        foreach (var settlement in settlements)
+        {
+            if (settlement.Name == settlementName)
+                resultSettlement = settlement;
+        }
+
+        return resultSettlement;
     }
     
     public IReadOnlyCollection<Settlement> ParseAll(OsmData osmData, string areaName)
@@ -32,6 +40,7 @@ internal sealed class SettlementParser : IOsmParser<Settlement>
                     resultSettlement.Components.Add(way);
         
                 settlementList.Add(resultSettlement);
+                Console.WriteLine("Объект {" + resultSettlement.Name + "} добавлен в коллекцию поселений.");
             }
         }
         return settlementList;
