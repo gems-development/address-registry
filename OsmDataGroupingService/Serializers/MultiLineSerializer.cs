@@ -14,7 +14,8 @@ public class MultiLineSerializer
     
     public static string Serialize(RealObject realObject, OsmData osmData)
     {
-        if (realObject == null || realObject.GetType() == typeof(District)
+        if (realObject == null || realObject.GetType() == typeof(Area)
+                               || realObject.GetType() == typeof(District)
                                || realObject.GetType() == typeof(Settlement)
                                || realObject.GetType() == typeof(City)
                                || realObject.GetType() == typeof(House))

@@ -8,6 +8,9 @@ public static class OsmParserFactory
 {
     public static IOsmParser<TResult> Create<TResult>()
     {
+        if (typeof(TResult) == typeof(Area))
+            return (new AreaParser() as IOsmParser<TResult>)!;
+        
         if (typeof(TResult) == typeof(District))
             return (new DistrictParser() as IOsmParser<TResult>)!;
         
