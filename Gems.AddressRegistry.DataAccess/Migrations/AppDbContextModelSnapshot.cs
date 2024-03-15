@@ -102,7 +102,7 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
 
                     b.HasIndex("TerritoryId");
 
-                    b.ToTable("Addresses");
+                    b.ToTable("Addresses", (string)null);
                 });
 
             modelBuilder.Entity("Gems.AddressRegistry.Entities.AdministrativeArea", b =>
@@ -126,7 +126,7 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AdministrativeAreas");
+                    b.ToTable("AdministrativeAreas", (string)null);
                 });
 
             modelBuilder.Entity("Gems.AddressRegistry.Entities.Building", b =>
@@ -156,7 +156,7 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Buildings");
+                    b.ToTable("Buildings", (string)null);
                 });
 
             modelBuilder.Entity("Gems.AddressRegistry.Entities.City", b =>
@@ -180,7 +180,7 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Cities");
+                    b.ToTable("Cities", (string)null);
                 });
 
             modelBuilder.Entity("Gems.AddressRegistry.Entities.Common.DataSourceBase", b =>
@@ -225,7 +225,7 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Countries");
+                    b.ToTable("Countries", (string)null);
                 });
 
             modelBuilder.Entity("Gems.AddressRegistry.Entities.LandPlot", b =>
@@ -249,7 +249,7 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("LandPlots");
+                    b.ToTable("LandPlots", (string)null);
                 });
 
             modelBuilder.Entity("Gems.AddressRegistry.Entities.MunicipalArea", b =>
@@ -273,7 +273,7 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MunicipalAreas");
+                    b.ToTable("MunicipalAreas", (string)null);
                 });
 
             modelBuilder.Entity("Gems.AddressRegistry.Entities.PlaningStructureElement", b =>
@@ -297,7 +297,7 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PlaningStructureElements");
+                    b.ToTable("PlaningStructureElements", (string)null);
                 });
 
             modelBuilder.Entity("Gems.AddressRegistry.Entities.Region", b =>
@@ -325,7 +325,7 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Regions");
+                    b.ToTable("Regions", (string)null);
                 });
 
             modelBuilder.Entity("Gems.AddressRegistry.Entities.RoadNetworkElement", b =>
@@ -352,7 +352,7 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("RoadNetworkElements");
+                    b.ToTable("RoadNetworkElements", (string)null);
                 });
 
             modelBuilder.Entity("Gems.AddressRegistry.Entities.Settlement", b =>
@@ -376,7 +376,7 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Settlements");
+                    b.ToTable("Settlements", (string)null);
                 });
 
             modelBuilder.Entity("Gems.AddressRegistry.Entities.Space", b =>
@@ -403,7 +403,7 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Spaces");
+                    b.ToTable("Spaces", (string)null);
                 });
 
             modelBuilder.Entity("Gems.AddressRegistry.Entities.Territory", b =>
@@ -427,7 +427,7 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Territories");
+                    b.ToTable("Territories", (string)null);
                 });
 
             modelBuilder.Entity("Gems.AddressRegistry.Entities.DataSources.AddressDataSource", b =>

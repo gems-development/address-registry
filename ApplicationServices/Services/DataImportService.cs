@@ -1,5 +1,6 @@
 ﻿using Gems.AddressRegistry.DataAccess;
 using Gems.AddressRegistry.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Gems.ApplicationServices.Services
 {
@@ -143,12 +144,29 @@ namespace Gems.ApplicationServices.Services
             }
             return _AppDbContext.SaveChangesAsync(cancellationToken);
         }
-        public Task AddressImportAsync(IReadOnlyCollection<Address> AddressesImport, CancellationToken cancellationToken = default)
+        public async Task AddressImportAsync(IReadOnlyCollection<Address> AddressesImport, CancellationToken cancellationToken = default)
         {
             foreach (Address AddressImport in AddressesImport)
             {
-                if (_AppDbContext.Addresses.Any(Address => Address.Id == AddressImport.Id))
+                var externalAddressId = AddressImport.Building?.DataSources.First(o => o.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias).Id;
+                if (externalAddressId == null)
+                    continue;
+                // TODO переделать запрос
+                var address = (await _AppDbContext
+                    .Addresses
+                    .ToArrayAsync())
+                    .FirstOrDefault(o => o
+                        .Building
+                        ?.DataSources
+                        .Any(p => p.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias && p.Id == externalAddressId) is true);
+                if (address != null)
+                {
+                    // TODO перенести из addressImport данные в address
+                    // При обновлении данных нужно искать есть ли этот объект в бд, если есть то обновлять его симантику
+                    // если отсутствует, то добавлять запись о нём. Для этого нужно переписать функции импорта для сущностей выше
+                    // Важно не допустить дублирования данных в базе
                     _AppDbContext.Update(AddressImport);
+                }
                 else
                     _AppDbContext.Add(AddressImport);
             }
