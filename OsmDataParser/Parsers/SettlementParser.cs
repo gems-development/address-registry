@@ -34,10 +34,7 @@ internal sealed class SettlementParser : IOsmParser<Settlement>
                 var resultSettlement = new Settlement { Name = settlement.Tags[OsmKeywords.Name] };
                 var settlementMemberIds = settlement.Members.Select(o => o.Id).ToHashSet();
                 var relationWays = osmData.Ways.Where(way => settlementMemberIds.Contains(way.Id ?? -1)).ToList();
-                var osmObjects = OsmParserCore.MergeByMatchingId(relationWays);
-                
-                foreach (var way in osmObjects)
-                    resultSettlement.Components.Add(way);
+                resultSettlement.Components = OsmParserCore.MergeByMatchingId(relationWays);
         
                 settlementList.Add(resultSettlement);
                 Console.WriteLine("Объект {" + resultSettlement.Name + "} добавлен в коллекцию поселений.");

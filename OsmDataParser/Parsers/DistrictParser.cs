@@ -29,10 +29,7 @@ internal sealed class DistrictParser : IOsmParser<District>
             var resultDistrict = new District { Name = district.Tags[OsmKeywords.Name] };
             var districtMemberIds = district.Members.Select(o => o.Id).ToHashSet();
             var relationWays = osmData.Ways.Where(way => districtMemberIds.Contains(way.Id ?? -1)).ToList();
-            var osmObjects = OsmParserCore.MergeByMatchingId(relationWays);
-
-            foreach (var way in osmObjects)
-                resultDistrict.Components.Add(way);
+            resultDistrict.Components = OsmParserCore.MergeByMatchingId(relationWays);
         
             districtList.Add(resultDistrict);
             Console.WriteLine("Объект {" + resultDistrict.Name + "} добавлен в коллекцию районов.");
