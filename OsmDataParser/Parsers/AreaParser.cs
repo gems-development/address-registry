@@ -9,7 +9,7 @@ public class AreaParser : IOsmParser<Area>
     public Area Parse(OsmData osmData, string areaName, string districtName = null!)
     {
         var relations = osmData.Relations;
-        var resultArea = new Area { Name = areaName };
+        var resultArea = new Area { Name = ObjectNameCleaner.Clean(areaName) };
         
         foreach (var relation in relations)
         {

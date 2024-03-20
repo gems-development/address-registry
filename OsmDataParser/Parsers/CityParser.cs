@@ -34,7 +34,7 @@ internal sealed class CityParser : IOsmParser<City>
             {
                 var resultTown = new City
                 {
-                    Name = way.Tags[OsmKeywords.StreetName],
+                    Name = ObjectNameCleaner.Clean(way.Tags[OsmKeywords.StreetName]),
                     Components = new List<Way> { way }
                 };
                 cities.Add(resultTown);
@@ -49,7 +49,7 @@ internal sealed class CityParser : IOsmParser<City>
                 && (relation.Tags[OsmKeywords.Place] == OsmKeywords.City
                 || relation.Tags[OsmKeywords.Place] == OsmKeywords.Town))
             {
-                var resultCity = new City { Name = relation.Tags[OsmKeywords.Name] };
+                var resultCity = new City { Name = ObjectNameCleaner.Clean(relation.Tags[OsmKeywords.Name]) };
                 var districtMemberIds = relation.Members.Select(o => o.Id).ToHashSet();
                 var relationWays = osmData.Ways.Where(way => districtMemberIds.Contains(way.Id ?? -1)).ToList();
                 resultCity.Components = OsmParserCore.MergeByMatchingId(relationWays);

@@ -47,7 +47,7 @@ internal sealed class StreetParser : IOsmParser<Street>
 
             if (group.Count == 1)
             {
-                var resultStreet = new Street { Name = street.Key };
+                var resultStreet = new Street { Name = ObjectNameCleaner.Clean(street.Key) };
                 resultStreet.Components.Add(group.First());
                 streetList.Add(resultStreet);
             }
@@ -59,7 +59,7 @@ internal sealed class StreetParser : IOsmParser<Street>
                 for (int i = 0; i < osmObjects.Count; i++)
                 {
                     var osmObject = osmObjects[i];
-                    var newStreet = new Street { Name = street.Key };
+                    var newStreet = new Street { Name = ObjectNameCleaner.Clean(street.Key) };
                     newStreet.Components.Add(osmObject);
 
                     for (int j = i + 1; j < osmObjects.Count; j++)

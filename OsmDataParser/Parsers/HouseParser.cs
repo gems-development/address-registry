@@ -34,7 +34,7 @@ public class HouseParser : IOsmParser<House>
             {
                 var resultHouse = new House
                 {
-                    Name = way.Tags[OsmKeywords.StreetName],
+                    Name = ObjectNameCleaner.Clean(way.Tags[OsmKeywords.StreetName]),
                     Number = way.Tags[OsmKeywords.HouseNumber],
                     Components = new List<Way>{ way }
                 };

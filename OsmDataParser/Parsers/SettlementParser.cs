@@ -31,7 +31,7 @@ internal sealed class SettlementParser : IOsmParser<Settlement>
 
             foreach (var settlement in settlements)
             {
-                var resultSettlement = new Settlement { Name = settlement.Tags[OsmKeywords.Name] };
+                var resultSettlement = new Settlement { Name = ObjectNameCleaner.Clean(settlement.Tags[OsmKeywords.Name]) };
                 var settlementMemberIds = settlement.Members.Select(o => o.Id).ToHashSet();
                 var relationWays = osmData.Ways.Where(way => settlementMemberIds.Contains(way.Id ?? -1)).ToList();
                 resultSettlement.Components = OsmParserCore.MergeByMatchingId(relationWays);

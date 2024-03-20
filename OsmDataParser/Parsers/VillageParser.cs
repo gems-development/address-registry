@@ -35,7 +35,7 @@ public class VillageParser : IOsmParser<Village>
             {
                 var resultTown = new Village
                 {
-                    Name = way.Tags[OsmKeywords.StreetName],
+                    Name = ObjectNameCleaner.Clean(way.Tags[OsmKeywords.StreetName]),
                     Components = new List<Way> { way }
                 };
                 villages.Add(resultTown);
@@ -50,7 +50,7 @@ public class VillageParser : IOsmParser<Village>
                 && (relation.Tags[OsmKeywords.Place] == OsmKeywords.Village
                 || relation.Tags[OsmKeywords.Place] == OsmKeywords.Hamlet))
             {
-                var resultVillage = new Village { Name = relation.Tags[OsmKeywords.Name] };
+                var resultVillage = new Village { Name = ObjectNameCleaner.Clean(relation.Tags[OsmKeywords.Name]) };
                 var districtMemberIds = relation.Members.Select(o => o.Id).ToHashSet();
                 var relationWays = osmData.Ways.Where(way => districtMemberIds.Contains(way.Id ?? -1)).ToList();
                 resultVillage.Components = OsmParserCore.MergeByMatchingId(relationWays);
