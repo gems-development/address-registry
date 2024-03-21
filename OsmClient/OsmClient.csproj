@@ -9,6 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <None Include="bin\Debug\net6.0\appsettings.json" />
         <None Include="bin\Debug\net6.0\crimean.osm.pbf"/>
     </ItemGroup>
 
@@ -31,11 +32,6 @@
     <ItemGroup>
         <ProjectReference Include="..\OsmDataGroupingService\OsmDataGroupingService.csproj" />
         <ProjectReference Include="..\OsmDataParser\OsmDataParser.csproj"/>
-    </ItemGroup>
-
-
-    <ItemGroup>
-        <Folder Include="bin\Debug\net6.0\"/>
     </ItemGroup>
 
 

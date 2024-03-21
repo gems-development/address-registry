@@ -34,7 +34,7 @@ internal sealed class CityParser : IOsmParser<City>
             {
                 var resultTown = new City
                 {
-                    Name = ObjectNameCleaner.Clean(way.Tags[OsmKeywords.StreetName]),
+                    Name = ObjectNameCleaner.Clean(way.Tags[OsmKeywords.Name]),
                     Components = new List<Way> { way }
                 };
                 cities.Add(resultTown);

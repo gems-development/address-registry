@@ -35,7 +35,7 @@ public class VillageParser : IOsmParser<Village>
             {
                 var resultTown = new Village
                 {
-                    Name = ObjectNameCleaner.Clean(way.Tags[OsmKeywords.StreetName]),
+                    Name = ObjectNameCleaner.Clean(way.Tags[OsmKeywords.Name]),
                     Components = new List<Way> { way }
                 };
                 villages.Add(resultTown);

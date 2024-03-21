@@ -11,7 +11,7 @@ using OsmSharp.Streams;
 
 namespace Gems.AddressRegistry.OsmClient;
 
-public class Client
+public static class Client
 {
     private const string PathToPbf = "RU-YEV.osm.pbf";
     private const string OutputFilePath = "data.geojson";
