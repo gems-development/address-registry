@@ -22,4 +22,5 @@ internal static class OsmKeywords
     public const string Level4 = "4";
     public const string Level6 = "6";
     public const string Level8 = "8";
+    public const string Level9 = "9";
 }

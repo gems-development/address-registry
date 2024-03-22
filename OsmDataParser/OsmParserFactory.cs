@@ -23,6 +23,9 @@ public static class OsmParserFactory
         if (typeof(TResult) == typeof(Village))
             return (new VillageParser() as IOsmParser<TResult>)!;
         
+        if (typeof(TResult) == typeof(AdminDistrict))
+            return (new AdminDistrictParser() as IOsmParser<TResult>)!;
+        
         if (typeof(TResult) == typeof(Street))
             return (new StreetParser() as IOsmParser<TResult>)!;
         
