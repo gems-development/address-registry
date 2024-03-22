@@ -1,9 +1,9 @@
 ﻿using System.Text.Encodings.Web;
 using System.Text.Json;
 using Gems.AddressRegistry.OsmDataGroupingService;
-using Gems.AddressRegistry.OsmDataGroupingService.Serializers;
 using Gems.AddressRegistry.OsmDataParser;
 using Gems.AddressRegistry.OsmDataParser.Model;
+using Gems.AddressRegistry.OsmDataParser.Serializers;
 using Gems.AddressRegistry.OsmDataParser.Support;
 using GeoJSON.Text.Feature;
 using OsmSharp;
@@ -21,7 +21,7 @@ public static class Client
     {
         var osmData = await GetSortedOsmData();
         
-        var grouper = new ObjectGrouper();
+        var grouper = new ObjectIntersector();
         var areaParser = OsmParserFactory.Create<Area>();
         var districtParser = OsmParserFactory.Create<District>();
         var settlementParser = OsmParserFactory.Create<Settlement>();
@@ -41,7 +41,7 @@ public static class Client
         var areaFeature = areaGeometry!.Features.First();
         features.Add(areaFeature);
         Console.WriteLine("Объект {" + area.Name + "} записался в формат GeoJSON.");
-
+        
         foreach (var district in districts)
         {
             var districtGeoJson = MultiPolygonSerializer.Serialize(district, osmData);
@@ -63,7 +63,7 @@ public static class Client
         foreach (var city in cities)
         {
             var cityGeoJson = MultiPolygonSerializer.Serialize(city, osmData);
-            if (grouper.Group(areaGeoJson, cityGeoJson))
+            if (grouper.Intersects(areaGeoJson, cityGeoJson))
             {
                 var cityGeometry = JsonSerializer.Deserialize<FeatureCollection>(cityGeoJson);
                 var cityFeature = cityGeometry!.Features.First();
@@ -73,7 +73,7 @@ public static class Client
                 foreach (var street in streets)
                 {
                     var streetGeoJson = MultiLineSerializer.Serialize(street, osmData);
-                    if (grouper.Group(cityGeoJson, streetGeoJson))
+                    if (grouper.Intersects(cityGeoJson, streetGeoJson))
                     {
                         var streetGeometry = JsonSerializer.Deserialize<FeatureCollection>(streetGeoJson);
                         var streetFeature = streetGeometry!.Features.First();
@@ -84,7 +84,7 @@ public static class Client
                         foreach (var house in houses)
                         {
                             var houseGeoJson = MultiPolygonSerializer.Serialize(house, osmData);
-                            if (grouper.Group(cityGeoJson, houseGeoJson))
+                            if (grouper.Intersects(cityGeoJson, houseGeoJson))
                             {
                                 var houseGeometry = JsonSerializer.Deserialize<FeatureCollection>(houseGeoJson);
                                 var houseFeature = houseGeometry!.Features.First();

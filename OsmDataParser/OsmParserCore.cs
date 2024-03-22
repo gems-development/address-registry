@@ -3,9 +3,10 @@ using OsmSharp;
 
 namespace Gems.AddressRegistry.OsmDataParser;
 
-internal class OsmParserCore
+internal static class OsmParserCore
 {
-    public static List<Relation> GetDistrictRelations(OsmData osmData, string areaName)
+    // TODO Кэшировать результат
+    internal static List<Relation> GetDistrictRelations(OsmData osmData, string areaName)
     {
         var relations = osmData.Relations;
         var districts = new List<Relation>();
@@ -26,7 +27,7 @@ internal class OsmParserCore
         return districts;
     }
 
-    public static List<Way> MergeByMatchingId(List<Way> osmObjects)
+    internal static List<Way> MergeByMatchingId(List<Way> osmObjects)
     {
         while (true)
         {

@@ -4,9 +4,9 @@ using NetTopologySuite.IO;
 
 namespace Gems.AddressRegistry.OsmDataGroupingService;
 
-public class ObjectGrouper
+public class ObjectIntersector
 {
-    public bool Group(string geoJson1, string geoJson2)
+    public bool Intersects(string geoJson1, string geoJson2)
     {
         var reader = new GeoJsonReader();
         var firstGeometry = reader.Read<FeatureCollection>(geoJson1);

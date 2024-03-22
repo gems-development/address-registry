@@ -6,26 +6,20 @@ using GeoJSON.Text.Feature;
 using GeoJSON.Text.Geometry;
 using OsmSharp;
 
-namespace Gems.AddressRegistry.OsmDataGroupingService.Serializers;
+namespace Gems.AddressRegistry.OsmDataParser.Serializers;
 
-public class MultiLineSerializer
+public static class MultiPolygonSerializer
 {
     private static readonly Dictionary<long, Node> NodeCache = new Dictionary<long, Node>();
     
     public static string Serialize(RealObject realObject, OsmData osmData)
     {
-        if (realObject == null || realObject.GetType() == typeof(Area)
-                               || realObject.GetType() == typeof(District)
-                               || realObject.GetType() == typeof(Settlement)
-                               || realObject.GetType() == typeof(City)
-                               || realObject.GetType() == typeof(Village)
-                               || realObject.GetType() == typeof(AdminDistrict)
-                               || realObject.GetType() == typeof(House))
+        if (realObject == null || realObject.GetType() == typeof(Street))
             throw new ArgumentException("Object can not be serialized");
         
         var features = new List<Feature>();
         var ways = realObject.Components;
-        var totalStreet = new List<LineString>();
+        var totalBorder = new List<List<LineString>>();
 
         foreach (var way in ways)
         {
@@ -45,29 +39,35 @@ public class MultiLineSerializer
                     NodeCache[nodeId] = wayNode;
                 }
             }
-            
-            if (wayNodes.Count < 2)
-                continue;
 
             if (wayNodes.Any())
             {
+                var firstNode = wayNodes.First();
+                wayNodes.Add(firstNode);
+
                 foreach (var node in wayNodes)
                     coordinates.Add(new Position((double)node.Latitude!, (double)node.Longitude!));
             }
-            
-            var streetPart = new LineString(coordinates);
-            totalStreet.Add(streetPart);
+
+            var borderPart = new List<LineString> { new LineString(coordinates) };
+            totalBorder.Add(borderPart);
         }
 
         var properties = new Dictionary<string, object>
         {
             { "ObjectName", realObject.Name }
         };
-        
-        
-        var multiLine = new MultiLineString(totalStreet);
 
-        var feature = new Feature(multiLine, properties);
+        var polygonList = new List<Polygon>();
+        foreach (var borderPart in totalBorder)
+        {
+            var polygon = new Polygon(borderPart);
+            polygonList.Add(polygon);
+        }
+
+        var multiPolygon = new MultiPolygon(polygonList);
+
+        var feature = new Feature(multiPolygon, properties);
         features.Add(feature);
 
         var featureCollection = new FeatureCollection(features);

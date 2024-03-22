@@ -6,20 +6,21 @@ using GeoJSON.Text.Feature;
 using GeoJSON.Text.Geometry;
 using OsmSharp;
 
-namespace Gems.AddressRegistry.OsmDataGroupingService.Serializers;
+namespace Gems.AddressRegistry.OsmDataParser.Serializers;
 
-public class MultiPolygonSerializer
+public static class MultiLineSerializer
 {
     private static readonly Dictionary<long, Node> NodeCache = new Dictionary<long, Node>();
     
     public static string Serialize(RealObject realObject, OsmData osmData)
     {
-        if (realObject == null || realObject.GetType() == typeof(Street))
+        // TODO Собрать классы под единым интерфейсом
+        if (realObject is not Street)
             throw new ArgumentException("Object can not be serialized");
         
         var features = new List<Feature>();
         var ways = realObject.Components;
-        var totalBorder = new List<List<LineString>>();
+        var totalStreet = new List<LineString>();
 
         foreach (var way in ways)
         {
@@ -39,35 +40,29 @@ public class MultiPolygonSerializer
                     NodeCache[nodeId] = wayNode;
                 }
             }
+            
+            if (wayNodes.Count < 2)
+                continue;
 
             if (wayNodes.Any())
             {
-                var firstNode = wayNodes.First();
-                wayNodes.Add(firstNode);
-
                 foreach (var node in wayNodes)
                     coordinates.Add(new Position((double)node.Latitude!, (double)node.Longitude!));
             }
-
-            var borderPart = new List<LineString> { new LineString(coordinates) };
-            totalBorder.Add(borderPart);
+            
+            var streetPart = new LineString(coordinates);
+            totalStreet.Add(streetPart);
         }
 
         var properties = new Dictionary<string, object>
         {
             { "ObjectName", realObject.Name }
         };
+        
+        
+        var multiLine = new MultiLineString(totalStreet);
 
-        var polygonList = new List<Polygon>();
-        foreach (var borderPart in totalBorder)
-        {
-            var polygon = new Polygon(borderPart);
-            polygonList.Add(polygon);
-        }
-
-        var multiPolygon = new MultiPolygon(polygonList);
-
-        var feature = new Feature(multiPolygon, properties);
+        var feature = new Feature(multiLine, properties);
         features.Add(feature);
 
         var featureCollection = new FeatureCollection(features);
