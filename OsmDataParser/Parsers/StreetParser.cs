@@ -1,5 +1,6 @@
 using Gems.AddressRegistry.OsmDataParser.Interfaces;
 using Gems.AddressRegistry.OsmDataParser.Model;
+using Gems.AddressRegistry.OsmDataParser.Serializers;
 using Gems.AddressRegistry.OsmDataParser.Support;
 using NetTopologySuite.Geometries;
 using OsmSharp;
@@ -10,6 +11,7 @@ internal sealed class StreetParser : IOsmParser<Street>
 {
     private const float BufferRadius = 0.045F; // 5км
     private readonly Dictionary<long, Node> _nodeCache = new Dictionary<long, Node>();
+    private readonly IOsmToGeoJsonConverter _converter = new MultiLineSerializer();
     
     public Street Parse(OsmData osmData, string streetName, string? districtName = null)
     {
@@ -47,8 +49,12 @@ internal sealed class StreetParser : IOsmParser<Street>
 
             if (group.Count == 1)
             {
-                var resultStreet = new Street { Name = ObjectNameCleaner.Clean(street.Key) };
-                resultStreet.Components.Add(group.First());
+                var cleanedName = ObjectNameCleaner.Clean(street.Key);
+                var resultStreet = new Street
+                {
+                    Name = cleanedName,
+                    GeoJson = _converter.Serialize(new List<Way> { group.First() }, cleanedName, osmData)
+                };
                 streetList.Add(resultStreet);
             }
             
@@ -58,9 +64,9 @@ internal sealed class StreetParser : IOsmParser<Street>
 
                 for (int i = 0; i < osmObjects.Count; i++)
                 {
+                    var streetComponents = new List<Way>();
                     var osmObject = osmObjects[i];
-                    var newStreet = new Street { Name = ObjectNameCleaner.Clean(street.Key) };
-                    newStreet.Components.Add(osmObject);
+                    streetComponents.Add(osmObject);
 
                     for (int j = i + 1; j < osmObjects.Count; j++)
                     {
@@ -77,7 +83,7 @@ internal sealed class StreetParser : IOsmParser<Street>
 
                             if (buffer.Contains(point2))
                             {
-                                newStreet.Components.Add(otherOsmObject);
+                                streetComponents.Add(otherOsmObject);
                                 osmObjects.RemoveAt(j);
                                 j--;
                             }
@@ -86,6 +92,14 @@ internal sealed class StreetParser : IOsmParser<Street>
 
                     osmObjects.RemoveAt(i);
                     i--;
+
+                    var cleanedName = ObjectNameCleaner.Clean(street.Key);
+                    var newStreet = new Street
+                    {
+                        Name = cleanedName,
+                        GeoJson = _converter.Serialize(streetComponents, cleanedName, osmData)
+                    };
+                    
                     streetList.Add(newStreet);
                     Console.WriteLine("Объект {" + newStreet.Name + "} добавлен в коллекцию улиц.");
                 }

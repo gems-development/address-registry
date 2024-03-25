@@ -5,9 +5,14 @@ namespace Gems.AddressRegistry.OsmDataParser.Tests;
 
 internal static class TestHelper
 {
-    public static Node CreateNode(long id)
+    public static Node CreateNode(long id, double lat, double lon)
     {
-        return new Node { Id = id };
+        return new Node
+        {
+            Id = id,
+            Latitude = lat,
+            Longitude = lon
+        };
     }
 
     public static Way CreateWay(long id, TagsCollection tags, long[] nodeIds)

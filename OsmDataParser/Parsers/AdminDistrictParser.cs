@@ -1,11 +1,13 @@
 using Gems.AddressRegistry.OsmDataParser.Interfaces;
 using Gems.AddressRegistry.OsmDataParser.Model;
+using Gems.AddressRegistry.OsmDataParser.Serializers;
 using Gems.AddressRegistry.OsmDataParser.Support;
 
 namespace Gems.AddressRegistry.OsmDataParser.Parsers;
 
 public class AdminDistrictParser : IOsmParser<AdminDistrict>
 {
+    private readonly IOsmToGeoJsonConverter _converter = new MultiPolygonSerializer();
     public AdminDistrict Parse(OsmData osmData, string adminDistrictName, string districtName = null!)
     {
         var resultAdminDistrict = new AdminDistrict();
@@ -32,10 +34,16 @@ public class AdminDistrictParser : IOsmParser<AdminDistrict>
                 && relation.Tags[OsmKeywords.Boundary] == OsmKeywords.Administrative 
                 && relation.Tags[OsmKeywords.AdminLevel] == OsmKeywords.Level9)
             {
-                var adminDistrict = new AdminDistrict { Name = ObjectNameCleaner.Clean(relation.Tags[OsmKeywords.Name]) };
                 var relationMemberIds = relation.Members.Select(o => o.Id).ToHashSet();
                 var relationWays = osmData.Ways.Where(way => relationMemberIds.Contains(way.Id ?? -1)).ToList();
-                adminDistrict.Components = OsmParserCore.MergeByMatchingId(relationWays);
+                var components = OsmParserCore.MergeByMatchingId(relationWays);
+                
+                var cleanedName = ObjectNameCleaner.Clean(relation.Tags[OsmKeywords.Name]);
+                var adminDistrict = new AdminDistrict
+                {
+                    Name = cleanedName,
+                    GeoJson = _converter.Serialize(components, cleanedName, osmData)
+                };
                 
                 adminDistricts.Add(adminDistrict);
                 Console.WriteLine("Объект {" + adminDistrict.Name + "} добавлен " +

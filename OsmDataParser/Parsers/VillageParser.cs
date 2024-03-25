@@ -1,5 +1,6 @@
 using Gems.AddressRegistry.OsmDataParser.Interfaces;
 using Gems.AddressRegistry.OsmDataParser.Model;
+using Gems.AddressRegistry.OsmDataParser.Serializers;
 using Gems.AddressRegistry.OsmDataParser.Support;
 using OsmSharp;
 
@@ -7,6 +8,7 @@ namespace Gems.AddressRegistry.OsmDataParser.Parsers;
 
 public class VillageParser : IOsmParser<Village>
 {
+    private readonly IOsmToGeoJsonConverter _converter = new MultiPolygonSerializer();
     public Village Parse(OsmData osmData, string villageName, string? districtName = null)
     {
         var resultVillage = new Village();
@@ -33,10 +35,11 @@ public class VillageParser : IOsmParser<Village>
                 && (way.Tags[OsmKeywords.Place] == OsmKeywords.Village
                 || way.Tags[OsmKeywords.Place] == OsmKeywords.Hamlet))
             {
+                var cleanedName = ObjectNameCleaner.Clean(way.Tags[OsmKeywords.Name]);
                 var resultTown = new Village
                 {
-                    Name = ObjectNameCleaner.Clean(way.Tags[OsmKeywords.Name]),
-                    Components = new List<Way> { way }
+                    Name = cleanedName,
+                    GeoJson = _converter.Serialize(new List<Way> { way }, cleanedName, osmData)
                 };
                 villages.Add(resultTown);
                 Console.WriteLine("Объект {" + resultTown.Name + "} добавлен в коллекцию сёл.");
@@ -50,10 +53,16 @@ public class VillageParser : IOsmParser<Village>
                 && (relation.Tags[OsmKeywords.Place] == OsmKeywords.Village
                 || relation.Tags[OsmKeywords.Place] == OsmKeywords.Hamlet))
             {
-                var resultVillage = new Village { Name = ObjectNameCleaner.Clean(relation.Tags[OsmKeywords.Name]) };
                 var districtMemberIds = relation.Members.Select(o => o.Id).ToHashSet();
                 var relationWays = osmData.Ways.Where(way => districtMemberIds.Contains(way.Id ?? -1)).ToList();
-                resultVillage.Components = OsmParserCore.MergeByMatchingId(relationWays);
+                var components = OsmParserCore.MergeByMatchingId(relationWays);
+                
+                var cleanedName = ObjectNameCleaner.Clean(relation.Tags[OsmKeywords.Name]);
+                var resultVillage = new Village
+                {
+                    Name = cleanedName,
+                    GeoJson = _converter.Serialize(components, cleanedName, osmData)
+                };
                 
                 villages.Add(resultVillage);
                 Console.WriteLine("Объект {" + resultVillage.Name + "} добавлен в коллекцию сёл.");

@@ -1,6 +1,6 @@
 using System.Text.Encodings.Web;
 using System.Text.Json;
-using Gems.AddressRegistry.OsmDataParser.Model;
+using Gems.AddressRegistry.OsmDataParser.Interfaces;
 using Gems.AddressRegistry.OsmDataParser.Support;
 using GeoJSON.Text.Feature;
 using GeoJSON.Text.Geometry;
@@ -8,43 +8,39 @@ using OsmSharp;
 
 namespace Gems.AddressRegistry.OsmDataParser.Serializers;
 
-public static class MultiPolygonSerializer
+public class MultiPolygonSerializer : IOsmToGeoJsonConverter
 {
-    private static readonly Dictionary<long, Node> NodeCache = new Dictionary<long, Node>();
+    private readonly Dictionary<long, Node> _nodeCache = new Dictionary<long, Node>();
     
-    public static string Serialize(RealObject realObject, OsmData osmData)
+    public string Serialize(List<Way> components, string objectName, OsmData osmData)
     {
-        if (realObject == null || realObject.GetType() == typeof(Street))
-            throw new ArgumentException("Object can not be serialized");
-        
         var features = new List<Feature>();
-        var ways = realObject.Components;
         var totalBorder = new List<List<LineString>>();
 
-        foreach (var way in ways)
+        foreach (var way in components)
         {
             var coordinates = new List<Position>();
             var wayNodes = new List<Node>();
             
             foreach (var nodeId in way.Nodes)
             {
-                if (NodeCache.TryGetValue(nodeId, out var cachedNode))
-                    wayNodes.Add(cachedNode);
-            
-                var wayNode = osmData.Nodes.FirstOrDefault(node => node.Id == nodeId);
-
-                if (wayNode != null)
+                if (_nodeCache.TryGetValue(nodeId, out var cachedNode))
                 {
-                    wayNodes.Add(wayNode);
-                    NodeCache[nodeId] = wayNode;
+                    wayNodes.Add(cachedNode);
+                }
+                else
+                {
+                    var wayNode = osmData.Nodes.FirstOrDefault(node => node.Id == nodeId);
+                    if (wayNode != null)
+                    {
+                        wayNodes.Add(wayNode);
+                        _nodeCache[nodeId] = wayNode;
+                    }
                 }
             }
 
             if (wayNodes.Any())
             {
-                var firstNode = wayNodes.First();
-                wayNodes.Add(firstNode);
-
                 foreach (var node in wayNodes)
                     coordinates.Add(new Position((double)node.Latitude!, (double)node.Longitude!));
             }
@@ -55,7 +51,7 @@ public static class MultiPolygonSerializer
 
         var properties = new Dictionary<string, object>
         {
-            { "ObjectName", realObject.Name }
+            { "ObjectName", objectName }
         };
 
         var polygonList = new List<Polygon>();

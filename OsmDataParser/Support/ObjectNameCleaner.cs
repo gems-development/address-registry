@@ -11,7 +11,7 @@ internal static class ObjectNameCleaner
         var currentDirectory = Directory.GetCurrentDirectory();
         var projectDirectory = Directory.GetParent(currentDirectory)?.Parent?.Parent?.FullName;
 
-        Configuration =new ConfigurationBuilder()
+        Configuration = new ConfigurationBuilder()
             .SetBasePath(projectDirectory!)
             .AddJsonFile("appsettings.json")
             .Build();
