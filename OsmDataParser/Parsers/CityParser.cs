@@ -1,6 +1,6 @@
+using Gems.AddressRegistry.OsmDataParser.Factories;
 using Gems.AddressRegistry.OsmDataParser.Interfaces;
 using Gems.AddressRegistry.OsmDataParser.Model;
-using Gems.AddressRegistry.OsmDataParser.Serializers;
 using Gems.AddressRegistry.OsmDataParser.Support;
 using OsmSharp;
 
@@ -8,8 +8,6 @@ namespace Gems.AddressRegistry.OsmDataParser.Parsers;
 
 internal sealed class CityParser : IOsmParser<City>
 {
-    private readonly IOsmToGeoJsonConverter _converter = new MultiPolygonSerializer();
-    
     public City Parse(OsmData osmData, string cityName, string? districtName = null)
     {
         var resultCity = new City();
@@ -35,11 +33,12 @@ internal sealed class CityParser : IOsmParser<City>
                 && way.Tags.ContainsKey(OsmKeywords.Name)
                 && way.Tags[OsmKeywords.Place] == OsmKeywords.Town)
             {
+                var converter = OsmToGeoJsonConverterFactory.Create<City>();
                 var cleanedName = ObjectNameCleaner.Clean(way.Tags[OsmKeywords.Name]);
                 var resultTown = new City
                 {
                     Name = cleanedName,
-                    GeoJson = _converter.Serialize(new List<Way> { way }, cleanedName, osmData)
+                    GeoJson = converter.Serialize(new List<Way> { way }, cleanedName, osmData)
                 };
                 cities.Add(resultTown);
                 Console.WriteLine("Объект {" + resultTown.Name + "} добавлен в коллекцию городов.");
@@ -57,11 +56,12 @@ internal sealed class CityParser : IOsmParser<City>
                 var relationWays = osmData.Ways.Where(way => districtMemberIds.Contains(way.Id ?? -1)).ToList();
                 var components = OsmParserCore.MergeByMatchingId(relationWays);
                 
+                var converter = OsmToGeoJsonConverterFactory.Create<City>();
                 var cleanedName = ObjectNameCleaner.Clean(relation.Tags[OsmKeywords.Name]);
                 var resultCity = new City
                 {
                     Name = cleanedName,
-                    GeoJson = _converter.Serialize(components, cleanedName, osmData)
+                    GeoJson = converter.Serialize(components, cleanedName, osmData)
                 };
                 
                 cities.Add(resultCity);

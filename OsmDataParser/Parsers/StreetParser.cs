@@ -1,6 +1,6 @@
+using Gems.AddressRegistry.OsmDataParser.Factories;
 using Gems.AddressRegistry.OsmDataParser.Interfaces;
 using Gems.AddressRegistry.OsmDataParser.Model;
-using Gems.AddressRegistry.OsmDataParser.Serializers;
 using Gems.AddressRegistry.OsmDataParser.Support;
 using NetTopologySuite.Geometries;
 using OsmSharp;
@@ -11,7 +11,6 @@ internal sealed class StreetParser : IOsmParser<Street>
 {
     private const float BufferRadius = 0.045F; // 5км
     private readonly Dictionary<long, Node> _nodeCache = new Dictionary<long, Node>();
-    private readonly IOsmToGeoJsonConverter _converter = new MultiLineSerializer();
     
     public Street Parse(OsmData osmData, string streetName, string? districtName = null)
     {
@@ -49,11 +48,12 @@ internal sealed class StreetParser : IOsmParser<Street>
 
             if (group.Count == 1)
             {
+                var converter = OsmToGeoJsonConverterFactory.Create<Street>();
                 var cleanedName = ObjectNameCleaner.Clean(street.Key);
                 var resultStreet = new Street
                 {
                     Name = cleanedName,
-                    GeoJson = _converter.Serialize(new List<Way> { group.First() }, cleanedName, osmData)
+                    GeoJson = converter.Serialize(new List<Way> { group.First() }, cleanedName, osmData)
                 };
                 streetList.Add(resultStreet);
             }
@@ -93,11 +93,12 @@ internal sealed class StreetParser : IOsmParser<Street>
                     osmObjects.RemoveAt(i);
                     i--;
 
+                    var converter = OsmToGeoJsonConverterFactory.Create<Street>();
                     var cleanedName = ObjectNameCleaner.Clean(street.Key);
                     var newStreet = new Street
                     {
                         Name = cleanedName,
-                        GeoJson = _converter.Serialize(streetComponents, cleanedName, osmData)
+                        GeoJson = converter.Serialize(streetComponents, cleanedName, osmData)
                     };
                     
                     streetList.Add(newStreet);

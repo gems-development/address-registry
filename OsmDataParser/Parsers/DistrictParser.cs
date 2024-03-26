@@ -1,13 +1,12 @@
+using Gems.AddressRegistry.OsmDataParser.Factories;
 using Gems.AddressRegistry.OsmDataParser.Interfaces;
 using Gems.AddressRegistry.OsmDataParser.Model;
-using Gems.AddressRegistry.OsmDataParser.Serializers;
 using Gems.AddressRegistry.OsmDataParser.Support;
 
 namespace Gems.AddressRegistry.OsmDataParser.Parsers;
 
 internal sealed class DistrictParser : IOsmParser<District>
 {
-    private readonly IOsmToGeoJsonConverter _converter = new MultiPolygonSerializer();
     public District Parse(OsmData osmData, string areaName, string districtName)
     {
         var resultDistrict = new District();
@@ -32,11 +31,12 @@ internal sealed class DistrictParser : IOsmParser<District>
             var relationWays = osmData.Ways.Where(way => districtMemberIds.Contains(way.Id ?? -1)).ToList();
             var components = OsmParserCore.MergeByMatchingId(relationWays);
             
+            var converter = OsmToGeoJsonConverterFactory.Create<District>();
             var cleanedName = ObjectNameCleaner.Clean(district.Tags[OsmKeywords.Name]);
             var resultDistrict = new District
             {
                 Name = cleanedName,
-                GeoJson = _converter.Serialize(components, cleanedName, osmData)
+                GeoJson = converter.Serialize(components, cleanedName, osmData)
             };
         
             districtList.Add(resultDistrict);

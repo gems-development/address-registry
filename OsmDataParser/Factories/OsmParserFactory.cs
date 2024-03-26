@@ -2,7 +2,7 @@ using Gems.AddressRegistry.OsmDataParser.Interfaces;
 using Gems.AddressRegistry.OsmDataParser.Model;
 using Gems.AddressRegistry.OsmDataParser.Parsers;
 
-namespace Gems.AddressRegistry.OsmDataParser;
+namespace Gems.AddressRegistry.OsmDataParser.Factories;
 
 public static class OsmParserFactory
 {
