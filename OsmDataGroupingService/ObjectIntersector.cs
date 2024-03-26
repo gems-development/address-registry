@@ -1,13 +1,12 @@
 using Gems.AddressRegistry.OsmDataParser.Model;
 using NetTopologySuite.Features;
-using NetTopologySuite.Geometries;
 using NetTopologySuite.IO;
 
 namespace Gems.AddressRegistry.OsmDataGroupingService;
 
-public class ObjectIntersector
+public static class ObjectIntersector
 {
-    public bool Intersects(RealObject realObject1, RealObject realObject2)
+    public static bool Intersects(RealObject realObject1, RealObject realObject2)
     {
         var reader = new GeoJsonReader();
         var firstGeometry = reader.Read<FeatureCollection>(realObject1.GeoJson);
