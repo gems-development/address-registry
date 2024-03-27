@@ -52,6 +52,7 @@ internal sealed class StreetParser : IOsmParser<Street>
                 var cleanedName = ObjectNameCleaner.Clean(street.Key);
                 var resultStreet = new Street
                 {
+                    Id = group.First().Id,
                     Name = cleanedName,
                     GeoJson = converter.Serialize(new List<Way> { group.First() }, cleanedName, osmData)
                 };
@@ -62,13 +63,13 @@ internal sealed class StreetParser : IOsmParser<Street>
             {
                 var osmObjects = OsmParserCore.MergeByMatchingId(group);
 
-                for (int i = 0; i < osmObjects.Count; i++)
+                for (var i = 0; i < osmObjects.Count; i++)
                 {
                     var streetComponents = new List<Way>();
                     var osmObject = osmObjects[i];
                     streetComponents.Add(osmObject);
 
-                    for (int j = i + 1; j < osmObjects.Count; j++)
+                    for (var j = i + 1; j < osmObjects.Count; j++)
                     {
                         var otherOsmObject = osmObjects[j];
 
@@ -89,20 +90,21 @@ internal sealed class StreetParser : IOsmParser<Street>
                             }
                         }
                     }
-
-                    osmObjects.RemoveAt(i);
-                    i--;
-
+                    
                     var converter = OsmToGeoJsonConverterFactory.Create<Street>();
                     var cleanedName = ObjectNameCleaner.Clean(street.Key);
                     var newStreet = new Street
                     {
+                        Id = osmObjects[i].Id,
                         Name = cleanedName,
                         GeoJson = converter.Serialize(streetComponents, cleanedName, osmData)
                     };
                     
                     streetList.Add(newStreet);
                     Console.WriteLine("Объект {" + newStreet.Name + "} добавлен в коллекцию улиц.");
+
+                    osmObjects.RemoveAt(i);
+                    i--;
                 }
             }
         }

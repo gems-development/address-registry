@@ -21,7 +21,7 @@ public class HouseParser : IOsmParser<House>
         return resultHouse;
     }
 
-    public IReadOnlyCollection<House> ParseAll(OsmData osmData, string streetName)
+    public IReadOnlyCollection<House> ParseAll(OsmData osmData, string streetName = null!)
     {
         var ways = osmData.Ways;
         var housesList = new List<House>();
@@ -30,13 +30,13 @@ public class HouseParser : IOsmParser<House>
         {
             if (way.Tags.ContainsKey(OsmKeywords.Building) && 
                 way.Tags.ContainsKey(OsmKeywords.StreetName) &&
-                way.Tags.ContainsKey(OsmKeywords.HouseNumber) &&
-                way.Tags[OsmKeywords.StreetName] == streetName)
+                way.Tags.ContainsKey(OsmKeywords.HouseNumber))
             {
                 var converter = OsmToGeoJsonConverterFactory.Create<House>();
                 var cleanedName = ObjectNameCleaner.Clean(way.Tags[OsmKeywords.StreetName]);
                 var resultHouse = new House
                 {
+                    Id = way.Id,
                     Name = cleanedName,
                     Number = way.Tags[OsmKeywords.HouseNumber],
                     GeoJson = converter.Serialize(new List<Way> { way }, cleanedName, osmData)

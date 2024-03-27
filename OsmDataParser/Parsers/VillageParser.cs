@@ -38,6 +38,7 @@ public class VillageParser : IOsmParser<Village>
                 var cleanedName = ObjectNameCleaner.Clean(way.Tags[OsmKeywords.Name]);
                 var resultTown = new Village
                 {
+                    Id = way.Id,
                     Name = cleanedName,
                     GeoJson = converter.Serialize(new List<Way> { way }, cleanedName, osmData)
                 };
@@ -61,6 +62,7 @@ public class VillageParser : IOsmParser<Village>
                 var cleanedName = ObjectNameCleaner.Clean(relation.Tags[OsmKeywords.Name]);
                 var resultVillage = new Village
                 {
+                    Id = relation.Id,
                     Name = cleanedName,
                     GeoJson = converter.Serialize(components, cleanedName, osmData)
                 };

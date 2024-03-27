@@ -35,6 +35,7 @@ internal sealed class DistrictParser : IOsmParser<District>
             var cleanedName = ObjectNameCleaner.Clean(district.Tags[OsmKeywords.Name]);
             var resultDistrict = new District
             {
+                Id = district.Id,
                 Name = cleanedName,
                 GeoJson = converter.Serialize(components, cleanedName, osmData)
             };

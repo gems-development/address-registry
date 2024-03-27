@@ -41,6 +41,7 @@ public class AdminDistrictParser : IOsmParser<AdminDistrict>
                 var cleanedName = ObjectNameCleaner.Clean(relation.Tags[OsmKeywords.Name]);
                 var adminDistrict = new AdminDistrict
                 {
+                    Id = relation.Id,
                     Name = cleanedName,
                     GeoJson = converter.Serialize(components, cleanedName, osmData)
                 };

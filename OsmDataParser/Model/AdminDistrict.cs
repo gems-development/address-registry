@@ -1,5 +1,3 @@
 namespace Gems.AddressRegistry.OsmDataParser.Model;
 
-public class AdminDistrict : RealObject
-{
-}
+public class AdminDistrict : RealObject { }

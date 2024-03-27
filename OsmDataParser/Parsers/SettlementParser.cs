@@ -40,7 +40,9 @@ internal sealed class SettlementParser : IOsmParser<Settlement>
                 var cleanedName = ObjectNameCleaner.Clean(settlement.Tags[OsmKeywords.Name]);
                 var resultSettlement = new Settlement
                 {
+                    Id = settlement.Id,
                     Name = cleanedName,
+                    DistrictId = district.Id,
                     GeoJson = converter.Serialize(components, cleanedName, osmData)
                 };
         

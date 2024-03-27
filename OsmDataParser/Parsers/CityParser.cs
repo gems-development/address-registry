@@ -37,6 +37,7 @@ internal sealed class CityParser : IOsmParser<City>
                 var cleanedName = ObjectNameCleaner.Clean(way.Tags[OsmKeywords.Name]);
                 var resultTown = new City
                 {
+                    Id = way.Id,
                     Name = cleanedName,
                     GeoJson = converter.Serialize(new List<Way> { way }, cleanedName, osmData)
                 };
@@ -60,6 +61,7 @@ internal sealed class CityParser : IOsmParser<City>
                 var cleanedName = ObjectNameCleaner.Clean(relation.Tags[OsmKeywords.Name]);
                 var resultCity = new City
                 {
+                    Id = relation.Id,
                     Name = cleanedName,
                     GeoJson = converter.Serialize(components, cleanedName, osmData)
                 };

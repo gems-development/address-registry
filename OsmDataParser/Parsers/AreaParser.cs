@@ -22,6 +22,7 @@ public class AreaParser : IOsmParser<Area>
                 relation.Tags.ContainsKey(OsmKeywords.Name) &&
                 relation.Tags[OsmKeywords.Name] == areaName)
             {
+                resultArea.Id = relation.Id;
                 var areaMemberIds = relation.Members.Select(o => o.Id).ToHashSet();
                 var areaWays = osmData.Ways.Where(rel => areaMemberIds.Contains(rel.Id ?? -1)).ToList();
                 var components = OsmParserCore.MergeByMatchingId(areaWays);
