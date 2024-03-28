@@ -17,7 +17,7 @@ namespace Gems.DataMergeServices.Services
         Dictionary<int, Settlement> settlementDictionary = new Dictionary<int, Settlement>();
         Dictionary<int, PlaningStructureElement> planingStructureElementDictionary = new Dictionary<int, PlaningStructureElement>();
         Dictionary<int, RoadNetworkElement> roadNetworkElementDictionary = new Dictionary<int, RoadNetworkElement>();
-        Dictionary<int, Building> buildingList = new Dictionary<int, Building>();
+        Dictionary<int, Building> buildingDictionary = new Dictionary<int, Building>();
 
         Dictionary<int, int> AdmHierarchy = new Dictionary<int, int>();
         Dictionary<int, int> MunHierarchy = new Dictionary<int, int>();
@@ -231,7 +231,8 @@ namespace Gems.DataMergeServices.Services
                             buildingDataSource.Id = reader.GetAttribute("OBJECTID");
                             buildingDataSource.SourceType = AddressRegistry.Entities.Enums.SourceType.Fias;
                             building.DataSources.Add(buildingDataSource);
-                            buildingList.Add(int.Parse(buildingDataSource.Id), building);
+                            if (!buildingDictionary.TryAdd(int.Parse(buildingDataSource.Id), building))
+                                Debug.WriteLine($"Не удалось добавить здание с id: {int.Parse(buildingDataSource.Id)}" );
                             Debug.WriteLine(building.Number);
 
                             Debug.WriteLine($"Start Element {reader.GetAttribute("OBJECTGUID")} {reader.GetAttribute("NAME")}");
@@ -338,7 +339,7 @@ namespace Gems.DataMergeServices.Services
         public List<Address> BuildAddresses()
         {
             List<Address> addresses = new List<Address>();
-            foreach(var item in buildingList)
+            foreach(var item in buildingDictionary)
             {
                 var address = new Address();
                 address.Building = item.Value;

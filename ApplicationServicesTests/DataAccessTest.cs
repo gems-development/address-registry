@@ -27,8 +27,8 @@ namespace ApplicationServices.Tests
             address.Territory = new Territory();
             address.Territory.Name = "Terrytory";
             Address[] addresses = new Address[] { address };
-            await dataImportService.AddressImportAsync(addresses);
-            await dataImportService.AddressImportAsync(addresses);
+            await dataImportService.ImportAddressAsync(addresses);
+            await dataImportService.ImportAddressAsync(addresses);
 
         }
 

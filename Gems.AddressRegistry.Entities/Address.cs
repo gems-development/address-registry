@@ -15,9 +15,7 @@ namespace Gems.AddressRegistry.Entities
         public virtual Settlement? Settlement { get; set; }
         public virtual PlaningStructureElement? PlaningStructureElement { get; set; }
         public virtual RoadNetworkElement? RoadNetworkElement { get; set; }
-        public virtual LandPlot? LandPlot { get; set; }
         public virtual Building? Building { get; set; }
-        public virtual Space? Space { get; set; }
 
     }
 }

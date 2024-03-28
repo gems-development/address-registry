@@ -14,11 +14,10 @@ namespace Gems.ApplicationServices.UseCases.Requests.GetAddressById
         public String? NameOfPlaningStructureElement { get; set; }
         public String? NameOfRoadNetworkElement { get; set; }
         public String? TypeOfRoadNetworkElement { get; set; }
-        public String? NameOfLandPlot { get; set; }
+        
         public String? NumberOfBuilding { get; set; }
         public String? TypeOfBuilding { get; set; }
-        public String? NumberOfSpace { get; set; }
-        public String? TypeOfSpace { get; set; }
+        
 
         public AddressResponseDto(Address address)
         {
@@ -32,11 +31,10 @@ namespace Gems.ApplicationServices.UseCases.Requests.GetAddressById
             NameOfPlaningStructureElement = address.PlaningStructureElement?.Name;
             NameOfRoadNetworkElement = address.RoadNetworkElement?.Name;
             TypeOfRoadNetworkElement = address.RoadNetworkElement?.RoadNetworkElementType.ToString();
-            NameOfLandPlot = address.LandPlot?.Name;
+            
             NumberOfBuilding = address.Building?.Number;
             TypeOfBuilding = address.Building?.BuildingType.ToString();
-            NumberOfSpace = address.Space?.Number;
-            TypeOfSpace = address.Space?.SpaceType.ToString();
+            
         }
     }
 
