@@ -1,5 +1,7 @@
 ﻿using Gems.AddressRegistry.Entities.Common;
 using Gems.AddressRegistry.Entities.DataSources;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text;
 
 namespace Gems.AddressRegistry.Entities
 {
@@ -16,6 +18,26 @@ namespace Gems.AddressRegistry.Entities
         public virtual PlaningStructureElement? PlaningStructureElement { get; set; }
         public virtual RoadNetworkElement? RoadNetworkElement { get; set; }
         public virtual Building? Building { get; set; }
+
+        [NotMapped]
+        public virtual String? NormalizedString { get; set; }
+
+        public virtual void BuildNormalizedString()
+        {
+            StringBuilder builder = new StringBuilder("");
+            builder.Append($"{Region.Name}#");
+            if (Territory != null)
+                builder.Append($"{Territory.Name}#");
+            if (City != null)
+                builder.Append($"{City.Name}#");
+            if (Settlement != null)
+                builder.Append($"{Settlement.Name}#");
+            if (RoadNetworkElement != null)
+                builder.Append($"{RoadNetworkElement.Name}#");
+            if (Building != null)
+                builder.Append($"{Building.Number}");
+            this.NormalizedString = builder.ToString();
+        }
 
     }
 }
