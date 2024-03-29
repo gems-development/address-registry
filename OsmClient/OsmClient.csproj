@@ -9,6 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <None Include="bin\Debug\net6.0\appsettings.json" />
         <None Include="bin\Debug\net6.0\crimean.osm.pbf"/>
     </ItemGroup>
 
@@ -18,6 +19,7 @@
         <Content Include="bin\Debug\net6.0\export.xml"/>
         <Content Include="bin\Debug\net6.0\export_01.pbf"/>
         <Content Include="bin\Debug\net6.0\map.osm"/>
+        <Content Include="bin\Debug\net6.0\RU-YEV.osm.pbf" />
     </ItemGroup>
 
 
@@ -31,11 +33,6 @@
     <ItemGroup>
         <ProjectReference Include="..\OsmDataGroupingService\OsmDataGroupingService.csproj" />
         <ProjectReference Include="..\OsmDataParser\OsmDataParser.csproj"/>
-    </ItemGroup>
-
-
-    <ItemGroup>
-        <Folder Include="bin\Debug\net6.0\"/>
     </ItemGroup>
 
 

@@ -1,3 +1,4 @@
+using Gems.AddressRegistry.OsmDataParser.Factories;
 using Gems.AddressRegistry.OsmDataParser.Interfaces;
 using Gems.AddressRegistry.OsmDataParser.Model;
 using Gems.AddressRegistry.OsmDataParser.Support;
@@ -32,10 +33,13 @@ internal sealed class CityParser : IOsmParser<City>
                 && way.Tags.ContainsKey(OsmKeywords.Name)
                 && way.Tags[OsmKeywords.Place] == OsmKeywords.Town)
             {
+                var converter = OsmToGeoJsonConverterFactory.Create<City>();
+                var cleanedName = ObjectNameCleaner.Clean(way.Tags[OsmKeywords.Name]);
                 var resultTown = new City
                 {
-                    Name = way.Tags[OsmKeywords.StreetName],
-                    Components = new List<Way> { way }
+                    Id = way.Id,
+                    Name = cleanedName,
+                    GeoJson = converter.Serialize(new List<Way> { way }, cleanedName, osmData)
                 };
                 cities.Add(resultTown);
                 Console.WriteLine("Объект {" + resultTown.Name + "} добавлен в коллекцию городов.");
@@ -49,10 +53,18 @@ internal sealed class CityParser : IOsmParser<City>
                 && (relation.Tags[OsmKeywords.Place] == OsmKeywords.City
                 || relation.Tags[OsmKeywords.Place] == OsmKeywords.Town))
             {
-                var resultCity = new City { Name = relation.Tags[OsmKeywords.Name] };
                 var districtMemberIds = relation.Members.Select(o => o.Id).ToHashSet();
                 var relationWays = osmData.Ways.Where(way => districtMemberIds.Contains(way.Id ?? -1)).ToList();
-                resultCity.Components = OsmParserCore.MergeByMatchingId(relationWays);
+                var components = OsmParserCore.MergeByMatchingId(relationWays);
+                
+                var converter = OsmToGeoJsonConverterFactory.Create<City>();
+                var cleanedName = ObjectNameCleaner.Clean(relation.Tags[OsmKeywords.Name]);
+                var resultCity = new City
+                {
+                    Id = relation.Id,
+                    Name = cleanedName,
+                    GeoJson = converter.Serialize(components, cleanedName, osmData)
+                };
                 
                 cities.Add(resultCity);
                 Console.WriteLine("Объект {" + resultCity.Name + "} добавлен в коллекцию городов.");

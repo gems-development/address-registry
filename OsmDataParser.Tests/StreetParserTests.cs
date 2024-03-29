@@ -1,11 +1,14 @@
+using Gems.AddressRegistry.OsmDataParser.Interfaces;
+using Gems.AddressRegistry.OsmDataParser.Model;
+using Gems.AddressRegistry.OsmDataParser.Support;
 using OsmSharp;
 using OsmSharp.Tags;
 
-namespace osmDataParser.Tests;
+namespace Gems.AddressRegistry.OsmDataParser.Tests;
 
-public class OsmDataParserTest
+public class StreetParserTests
 {
-    private readonly OsmDataParser _osmDataParser = new OsmDataParser();
+    private readonly IOsmParser<Street> _streetParser = OsmParserFactory.Create<Street>();
     private readonly OsmData _osmData = new OsmData();
     
     [Fact]
@@ -39,7 +42,7 @@ public class OsmDataParserTest
         //Act.
         _osmData.Ways.Add(way1);
         _osmData.Ways.Add(way2);
-        var streets = _osmDataParser.GetStreets(_osmData);
+        var streets = _streetParser.ParseAll(_osmData, null);
         var nodeIds = streets.First().Components.First().Nodes;
         
         //Assert.
@@ -88,7 +91,7 @@ public class OsmDataParserTest
         _osmData.Ways.Add(way1);
         _osmData.Ways.Add(way2);
         _osmData.Ways.Add(way3);
-        var streets = _osmDataParser.GetStreets(_osmData);
+        var streets = _streetParser.ParseAll(_osmData, null);
         var nodeIds = streets.First().Components.First().Nodes;
         
         //Assert.
@@ -138,16 +141,13 @@ public class OsmDataParserTest
         _osmData.Ways.Add(way1);
         _osmData.Ways.Add(way2);
         _osmData.Ways.Add(way3);
-        var streets = _osmDataParser.GetStreets(_osmData);
+        var streets = _streetParser.ParseAll(_osmData, null);
         var nodeIds = streets.First().Components.First().Nodes;
         
         //Assert.
         Assert.Equal(expectedNodeIds, nodeIds);
     }
-
-    [Fact]
-    public void GetLocalities_Success()
-    {
+}
         //Arrange.
         var tags = new TagsCollection
         {

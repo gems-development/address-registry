@@ -1,3 +1,4 @@
+using Gems.AddressRegistry.OsmDataParser.Factories;
 using Gems.AddressRegistry.OsmDataParser.Interfaces;
 using Gems.AddressRegistry.OsmDataParser.Model;
 using Gems.AddressRegistry.OsmDataParser.Support;
@@ -31,10 +32,19 @@ internal sealed class SettlementParser : IOsmParser<Settlement>
 
             foreach (var settlement in settlements)
             {
-                var resultSettlement = new Settlement { Name = settlement.Tags[OsmKeywords.Name] };
                 var settlementMemberIds = settlement.Members.Select(o => o.Id).ToHashSet();
                 var relationWays = osmData.Ways.Where(way => settlementMemberIds.Contains(way.Id ?? -1)).ToList();
-                resultSettlement.Components = OsmParserCore.MergeByMatchingId(relationWays);
+                var components = OsmParserCore.MergeByMatchingId(relationWays);
+                
+                var converter = OsmToGeoJsonConverterFactory.Create<Settlement>();
+                var cleanedName = ObjectNameCleaner.Clean(settlement.Tags[OsmKeywords.Name]);
+                var resultSettlement = new Settlement
+                {
+                    Id = settlement.Id,
+                    Name = cleanedName,
+                    DistrictId = district.Id,
+                    GeoJson = converter.Serialize(components, cleanedName, osmData)
+                };
         
                 settlementList.Add(resultSettlement);
                 Console.WriteLine("Объект {" + resultSettlement.Name + "} добавлен в коллекцию поселений.");

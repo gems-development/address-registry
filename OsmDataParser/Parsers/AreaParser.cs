@@ -1,3 +1,4 @@
+using Gems.AddressRegistry.OsmDataParser.Factories;
 using Gems.AddressRegistry.OsmDataParser.Interfaces;
 using Gems.AddressRegistry.OsmDataParser.Model;
 using Gems.AddressRegistry.OsmDataParser.Support;
@@ -9,7 +10,8 @@ public class AreaParser : IOsmParser<Area>
     public Area Parse(OsmData osmData, string areaName, string districtName = null!)
     {
         var relations = osmData.Relations;
-        var resultArea = new Area { Name = areaName };
+        var cleanedName = ObjectNameCleaner.Clean(areaName);
+        var resultArea = new Area { Name = cleanedName };
         
         foreach (var relation in relations)
         {
@@ -20,12 +22,16 @@ public class AreaParser : IOsmParser<Area>
                 relation.Tags.ContainsKey(OsmKeywords.Name) &&
                 relation.Tags[OsmKeywords.Name] == areaName)
             {
+                resultArea.Id = relation.Id;
                 var areaMemberIds = relation.Members.Select(o => o.Id).ToHashSet();
                 var areaWays = osmData.Ways.Where(rel => areaMemberIds.Contains(rel.Id ?? -1)).ToList();
-                resultArea.Components = OsmParserCore.MergeByMatchingId(areaWays);
+                var components = OsmParserCore.MergeByMatchingId(areaWays);
+
+                var converter = OsmToGeoJsonConverterFactory.Create<Area>();
+                resultArea.GeoJson = converter.Serialize(components, cleanedName, osmData);
             }
         }
-        Console.WriteLine("Объект {" + resultArea.Name + "} успешно получена.");
+        Console.WriteLine("Объект {" + resultArea.Name + "} успешно получен.");
 
         return resultArea;
     }

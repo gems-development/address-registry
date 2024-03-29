@@ -1,3 +1,4 @@
+using Gems.AddressRegistry.OsmDataParser.Factories;
 using Gems.AddressRegistry.OsmDataParser.Interfaces;
 using Gems.AddressRegistry.OsmDataParser.Model;
 using Gems.AddressRegistry.OsmDataParser.Support;
@@ -20,7 +21,7 @@ public class HouseParser : IOsmParser<House>
         return resultHouse;
     }
 
-    public IReadOnlyCollection<House> ParseAll(OsmData osmData, string streetName)
+    public IReadOnlyCollection<House> ParseAll(OsmData osmData, string streetName = null!)
     {
         var ways = osmData.Ways;
         var housesList = new List<House>();
@@ -29,14 +30,16 @@ public class HouseParser : IOsmParser<House>
         {
             if (way.Tags.ContainsKey(OsmKeywords.Building) && 
                 way.Tags.ContainsKey(OsmKeywords.StreetName) &&
-                way.Tags.ContainsKey(OsmKeywords.HouseNumber) &&
-                way.Tags[OsmKeywords.StreetName] == streetName)
+                way.Tags.ContainsKey(OsmKeywords.HouseNumber))
             {
+                var converter = OsmToGeoJsonConverterFactory.Create<House>();
+                var cleanedName = ObjectNameCleaner.Clean(way.Tags[OsmKeywords.StreetName]);
                 var resultHouse = new House
                 {
-                    Name = way.Tags[OsmKeywords.StreetName],
+                    Id = way.Id,
+                    Name = cleanedName,
                     Number = way.Tags[OsmKeywords.HouseNumber],
-                    Components = new List<Way>{ way }
+                    GeoJson = converter.Serialize(new List<Way> { way }, cleanedName, osmData)
                 };
                 housesList.Add(resultHouse);
                 Console.WriteLine($"Объект с адресом {resultHouse.Name}, " +

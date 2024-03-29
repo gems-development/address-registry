@@ -1,46 +1,41 @@
 using System.Text.Encodings.Web;
 using System.Text.Json;
-using Gems.AddressRegistry.OsmDataParser.Model;
+using Gems.AddressRegistry.OsmDataParser.Interfaces;
 using Gems.AddressRegistry.OsmDataParser.Support;
 using GeoJSON.Text.Feature;
 using GeoJSON.Text.Geometry;
 using OsmSharp;
 
-namespace Gems.AddressRegistry.OsmDataGroupingService.Serializers;
+namespace Gems.AddressRegistry.OsmDataParser.Serializers;
 
-public class MultiLineSerializer
+public class MultiLineSerializer : IOsmToGeoJsonConverter
 {
-    private static readonly Dictionary<long, Node> NodeCache = new Dictionary<long, Node>();
+    private readonly Dictionary<long, Node> _nodeCache = new Dictionary<long, Node>();
     
-    public static string Serialize(RealObject realObject, OsmData osmData)
+    public string Serialize(List<Way> components, string objectName, OsmData osmData)
     {
-        if (realObject == null || realObject.GetType() == typeof(Area)
-                               || realObject.GetType() == typeof(District)
-                               || realObject.GetType() == typeof(Settlement)
-                               || realObject.GetType() == typeof(City)
-                               || realObject.GetType() == typeof(House))
-            throw new ArgumentException("Object can not be serialized");
-        
         var features = new List<Feature>();
-        var ways = realObject.Components;
         var totalStreet = new List<LineString>();
 
-        foreach (var way in ways)
+        foreach (var way in components)
         {
             var coordinates = new List<Position>();
             var wayNodes = new List<Node>();
             
             foreach (var nodeId in way.Nodes)
             {
-                if (NodeCache.TryGetValue(nodeId, out var cachedNode))
-                    wayNodes.Add(cachedNode);
-            
-                var wayNode = osmData.Nodes.FirstOrDefault(node => node.Id == nodeId);
-
-                if (wayNode != null)
+                if (_nodeCache.TryGetValue(nodeId, out var cachedNode))
                 {
-                    wayNodes.Add(wayNode);
-                    NodeCache[nodeId] = wayNode;
+                    wayNodes.Add(cachedNode);
+                }
+                else
+                {
+                    var wayNode = osmData.Nodes.FirstOrDefault(node => node.Id == nodeId);
+                    if (wayNode != null)
+                    {
+                        wayNodes.Add(wayNode);
+                        _nodeCache[nodeId] = wayNode;
+                    }
                 }
             }
             
@@ -59,7 +54,7 @@ public class MultiLineSerializer
 
         var properties = new Dictionary<string, object>
         {
-            { "ObjectName", realObject.Name }
+            { "ObjectName", objectName }
         };
         
         

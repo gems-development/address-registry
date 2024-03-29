@@ -1,3 +1,4 @@
+using Gems.AddressRegistry.OsmDataParser.Factories;
 using Gems.AddressRegistry.OsmDataParser.Interfaces;
 using Gems.AddressRegistry.OsmDataParser.Model;
 using Gems.AddressRegistry.OsmDataParser.Support;
@@ -47,8 +48,14 @@ internal sealed class StreetParser : IOsmParser<Street>
 
             if (group.Count == 1)
             {
-                var resultStreet = new Street { Name = street.Key };
-                resultStreet.Components.Add(group.First());
+                var converter = OsmToGeoJsonConverterFactory.Create<Street>();
+                var cleanedName = ObjectNameCleaner.Clean(street.Key);
+                var resultStreet = new Street
+                {
+                    Id = group.First().Id,
+                    Name = cleanedName,
+                    GeoJson = converter.Serialize(new List<Way> { group.First() }, cleanedName, osmData)
+                };
                 streetList.Add(resultStreet);
             }
             
@@ -56,13 +63,13 @@ internal sealed class StreetParser : IOsmParser<Street>
             {
                 var osmObjects = OsmParserCore.MergeByMatchingId(group);
 
-                for (int i = 0; i < osmObjects.Count; i++)
+                for (var i = 0; i < osmObjects.Count; i++)
                 {
+                    var streetComponents = new List<Way>();
                     var osmObject = osmObjects[i];
-                    var newStreet = new Street { Name = street.Key };
-                    newStreet.Components.Add(osmObject);
+                    streetComponents.Add(osmObject);
 
-                    for (int j = i + 1; j < osmObjects.Count; j++)
+                    for (var j = i + 1; j < osmObjects.Count; j++)
                     {
                         var otherOsmObject = osmObjects[j];
 
@@ -77,17 +84,27 @@ internal sealed class StreetParser : IOsmParser<Street>
 
                             if (buffer.Contains(point2))
                             {
-                                newStreet.Components.Add(otherOsmObject);
+                                streetComponents.Add(otherOsmObject);
                                 osmObjects.RemoveAt(j);
                                 j--;
                             }
                         }
                     }
+                    
+                    var converter = OsmToGeoJsonConverterFactory.Create<Street>();
+                    var cleanedName = ObjectNameCleaner.Clean(street.Key);
+                    var newStreet = new Street
+                    {
+                        Id = osmObjects[i].Id,
+                        Name = cleanedName,
+                        GeoJson = converter.Serialize(streetComponents, cleanedName, osmData)
+                    };
+                    
+                    streetList.Add(newStreet);
+                    Console.WriteLine("Объект {" + newStreet.Name + "} добавлен в коллекцию улиц.");
 
                     osmObjects.RemoveAt(i);
                     i--;
-                    streetList.Add(newStreet);
-                    Console.WriteLine("Объект {" + newStreet.Name + "} добавлен в коллекцию улиц.");
                 }
             }
         }
