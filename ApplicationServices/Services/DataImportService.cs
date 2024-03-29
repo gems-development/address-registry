@@ -50,9 +50,7 @@ namespace Gems.ApplicationServices.Services
                         .Any(p => p.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias && p.Id == externalRoadNetworkElementPlotId) is true);
                 if (roadNetworkElement != null)
                 {
-                    // Обновление симантики
-                    roadNetworkElement.Name = roadNetworkElementImport.Name;
-                    roadNetworkElement.RoadNetworkElementType = roadNetworkElementImport.RoadNetworkElementType;
+                    DataImportHelper.Map(roadNetworkElementImport, roadNetworkElement);
 
                     _appDbContext.Update(roadNetworkElement);
                 }
@@ -75,8 +73,7 @@ namespace Gems.ApplicationServices.Services
                         .Any(p => p.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias && p.Id == externalPlaningStructureElementId) is true);
                 if (planingStructureElement != null)
                 {
-                    // Обновление симантики
-                    planingStructureElement.Name = planingStructureElementImport.Name;
+                    DataImportHelper.Map(planingStructureElementImport, planingStructureElement);
 
 
                     _appDbContext.Update(planingStructureElement);
@@ -100,8 +97,7 @@ namespace Gems.ApplicationServices.Services
                         .Any(p => p.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias && p.Id == externalSettlementId) is true);
                 if (settlement != null)
                 {
-                    // Обновление симантики
-                    settlement.Name = settlementImport.Name;
+                    DataImportHelper.Map (settlementImport, settlement);
 
 
                     _appDbContext.Update(settlement);
@@ -125,9 +121,7 @@ namespace Gems.ApplicationServices.Services
                         .Any(p => p.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias && p.Id == externalCityId) is true);
                 if (city != null)
                 {
-                    // Обновление симантики
-                    city.Name = cityImport.Name;
-
+                    DataImportHelper.Map (cityImport, city);
 
                     _appDbContext.Update(city);
                 }
@@ -150,11 +144,7 @@ namespace Gems.ApplicationServices.Services
                         .Any(p => p.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias && p.Id == externalTerritoryId) is true);
                 if (territory != null)
                 {
-                    // Обновление симантики
-                    territory.Name = territoryImport.Name;
-
-
-                    _appDbContext.Update(territory);
+                    DataImportHelper .Map (territoryImport, territory);
                 }
                 else
                     _appDbContext.Add(territoryImport);
@@ -175,8 +165,7 @@ namespace Gems.ApplicationServices.Services
                         .Any(p => p.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias && p.Id == externalMunicipalAreaId) is true);
                 if (municipalArea != null)
                 {
-                    // Обновление симантики
-                    municipalArea.Name = municipalAreaImport.Name;
+                    DataImportHelper.Map(municipalAreaImport, municipalArea);
 
 
                     _appDbContext.Update(municipalArea);
@@ -200,8 +189,7 @@ namespace Gems.ApplicationServices.Services
                         .Any(p => p.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias && p.Id == externalAdministrativeAreaId) is true);
                 if (administrativeArea != null)
                 {
-                    // Обновление симантики
-                    administrativeArea.Name = administrativeAreaImport.Name;
+                    DataImportHelper.Map(administrativeAreaImport, administrativeArea);
 
 
                     _appDbContext.Update(administrativeArea);
@@ -225,8 +213,7 @@ namespace Gems.ApplicationServices.Services
                         .Any(p => p.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias && p.Id == externalRegionId) is true);
                 if (region != null)
                 {
-                    // Обновление симантики
-                    region.Name = regionImport.Name;
+                    DataImportHelper.Map(regionImport, region);
 
 
                     _appDbContext.Update(region);
@@ -250,8 +237,7 @@ namespace Gems.ApplicationServices.Services
                         .Any(p => p.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias && p.Id == externalCountryId) is true);
                 if (country != null)
                 {
-                    // Обновление симантики
-                    country.Name = countryImport.Name;
+                    DataImportHelper .Map(countryImport, country);
 
 
                     _appDbContext.Update(country);
@@ -278,26 +264,22 @@ namespace Gems.ApplicationServices.Services
                         .Any(p => p.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias && p.Id == externalAddressId) is true);
                 if (address != null)
                 {
-                    // TODO перенести из addressImport данные в address
-                    // При обновлении данных нужно искать есть ли этот объект в бд, если есть то обновлять его симантику
-                    // если отсутствует, то добавлять запись о нём. Для этого нужно переписать функции импорта для сущностей выше
-                    // Важно не допустить дублирования данных в базе
                     if(address.Building != null)
-                        await ImportBuildingAsync(addressImport.Building, cancellationToken);
+                        await ImportBuildingAsync(addressImport.Building!, cancellationToken);
                     if (address.RoadNetworkElement != null)
-                        await ImportRoadNetworkElementAsync(addressImport.RoadNetworkElement, cancellationToken);
+                        await ImportRoadNetworkElementAsync(addressImport.RoadNetworkElement!, cancellationToken);
                     if (address.PlaningStructureElement != null)
-                        await ImportPlaningStructureElementAsync(addressImport.PlaningStructureElement, cancellationToken);
+                        await ImportPlaningStructureElementAsync(addressImport.PlaningStructureElement!, cancellationToken);
                     if (address.Settlement != null)
-                        await ImportSettlementAsync(addressImport.Settlement, cancellationToken);
+                        await ImportSettlementAsync(addressImport.Settlement!, cancellationToken);
                     if (address.City != null)
-                        await ImportCityAsync(addressImport.City, cancellationToken);
+                        await ImportCityAsync(addressImport.City!, cancellationToken);
                     if (address.Territory != null)
-                        await ImportTerritoryAsync(addressImport.Territory, cancellationToken);
+                        await ImportTerritoryAsync(addressImport.Territory!, cancellationToken);
                     if (address.AdministrativeArea != null)
-                        await ImportAdministrativeAreaAsync(addressImport.AdministrativeArea, cancellationToken);
+                        await ImportAdministrativeAreaAsync(addressImport.AdministrativeArea!, cancellationToken);
                     if (address.MunicipalArea != null)
-                        await ImportMunicipalAreaAsync(addressImport.MunicipalArea, cancellationToken);
+                        await ImportMunicipalAreaAsync(addressImport.MunicipalArea!, cancellationToken);
                     if (address.Region != null)
                         await ImportRegionAsync(addressImport.Region, cancellationToken);
 
