@@ -7,7 +7,7 @@ internal static class OsmKeywords
     public const string Name = "name";
     public const string Highway = "highway";
     public const string Administrative = "administrative";
-
+    
     public const string Level2 = "2";
     public const string Level4 = "4";
     public const string Level6 = "6";

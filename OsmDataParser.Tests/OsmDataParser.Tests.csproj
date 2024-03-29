@@ -6,6 +6,8 @@
         <Nullable>enable</Nullable>
 
         <IsPackable>false</IsPackable>
+
+        <RootNamespace>Gems.AddressRegistry.OsmDataParser.Tests</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>

@@ -13,11 +13,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApplicationServices.Tests",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApi", "WebApi\WebApi.csproj", "{EC6BDCAC-BE0C-41FF-A3A5-16390EA6B32B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OsmClient", "OsmClient\OsmClient.csproj", "{A19B3C08-BA26-4C27-A18F-33B18115119A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OsmClient", "OsmClient\OsmClient.csproj", "{A19B3C08-BA26-4C27-A18F-33B18115119A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OsmDataParser", "OsmDataParser\OsmDataParser.csproj", "{396DD623-4323-4604-B960-82862C628A9B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OsmDataParser", "OsmDataParser\OsmDataParser.csproj", "{396DD623-4323-4604-B960-82862C628A9B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OsmDataParser.Tests", "OsmDataParser.Tests\OsmDataParser.Tests.csproj", "{B7CC5A44-4964-4CC3-A908-6859F6ED8C3E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OsmDataParser.Tests", "OsmDataParser.Tests\OsmDataParser.Tests.csproj", "{B7CC5A44-4964-4CC3-A908-6859F6ED8C3E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gems.DataMergeServices", "DataMergeService\Gems.DataMergeServices.csproj", "{BFAAFAF4-3472-4429-8E71-6837A12A7E83}"
 EndProject

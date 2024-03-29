@@ -1,5 +1,5 @@
 namespace Gems.AddressRegistry.OsmDataParser.Model;
 
-public class Street : RealObject
+public class District : RealObject
 {
 }
