@@ -5,7 +5,6 @@ namespace Gems.AddressRegistry.OsmDataParser;
 
 internal static class OsmParserCore
 {
-    // TODO Кэшировать результат
     internal static List<Relation> GetDistrictRelations(OsmData osmData, string areaName)
     {
         var relations = osmData.Relations;

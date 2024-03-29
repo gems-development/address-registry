@@ -1,4 +1,5 @@
-﻿using Gems.AddressRegistry.OsmDataGroupingService;
+﻿using System.Diagnostics;
+using Gems.AddressRegistry.OsmDataGroupingService;
 using Gems.AddressRegistry.OsmDataParser.Factories;
 using Gems.AddressRegistry.OsmDataParser.Model;
 using Gems.AddressRegistry.OsmDataParser.Support;
@@ -15,6 +16,7 @@ public static class Client
 
     public static async Task Main(string[] args)
     {
+        var sw = Stopwatch.StartNew();
         var osmData = await GetSortedOsmData();
         
         var areaParser = OsmParserFactory.Create<Area>();
@@ -34,8 +36,12 @@ public static class Client
         var houses = houseParser.ParseAll(osmData, default!);
         
         ObjectLinkBuilder.LinkAddressElements(area, districts, settlements, cities, villages, streets, houses);
+
+        var resultHouses = UnusedAddressesCleaner.Clean(houses);
         
-        await File.WriteAllTextAsync(OutputFilePath, area.GeoJson);
+        NormalizedAddressBuilder.BuildAddress(resultHouses);
+        sw.Stop();
+        Console.WriteLine(sw.Elapsed);
     }
 
     private static async Task<OsmData> GetSortedOsmData()

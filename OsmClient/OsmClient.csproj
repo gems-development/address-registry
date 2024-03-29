@@ -19,6 +19,7 @@
         <Content Include="bin\Debug\net6.0\export.xml"/>
         <Content Include="bin\Debug\net6.0\export_01.pbf"/>
         <Content Include="bin\Debug\net6.0\map.osm"/>
+        <Content Include="bin\Debug\net6.0\RU-YEV.osm.pbf" />
     </ItemGroup>
 
 
