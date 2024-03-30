@@ -3,6 +3,7 @@ using Gems.AddressRegistry.OsmDataGroupingService;
 using Gems.AddressRegistry.OsmDataParser.Factories;
 using Gems.AddressRegistry.OsmDataParser.Model;
 using Gems.AddressRegistry.OsmDataParser.Support;
+using Microsoft.Extensions.Configuration;
 using OsmSharp;
 using OsmSharp.Streams;
 
@@ -10,32 +11,40 @@ namespace Gems.AddressRegistry.OsmClient;
 
 public static class Client
 {
-    private const string PathToPbf = "RU-YEV.osm.pbf";
-    private const string OutputFilePath = "data.geojson";
-    private const string AreaName = "Еврейская автономная область";
+    private static readonly IConfiguration Configuration;
+    
+    static Client()
+    {
+        var currentDirectory = Directory.GetCurrentDirectory();
+        var projectDirectory = Directory.GetParent(currentDirectory)?.Parent?.Parent?.FullName;
+
+        Configuration = new ConfigurationBuilder()
+            .SetBasePath(projectDirectory!)
+            .AddJsonFile("appsettings.json")
+            .Build();
+    }
 
     public static async Task Main(string[] args)
     {
         var sw = Stopwatch.StartNew();
+        var areaName = Configuration.GetSection("Target Area").Value;
         var osmData = await GetSortedOsmData();
         
         var areaParser = OsmParserFactory.Create<Area>();
         var districtParser = OsmParserFactory.Create<District>();
-        var settlementParser = OsmParserFactory.Create<Settlement>();
         var cityParser = OsmParserFactory.Create<City>();
         var villageParser = OsmParserFactory.Create<Village>();
         var streetParser = OsmParserFactory.Create<Street>();
         var houseParser = OsmParserFactory.Create<House>();
         
-        var area = areaParser.Parse(osmData, AreaName, default!);
-        var districts = districtParser.ParseAll(osmData, AreaName);
-        var settlements = settlementParser.ParseAll(osmData, AreaName);
+        var area = areaParser.Parse(osmData, areaName!, default!);
+        var districts = districtParser.ParseAll(osmData, areaName!);
         var cities = cityParser.ParseAll(osmData, default!);
         var villages = villageParser.ParseAll(osmData, default!);
         var streets = streetParser.ParseAll(osmData, default!);
         var houses = houseParser.ParseAll(osmData, default!);
         
-        ObjectLinkBuilder.LinkAddressElements(area, districts, settlements, cities, villages, streets, houses);
+        ObjectLinkBuilder.LinkAddressElements(area, districts, cities, villages, streets, houses);
 
         var resultHouses = UnusedAddressesCleaner.Clean(houses);
         
@@ -47,7 +56,9 @@ public static class Client
     private static async Task<OsmData> GetSortedOsmData()
     {
         var osmData = new OsmData();
-        await using var fileStream = new FileInfo(PathToPbf).OpenRead();
+        var pathToPbf = Configuration.GetSection("Pbf File").Value;
+        
+        await using var fileStream = new FileInfo(pathToPbf!).OpenRead();
         using var osmStreamSource = new PBFOsmStreamSource(fileStream);
         
         foreach (var element in osmStreamSource)

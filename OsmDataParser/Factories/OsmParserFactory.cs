@@ -14,17 +14,11 @@ public static class OsmParserFactory
         if (typeof(TResult) == typeof(District))
             return (new DistrictParser() as IOsmParser<TResult>)!;
         
-        if (typeof(TResult) == typeof(Settlement))
-            return (new SettlementParser() as IOsmParser<TResult>)!;
-        
         if (typeof(TResult) == typeof(City))
             return (new CityParser() as IOsmParser<TResult>)!;
         
         if (typeof(TResult) == typeof(Village))
             return (new VillageParser() as IOsmParser<TResult>)!;
-        
-        if (typeof(TResult) == typeof(AdminDistrict))
-            return (new AdminDistrictParser() as IOsmParser<TResult>)!;
         
         if (typeof(TResult) == typeof(Street))
             return (new StreetParser() as IOsmParser<TResult>)!;

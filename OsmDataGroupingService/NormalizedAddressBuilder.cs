@@ -10,7 +10,7 @@ public static class NormalizedAddressBuilder
     {
         foreach (var house in houses)
         {
-            var normalizedAddress = new StringBuilder(house.Name);
+            var normalizedAddress = new StringBuilder(house.Number);
             
             var street = house.Street;
             normalizedAddress.Append(AddressPartDivider);
@@ -22,11 +22,7 @@ public static class NormalizedAddressBuilder
                 normalizedAddress.Append(AddressPartDivider);
                 normalizedAddress.Append(city.Name);
                 
-                var settlement = city.Settlement;
-                normalizedAddress.Append(AddressPartDivider);
-                normalizedAddress.Append(settlement.Name);
-
-                var district = settlement.District;
+                var district = city.District;
                 normalizedAddress.Append(AddressPartDivider);
                 normalizedAddress.Append(district.Name);
                 
@@ -39,12 +35,8 @@ public static class NormalizedAddressBuilder
                 var village = street.Village;
                 normalizedAddress.Append(AddressPartDivider);
                 normalizedAddress.Append(village.Name);
-
-                var settlement = village.Settlement;
-                normalizedAddress.Append(AddressPartDivider);
-                normalizedAddress.Append(settlement.Name);
                 
-                var district = settlement.District;
+                var district = village.District;
                 normalizedAddress.Append(AddressPartDivider);
                 normalizedAddress.Append(district.Name);
                 
