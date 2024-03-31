@@ -26,13 +26,16 @@ public static class ObjectLinkBuilder
 
                 foreach (var street in streets)
                 {
-                    if (ObjectIntersector.Intersects(city, street))
+                    if (ObjectIntersector.Intersects(city, street) && street.City == null)
                     {
                         street.City = city;
                         Console.WriteLine($"Улице <{street.Name}> присвоен город <{city.Name}>");
                     }
 
-                    foreach (var house in houses.Where(house => house.Name == street.Name))
+                    foreach (var house in houses
+                                 .Where(house => house.Name == street.Name 
+                                                 && ObjectIntersector.Intersects(city, house)
+                                                 && house.Street == null))
                     {
                         house.Street = street;
                         Console.WriteLine($"Дому <{house.Number}> присвоена улица <{street.Name}>");
@@ -50,13 +53,16 @@ public static class ObjectLinkBuilder
             
                 foreach (var street in streets)
                 {
-                    if (ObjectIntersector.Intersects(village, street))
+                    if (ObjectIntersector.Intersects(village, street) && street.Village == null)
                     {
                         street.Village = village;
                         Console.WriteLine($"Улице <{street.Name}> присвоено село <{village.Name}>");
                     }
 
-                    foreach (var house in houses.Where(house => house.Name == street.Name))
+                    foreach (var house in houses
+                                 .Where(house => (house.Name == street.Name) 
+                                                 && ObjectIntersector.Intersects(village, house)
+                                                 && house.Street == null))
                     {
                         house.Street = street;
                         Console.WriteLine($"Дому <{house.Number}> присвоена улица <{street.Name}>");
