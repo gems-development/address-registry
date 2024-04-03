@@ -16,11 +16,9 @@ namespace Gems.AddressRegistry.DataAccess
         public DbSet<Settlement> Settlements { get; set; }
         public DbSet<PlaningStructureElement> PlaningStructureElements { get; set; }
         public DbSet<RoadNetworkElement> RoadNetworkElements { get; set; }
-        public DbSet<LandPlot> LandPlots { get; set; }
         public DbSet<Building> Buildings { get; set; }
-        public DbSet<Space> Spaces { get; set; }
 
-        private readonly string _connectionString = "Host=localhost;Port=5432;Database=addressdb;Username=postgres;Password=admin";
+        private readonly string _connectionString = "Host=localhost;Port=5432;Database=addressdb;Username=postgres;Password=postgres";
 
         public AppDbContext()
         { }

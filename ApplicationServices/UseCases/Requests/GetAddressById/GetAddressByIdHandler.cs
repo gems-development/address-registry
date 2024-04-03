@@ -1,8 +1,8 @@
-﻿using AplicationServices.Exceptions;
-using Gems.AddressRegistry.DataAccess;
+﻿using Gems.AddressRegistry.DataAccess;
+using Gems.AplicationServices.Exceptions;
 using MediatR;
 
-namespace ApplicationServices.UseCases.Requests.GetAddressById
+namespace Gems.ApplicationServices.UseCases.Requests.GetAddressById
 {
     internal class GetAddressByIdHandler : IRequestHandler<GetAddressByIdRequest, AddressResponseDto>
     {

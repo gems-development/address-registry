@@ -7,17 +7,21 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gems.AddressRegistry.Entiti
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gems.AddressRegistry.DataAccess", "Gems.AddressRegistry.DataAccess\Gems.AddressRegistry.DataAccess.csproj", "{7BA13EAF-F07A-495A-9589-AB8F00DA20D0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApplicationServices", "ApplicationServices\ApplicationServices.csproj", "{AEE7188F-CD68-412B-8D60-E10BA6BE910D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gems.ApplicationServices", "ApplicationServices\Gems.ApplicationServices.csproj", "{AEE7188F-CD68-412B-8D60-E10BA6BE910D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApplicationServices.Tests", "ApplicationServicesTests\ApplicationServices.Tests.csproj", "{F39F141E-5211-4A1E-AE62-4D8FBCF2260C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApi", "WebApi\WebApi.csproj", "{EC6BDCAC-BE0C-41FF-A3A5-16390EA6B32B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OsmClient", "OsmClient\OsmClient.csproj", "{A19B3C08-BA26-4C27-A18F-33B18115119A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OsmClient", "OsmClient\OsmClient.csproj", "{A19B3C08-BA26-4C27-A18F-33B18115119A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OsmDataParser", "OsmDataParser\OsmDataParser.csproj", "{396DD623-4323-4604-B960-82862C628A9B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OsmDataParser", "OsmDataParser\OsmDataParser.csproj", "{396DD623-4323-4604-B960-82862C628A9B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OsmDataParser.Tests", "OsmDataParser.Tests\OsmDataParser.Tests.csproj", "{B7CC5A44-4964-4CC3-A908-6859F6ED8C3E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OsmDataParser.Tests", "OsmDataParser.Tests\OsmDataParser.Tests.csproj", "{B7CC5A44-4964-4CC3-A908-6859F6ED8C3E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gems.DataMergeServices", "DataMergeService\Gems.DataMergeServices.csproj", "{BFAAFAF4-3472-4429-8E71-6837A12A7E83}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gems.DataMergeServices.Tests", "Gems.DataMergeServices.Tests\Gems.DataMergeServices.Tests.csproj", "{20DE2F1E-B74E-471F-B6E6-BA5A4B30D8A2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OsmDataGroupingService", "OsmDataGroupingService\OsmDataGroupingService.csproj", "{445AB384-9B15-4703-BCFB-FC40AD741B33}"
 EndProject
@@ -43,14 +47,14 @@ Global
 		{F39F141E-5211-4A1E-AE62-4D8FBCF2260C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F39F141E-5211-4A1E-AE62-4D8FBCF2260C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F39F141E-5211-4A1E-AE62-4D8FBCF2260C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A19B3C08-BA26-4C27-A18F-33B18115119A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A19B3C08-BA26-4C27-A18F-33B18115119A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A19B3C08-BA26-4C27-A18F-33B18115119A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A19B3C08-BA26-4C27-A18F-33B18115119A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EC6BDCAC-BE0C-41FF-A3A5-16390EA6B32B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EC6BDCAC-BE0C-41FF-A3A5-16390EA6B32B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EC6BDCAC-BE0C-41FF-A3A5-16390EA6B32B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EC6BDCAC-BE0C-41FF-A3A5-16390EA6B32B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A19B3C08-BA26-4C27-A18F-33B18115119A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A19B3C08-BA26-4C27-A18F-33B18115119A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A19B3C08-BA26-4C27-A18F-33B18115119A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A19B3C08-BA26-4C27-A18F-33B18115119A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{396DD623-4323-4604-B960-82862C628A9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{396DD623-4323-4604-B960-82862C628A9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{396DD623-4323-4604-B960-82862C628A9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -63,6 +67,14 @@ Global
 		{445AB384-9B15-4703-BCFB-FC40AD741B33}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{445AB384-9B15-4703-BCFB-FC40AD741B33}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{445AB384-9B15-4703-BCFB-FC40AD741B33}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BFAAFAF4-3472-4429-8E71-6837A12A7E83}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BFAAFAF4-3472-4429-8E71-6837A12A7E83}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BFAAFAF4-3472-4429-8E71-6837A12A7E83}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BFAAFAF4-3472-4429-8E71-6837A12A7E83}.Release|Any CPU.Build.0 = Release|Any CPU
+		{20DE2F1E-B74E-471F-B6E6-BA5A4B30D8A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20DE2F1E-B74E-471F-B6E6-BA5A4B30D8A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20DE2F1E-B74E-471F-B6E6-BA5A4B30D8A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20DE2F1E-B74E-471F-B6E6-BA5A4B30D8A2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

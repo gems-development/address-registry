@@ -1,4 +1,4 @@
-﻿using ApplicationServices.Services;
+﻿using Gems.ApplicationServices.Services;
 
 namespace Microsoft.Extensions.DependencyInjection
 {

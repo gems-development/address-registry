@@ -1,158 +1,294 @@
 ﻿using Gems.AddressRegistry.DataAccess;
 using Gems.AddressRegistry.Entities;
+using Microsoft.EntityFrameworkCore;
 
-namespace ApplicationServices.Services
+namespace Gems.ApplicationServices.Services
 {
     public class DataImportService
     {
-        private IAppDbContext _AppDbContext;
+        private IAppDbContext _appDbContext;
         public DataImportService(IAppDbContextFactory appDbContextFactory)
         {
-            _AppDbContext = appDbContextFactory.Create();
+            _appDbContext = appDbContextFactory.Create();
         }
 
-        public Task SpaceImportAsync(IReadOnlyCollection<Space> spacesImport, CancellationToken cancellationToken = default)
+        public async Task<int> ImportBuildingAsync(Building buildingImport, CancellationToken cancellationToken = default)
         {
-            foreach (Space SpaceImport in spacesImport)
+            
+                var externalBuildingId = buildingImport.DataSources.First(o => o.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias).Id;
+            if (externalBuildingId != null)
             {
-                if (_AppDbContext.Spaces.Any(Space => Space.Id == SpaceImport.Id))
-                    _AppDbContext.Update(SpaceImport);
+                var building = (await _appDbContext
+                    .Buildings
+                    .ToArrayAsync())
+                    .FirstOrDefault(o => o
+                        .DataSources
+                        .Any(p => p.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias && p.Id == externalBuildingId) is true);
+                if (building != null)
+                {
+                    DataImportHelper.Map(buildingImport, building);
+
+                    _appDbContext.Update(building);
+                }
                 else
-                    _AppDbContext.Add(SpaceImport);
+                    _appDbContext.Add(buildingImport);
             }
-            return _AppDbContext.SaveChangesAsync(cancellationToken);
+            
+            return await _appDbContext.SaveChangesAsync(cancellationToken);
         }
-        public Task BuildingImportAsync(IReadOnlyCollection<Building> BuildingsImport, CancellationToken cancellationToken = default)
+        public async Task<int> ImportRoadNetworkElementAsync(RoadNetworkElement roadNetworkElementImport, CancellationToken cancellationToken = default)
         {
-            foreach (Building BuildingImport in BuildingsImport)
+            
+                var externalRoadNetworkElementPlotId = roadNetworkElementImport.DataSources.First(o => o.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias).Id;
+                if (externalRoadNetworkElementPlotId != null)
             {
-                if (_AppDbContext.Buildings.Any(Building => Building.Id == BuildingImport.Id))
-                    _AppDbContext.Update(BuildingImport);
+                var roadNetworkElement = (await _appDbContext
+                    .RoadNetworkElements
+                    .ToArrayAsync())
+                    .FirstOrDefault(o => o
+                        .DataSources
+                        .Any(p => p.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias && p.Id == externalRoadNetworkElementPlotId) is true);
+                if (roadNetworkElement != null)
+                {
+                    DataImportHelper.Map(roadNetworkElementImport, roadNetworkElement);
+
+                    _appDbContext.Update(roadNetworkElement);
+                }
                 else
-                    _AppDbContext.Add(BuildingImport);
+                    _appDbContext.Add(roadNetworkElementImport);
             }
-            return _AppDbContext.SaveChangesAsync(cancellationToken);
+            return await _appDbContext.SaveChangesAsync(cancellationToken);
         }
-        public Task LandPlotImportAsync(IReadOnlyCollection<LandPlot> LandPlotsImport, CancellationToken cancellationToken = default)
+        public async Task<int> ImportPlaningStructureElementAsync(PlaningStructureElement planingStructureElementImport, CancellationToken cancellationToken = default)
         {
-            foreach (LandPlot LandPlotImport in LandPlotsImport)
+            
+                var externalPlaningStructureElementId = planingStructureElementImport.DataSources.First(o => o.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias).Id;
+                if (externalPlaningStructureElementId != null)
             {
-                if (_AppDbContext.LandPlots.Any(LandPlot => LandPlot.Id == LandPlotImport.Id))
-                    _AppDbContext.Update(LandPlotImport);
+                var planingStructureElement = (await _appDbContext
+                    .PlaningStructureElements
+                    .ToArrayAsync())
+                    .FirstOrDefault(o => o
+                        .DataSources
+                        .Any(p => p.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias && p.Id == externalPlaningStructureElementId) is true);
+                if (planingStructureElement != null)
+                {
+                    DataImportHelper.Map(planingStructureElementImport, planingStructureElement);
+
+
+                    _appDbContext.Update(planingStructureElement);
+                }
                 else
-                    _AppDbContext.Add(LandPlotImport);
+                    _appDbContext.Add(planingStructureElementImport);
             }
-            return _AppDbContext.SaveChangesAsync(cancellationToken);
+            return await _appDbContext.SaveChangesAsync(cancellationToken);
         }
-        public Task RoadNetworkElementImportAsync(IReadOnlyCollection<RoadNetworkElement> RoadNetworkElementsImport, CancellationToken cancellationToken = default)
+        public async Task<int> ImportSettlementAsync(Settlement settlementImport, CancellationToken cancellationToken = default)
         {
-            foreach (RoadNetworkElement RoadNetworkElementImport in RoadNetworkElementsImport)
+            
+                var externalSettlementId = settlementImport.DataSources.First(o => o.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias).Id;
+                if (externalSettlementId != null)
             {
-                if (_AppDbContext.RoadNetworkElements.Any(RoadNetworkElement => RoadNetworkElement.Id == RoadNetworkElementImport.Id))
-                    _AppDbContext.Update(RoadNetworkElementImport);
+                var settlement = (await _appDbContext
+                    .Settlements
+                    .ToArrayAsync())
+                    .FirstOrDefault(o => o
+                        .DataSources
+                        .Any(p => p.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias && p.Id == externalSettlementId) is true);
+                if (settlement != null)
+                {
+                    DataImportHelper.Map (settlementImport, settlement);
+
+
+                    _appDbContext.Update(settlement);
+                }
                 else
-                    _AppDbContext.Add(RoadNetworkElementImport);
+                    _appDbContext.Add(settlementImport);
             }
-            return _AppDbContext.SaveChangesAsync(cancellationToken);
+            return await _appDbContext.SaveChangesAsync(cancellationToken);
         }
-        public Task PlaningStructureElementImportAsync(IReadOnlyCollection<PlaningStructureElement> PlaningStructureElementsImport, CancellationToken cancellationToken = default)
+        public async Task<int> ImportCityAsync(City cityImport, CancellationToken cancellationToken = default)
         {
-            foreach (PlaningStructureElement PlaningStructureElementImport in PlaningStructureElementsImport)
+            
+                var externalCityId = cityImport.DataSources.First(o => o.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias).Id;
+                if (externalCityId != null)
             {
-                if (_AppDbContext.PlaningStructureElements.Any(PlaningStructureElement => PlaningStructureElement.Id == PlaningStructureElementImport.Id))
-                    _AppDbContext.Update(PlaningStructureElementImport);
+                var city = (await _appDbContext
+                    .Cities
+                    .ToArrayAsync())
+                    .FirstOrDefault(o => o
+                        .DataSources
+                        .Any(p => p.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias && p.Id == externalCityId) is true);
+                if (city != null)
+                {
+                    DataImportHelper.Map (cityImport, city);
+
+                    _appDbContext.Update(city);
+                }
                 else
-                    _AppDbContext.Add(PlaningStructureElementImport);
+                    _appDbContext.Add(cityImport);
             }
-            return _AppDbContext.SaveChangesAsync(cancellationToken);
+            return await _appDbContext.SaveChangesAsync(cancellationToken);
         }
-        public Task SettlementImportAsync(IReadOnlyCollection<Settlement> SettlementsImport, CancellationToken cancellationToken = default)
+        public async Task<int> ImportTerritoryAsync(Territory territoryImport, CancellationToken cancellationToken = default)
         {
-            foreach (Settlement SettlementImport in SettlementsImport)
-            {
-                if (_AppDbContext.Settlements.Any(Settlement => Settlement.Id == SettlementImport.Id))
-                    _AppDbContext.Update(SettlementImport);
+            
+                var externalTerritoryId = territoryImport.DataSources.First(o => o.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias).Id;
+                if (externalTerritoryId != null)
+            { 
+                var territory = (await _appDbContext
+                    .Territories
+                    .ToArrayAsync())
+                    .FirstOrDefault(o => o
+                        .DataSources
+                        .Any(p => p.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias && p.Id == externalTerritoryId) is true);
+                if (territory != null)
+                {
+                    DataImportHelper .Map (territoryImport, territory);
+                }
                 else
-                    _AppDbContext.Add(SettlementImport);
+                    _appDbContext.Add(territoryImport);
             }
-            return _AppDbContext.SaveChangesAsync(cancellationToken);
+            return await _appDbContext.SaveChangesAsync(cancellationToken);
         }
-        public Task CityImportsAsync(IReadOnlyCollection<City> CitiesImport, CancellationToken cancellationToken = default)
+        public async Task<int> ImportMunicipalAreaAsync(MunicipalArea municipalAreaImport, CancellationToken cancellationToken = default)
         {
-            foreach (City CityImport in CitiesImport)
+            
+                var externalMunicipalAreaId = municipalAreaImport.DataSources.First(o => o.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias).Id;
+                if (externalMunicipalAreaId != null)
             {
-                if (_AppDbContext.Cities.Any(City => City.Id == CityImport.Id))
-                    _AppDbContext.Update(CityImport);
+                var municipalArea = (await _appDbContext
+                    .MunicipalAreas
+                    .ToArrayAsync())
+                    .FirstOrDefault(o => o
+                        .DataSources
+                        .Any(p => p.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias && p.Id == externalMunicipalAreaId) is true);
+                if (municipalArea != null)
+                {
+                    DataImportHelper.Map(municipalAreaImport, municipalArea);
+
+
+                    _appDbContext.Update(municipalArea);
+                }
                 else
-                    _AppDbContext.Add(CityImport);
+                    _appDbContext.Add(municipalAreaImport);
             }
-            return _AppDbContext.SaveChangesAsync(cancellationToken);
+            return await _appDbContext.SaveChangesAsync(cancellationToken);
         }
-        public Task TerritoryImportAsync(IReadOnlyCollection<Territory> TerritoriesImport, CancellationToken cancellationToken = default)
+        public async Task<int> ImportAdministrativeAreaAsync(AdministrativeArea administrativeAreaImport, CancellationToken cancellationToken = default)
         {
-            foreach (Territory TerrytoryImport in TerritoriesImport)
+            
+                var externalAdministrativeAreaId = administrativeAreaImport.DataSources.First(o => o.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias).Id;
+                if (externalAdministrativeAreaId != null)
             {
-                if (_AppDbContext.Territories.Any(Territory => Territory.Id == TerrytoryImport.Id))
-                    _AppDbContext.Update(TerrytoryImport);
+                var administrativeArea = (await _appDbContext
+                    .AdministrativeAreas
+                    .ToArrayAsync())
+                    .FirstOrDefault(o => o
+                        .DataSources
+                        .Any(p => p.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias && p.Id == externalAdministrativeAreaId) is true);
+                if (administrativeArea != null)
+                {
+                    DataImportHelper.Map(administrativeAreaImport, administrativeArea);
+
+
+                    _appDbContext.Update(administrativeArea);
+                }
                 else
-                    _AppDbContext.Add(TerrytoryImport);
+                    _appDbContext.Add(administrativeAreaImport);
             }
-            return _AppDbContext.SaveChangesAsync(cancellationToken);
+            return await _appDbContext.SaveChangesAsync(cancellationToken);
         }
-        public Task MunicipalAreaImportAsync(IReadOnlyCollection<MunicipalArea> MunicipalAreasImport, CancellationToken cancellationToken = default)
+        public async Task<int> ImportRegionAsync(Region regionImport, CancellationToken cancellationToken = default)
         {
-            foreach (MunicipalArea MunicipalAreaImport in MunicipalAreasImport)
+            
+                var externalRegionId = regionImport.DataSources.First(o => o.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias).Id;
+                if (externalRegionId != null)
             {
-                if (_AppDbContext.MunicipalAreas.Any(MunicipalArea => MunicipalArea.Id == MunicipalAreaImport.Id))
-                    _AppDbContext.Update(MunicipalAreaImport);
+                var region = (await _appDbContext
+                    .Regions
+                    .ToArrayAsync())
+                    .FirstOrDefault(o => o
+                        .DataSources
+                        .Any(p => p.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias && p.Id == externalRegionId) is true);
+                if (region != null)
+                {
+                    DataImportHelper.Map(regionImport, region);
+
+
+                    _appDbContext.Update(region);
+                }
                 else
-                    _AppDbContext.Add(MunicipalAreaImport);
+                    _appDbContext.Add(regionImport);
             }
-            return _AppDbContext.SaveChangesAsync(cancellationToken);
+            return await _appDbContext.SaveChangesAsync(cancellationToken);
         }
-        public Task AdministrativeAreaImportAsync(IReadOnlyCollection<AdministrativeArea> AdministrativeAreasImport, CancellationToken cancellationToken = default)
+        public async Task<int> ImportCountryAsync(Country countryImport, CancellationToken cancellationToken = default)
         {
-            foreach (AdministrativeArea AdministrativeAreaImport in AdministrativeAreasImport)
+            
+                var externalCountryId = countryImport.DataSources.First(o => o.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias).Id;
+                if (externalCountryId != null)
             {
-                if (_AppDbContext.AdministrativeAreas.Any(AdministrativeArea => AdministrativeArea.Id == AdministrativeAreaImport.Id))
-                    _AppDbContext.Update(AdministrativeAreaImport);
+                var country = (await _appDbContext
+                    .Countries
+                    .ToArrayAsync())
+                    .FirstOrDefault(o => o
+                        .DataSources
+                        .Any(p => p.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias && p.Id == externalCountryId) is true);
+                if (country != null)
+                {
+                    DataImportHelper .Map(countryImport, country);
+
+
+                    _appDbContext.Update(country);
+                }
                 else
-                    _AppDbContext.Add(AdministrativeAreaImport);
+                    _appDbContext.Add(countryImport);
             }
-            return _AppDbContext.SaveChangesAsync(cancellationToken);
+            return await _appDbContext.SaveChangesAsync(cancellationToken);
         }
-        public Task RegionImportAsync(IReadOnlyCollection<Region> RegionsImport, CancellationToken cancellationToken = default)
+        public async Task<int> ImportAddressAsync(IReadOnlyCollection<Address> addressesImport, CancellationToken cancellationToken = default)
         {
-            foreach (Region RegionImport in RegionsImport)
+            foreach (Address addressImport in addressesImport)
             {
-                if (_AppDbContext.Regions.Any(Region => Region.Id == RegionImport.Id))
-                    _AppDbContext.Update(RegionImport);
+                var externalAddressId = addressImport.Building?.DataSources.First(o => o.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias).Id;
+                if (externalAddressId == null)
+                    continue;
+                // TODO переделать запрос
+                var address = (await _appDbContext
+                    .Addresses
+                    .ToArrayAsync())
+                    .FirstOrDefault(o => o
+                        .Building
+                        ?.DataSources
+                        .Any(p => p.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias && p.Id == externalAddressId) is true);
+                if (address != null)
+                {
+                    if(address.Building != null)
+                        await ImportBuildingAsync(addressImport.Building!, cancellationToken);
+                    if (address.RoadNetworkElement != null)
+                        await ImportRoadNetworkElementAsync(addressImport.RoadNetworkElement!, cancellationToken);
+                    if (address.PlaningStructureElement != null)
+                        await ImportPlaningStructureElementAsync(addressImport.PlaningStructureElement!, cancellationToken);
+                    if (address.Settlement != null)
+                        await ImportSettlementAsync(addressImport.Settlement!, cancellationToken);
+                    if (address.City != null)
+                        await ImportCityAsync(addressImport.City!, cancellationToken);
+                    if (address.Territory != null)
+                        await ImportTerritoryAsync(addressImport.Territory!, cancellationToken);
+                    if (address.AdministrativeArea != null)
+                        await ImportAdministrativeAreaAsync(addressImport.AdministrativeArea!, cancellationToken);
+                    if (address.MunicipalArea != null)
+                        await ImportMunicipalAreaAsync(addressImport.MunicipalArea!, cancellationToken);
+                    if (address.Region != null)
+                        await ImportRegionAsync(addressImport.Region, cancellationToken);
+
+                    _appDbContext.Update(address);
+                }
                 else
-                    _AppDbContext.Add(RegionImport);
+                    _appDbContext.Add(addressImport);
             }
-            return _AppDbContext.SaveChangesAsync(cancellationToken);
-        }
-        public Task CountryImportAsync(IReadOnlyCollection<Country> CountriesImport, CancellationToken cancellationToken = default)
-        {
-            foreach (Country CountryImport in CountriesImport)
-            {
-                if (_AppDbContext.Countries.Any(Country => Country.Id == CountryImport.Id))
-                    _AppDbContext.Update(CountryImport);
-                else
-                    _AppDbContext.Add(CountryImport);
-            }
-            return _AppDbContext.SaveChangesAsync(cancellationToken);
-        }
-        public Task AddressImportAsync(IReadOnlyCollection<Address> AddressesImport, CancellationToken cancellationToken = default)
-        {
-            foreach (Address AddressImport in AddressesImport)
-            {
-                if (_AppDbContext.Addresses.Any(Address => Address.Id == AddressImport.Id))
-                    _AppDbContext.Update(AddressImport);
-                else
-                    _AppDbContext.Add(AddressImport);
-            }
-            return _AppDbContext.SaveChangesAsync(cancellationToken);
+            return await _appDbContext.SaveChangesAsync(cancellationToken);
 
         }
 

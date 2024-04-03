@@ -1,6 +1,6 @@
-using ApplicationServices.Services;
 using Gems.AddressRegistry.DataAccess;
 using Gems.AddressRegistry.Entities;
+using Gems.ApplicationServices.Services;
 
 
 namespace ApplicationServices.Tests
@@ -11,7 +11,7 @@ namespace ApplicationServices.Tests
         [RunnableInDebugOnlyFactAttribute]
         public async Task ErnImportTest()
         {
-            const string connectionString = "Host=localhost;Port=5432;Database=addressdb;Username=postgres;Password=admin";
+            const string connectionString = "Host=localhost;Port=5432;Database=addressdb;Username=postgres;Password=postgres";
             IAppDbContextFactory appDbContextFactory = new AppDbContextFactory(connectionString);
             DataImportService dataImportService = new DataImportService(appDbContextFactory);
             Address address = new Address();
@@ -27,8 +27,8 @@ namespace ApplicationServices.Tests
             address.Territory = new Territory();
             address.Territory.Name = "Terrytory";
             Address[] addresses = new Address[] { address };
-            await dataImportService.AddressImportAsync(addresses);
-            await dataImportService.AddressImportAsync(addresses);
+            await dataImportService.ImportAddressAsync(addresses);
+            await dataImportService.ImportAddressAsync(addresses);
 
         }
 
