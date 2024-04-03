@@ -33,7 +33,7 @@ namespace Gems.AddressRegistry.Entities
                 builder.Append($"{RoadNetworkElement.Name}#");
             if (Building != null)
                 builder.Append($"{Building.Number}");
-            return builder.ToString();
+            return builder.ToString().ToUpper();
         }
 
     }
