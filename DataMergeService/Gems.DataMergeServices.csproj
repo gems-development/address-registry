@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Gems.AddressRegistry.Entities\Gems.AddressRegistry.Entities.csproj" />
+    <ProjectReference Include="..\OsmDataParser\OsmDataParser.csproj" />
   </ItemGroup>
 
 </Project>

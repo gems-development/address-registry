@@ -26,6 +26,8 @@
     <ProjectReference Include="..\ApplicationServices\Gems.ApplicationServices.csproj" />
     <ProjectReference Include="..\DataMergeService\Gems.DataMergeServices.csproj" />
     <ProjectReference Include="..\Gems.AddressRegistry.DataAccess\Gems.AddressRegistry.DataAccess.csproj" />
+    <ProjectReference Include="..\OsmDataGroupingService\OsmDataGroupingService.csproj" />
+    <ProjectReference Include="..\OsmDataParser\OsmDataParser.csproj" />
   </ItemGroup>
 
 </Project>

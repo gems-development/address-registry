@@ -23,8 +23,8 @@ namespace Gems.AddressRegistry.Entities
         {
             StringBuilder builder = new StringBuilder("");
             builder.Append($"{Region.Name}#");
-            if (Territory != null)
-                builder.Append($"{Territory.Name}#");
+            if (MunicipalArea != null)
+                builder.Append($"{MunicipalArea.Name}#");
             if (City != null)
                 builder.Append($"{City.Name}#");
             if (Settlement != null)
