@@ -48,7 +48,6 @@ public static class Client
 
         var resultHouses = UnusedAddressesCleaner.Clean(houses);
         
-        NormalizedAddressBuilder.BuildAddress(resultHouses);
         sw.Stop();
         Console.WriteLine(sw.Elapsed);
     }

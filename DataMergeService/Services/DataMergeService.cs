@@ -13,7 +13,7 @@ namespace Gems.DataMergeServices.Services
             {
                 foreach (var addressOsm in addressesOsm)
                 {
-                    if (addressFias.GetNormalizedAddress() == addressOsm.Address)
+                    if (addressFias.GetNormalizedAddress() == addressOsm.GetNormalizedAddress())
                     {
                         AddGeometryToAddress(addressFias, addressOsm);
                         break;

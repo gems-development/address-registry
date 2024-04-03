@@ -30,8 +30,6 @@ public class DataMergeServiceTest
         {
             house1
         };
-        
-        NormalizedAddressBuilder.BuildAddress(addressesOsm);
 
         var addressesFias = new List<Address>();
 
