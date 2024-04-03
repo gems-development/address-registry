@@ -3,7 +3,7 @@
     <PropertyGroup>
         <OutputType>Exe</OutputType>
         <TargetFramework>net6.0</TargetFramework>
-        <RootNamespace>OSM_client</RootNamespace>
+        <RootNamespace>Gems.AddressRegistry.OsmClient</RootNamespace>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
@@ -23,14 +23,13 @@
 
     <ItemGroup>
         <PackageReference Include="GeoJSON.Net" Version="1.2.19"/>
-        <PackageReference Include="GeoJSON.Text" Version="1.0.2"/>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
         <PackageReference Include="OsmSharp" Version="6.2.0"/>
     </ItemGroup>
 
 
     <ItemGroup>
-        <ProjectReference Include="..\Gems.AddressRegistry.Entities\Gems.AddressRegistry.Entities.csproj"/>
+        <ProjectReference Include="..\OsmDataGroupingService\OsmDataGroupingService.csproj" />
         <ProjectReference Include="..\OsmDataParser\OsmDataParser.csproj"/>
     </ItemGroup>
 

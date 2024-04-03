@@ -1,9 +1,9 @@
 using OsmSharp;
 using OsmSharp.Tags;
 
-namespace osmDataParser.Tests;
+namespace Gems.AddressRegistry.OsmDataParser.Tests;
 
-public static class TestHelper
+internal static class TestHelper
 {
     public static Node CreateNode(long id)
     {

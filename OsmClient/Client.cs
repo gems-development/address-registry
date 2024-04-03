@@ -1,81 +1,114 @@
-﻿using GeoJSON.Text.Feature;
-using GeoJSON.Text.Geometry;
-using osmDataParser;
+﻿using Gems.AddressRegistry.OsmDataGroupingService;
+using Gems.AddressRegistry.OsmDataGroupingService.Serializers;
+using Gems.AddressRegistry.OsmDataParser;
+using Gems.AddressRegistry.OsmDataParser.Model;
+using Gems.AddressRegistry.OsmDataParser.Support;
+using GeoJSON.Text.Feature;
 using OsmSharp;
 using OsmSharp.Streams;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 
-namespace osm_client;
+namespace Gems.AddressRegistry.OsmClient;
 
 public class Client
 {
-    private const string PathToPbf = "RU-OMS.osm.pbf";
+    private const string PathToPbf = "RU-YEV.osm.pbf";
     private const string OutputFilePath = "data.geojson";
+    private const string AreaName = "Еврейская автономная область";
 
     public static async Task Main(string[] args)
     {
         var osmData = await GetSortedOsmData();
-        var osmDataParser = new OsmDataParser();
-        var localities = osmDataParser.GetLocalities(osmData);
+        
+        var grouper = new ObjectGrouper();
+        var areaParser = OsmParserFactory.Create<Area>();
+        var districtParser = OsmParserFactory.Create<District>();
+        var settlementParser = OsmParserFactory.Create<Settlement>();
+        var cityParser = OsmParserFactory.Create<City>();
+        var streetParser = OsmParserFactory.Create<Street>();
+        var houseParser = OsmParserFactory.Create<House>();
+
         var features = new List<Feature>();
+        var area = areaParser.Parse(osmData, AreaName, default!);
+        var districts = districtParser.ParseAll(osmData, AreaName);
+        var settlements = settlementParser.ParseAll(osmData, AreaName);
+        var cities = cityParser.ParseAll(osmData, null!);
+        var streets = streetParser.ParseAll(osmData, null!);
+        
+        var areaGeoJson = MultiPolygonSerializer.Serialize(area, osmData);
+        var areaGeometry = JsonSerializer.Deserialize<FeatureCollection>(areaGeoJson);
+        var areaFeature = areaGeometry!.Features.First();
+        features.Add(areaFeature);
+        Console.WriteLine("Объект {" + area.Name + "} записался в формат GeoJSON.");
 
-        foreach (var locality in localities)
+        foreach (var district in districts)
         {
-            var localityWays = locality.Components;
-            var totalBorder = new List<List<LineString>>();
-
-            foreach (var way in localityWays)
-            {
-                var coordinates = new List<Position>();
-                var wayNodeIds = way.Nodes.ToHashSet();
-                var wayNodes = wayNodeIds
-                    .Select(id => osmData.Nodes.FirstOrDefault(node => node.Id == id))
-                    .Where(node => node != null)
-                    .ToList();
-
-                if (wayNodes.Any())
-                {
-                    var firstNode = wayNodes.First();
-                    wayNodes.Add(firstNode);
-
-                    foreach (var node in wayNodes)
-                        coordinates.Add(new Position((double)node.Latitude!, (double)node.Longitude!));
-                }
-
-                var borderPart = new List<LineString> { new LineString(coordinates) };
-                totalBorder.Add(borderPart);
-            }
-
-            var properties = new Dictionary<string, object>
-            {
-                { "LocalityName", locality.Name }
-            };
-
-            var polygonList = new List<Polygon>();
-            foreach (var borderPart in totalBorder)
-            {
-                var polygon = new Polygon(borderPart);
-                polygonList.Add(polygon);
-            }
-
-            var multiPolygon = new MultiPolygon(polygonList);
-
-            var feature = new Feature(multiPolygon, properties);
-            features.Add(feature);
-
-            var featureCollection = new FeatureCollection(features);
-
-            var options = new JsonSerializerOptions
-            {
-                WriteIndented = true,
-                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-            };
-            var geoJson = JsonSerializer.Serialize(featureCollection, options);
-
-            await File.WriteAllTextAsync(OutputFilePath, geoJson);
-            Console.WriteLine("Граница {" + locality.Name + "} записана в формате GeoJSON.");
+            var districtGeoJson = MultiPolygonSerializer.Serialize(district, osmData);
+            var districtGeometry = JsonSerializer.Deserialize<FeatureCollection>(districtGeoJson);
+            var districtFeature = districtGeometry!.Features.First();
+            features.Add(districtFeature);
+            Console.WriteLine("Объект {" + district.Name + "} записался в формат GeoJSON.");
         }
+        
+        foreach (var settlement in settlements)
+        {
+            var settlementGeoJson = MultiPolygonSerializer.Serialize(settlement, osmData);
+            var settlementGeometry = JsonSerializer.Deserialize<FeatureCollection>(settlementGeoJson);
+            var settlementFeature = settlementGeometry!.Features.First();
+            features.Add(settlementFeature);
+            Console.WriteLine("Объект {" + settlement.Name + "} записался в формат GeoJSON.");
+        }
+
+        foreach (var city in cities)
+        {
+            var cityGeoJson = MultiPolygonSerializer.Serialize(city, osmData);
+            if (grouper.Group(areaGeoJson, cityGeoJson))
+            {
+                var cityGeometry = JsonSerializer.Deserialize<FeatureCollection>(cityGeoJson);
+                var cityFeature = cityGeometry!.Features.First();
+                features.Add(cityFeature);
+                Console.WriteLine("Объект {" + city.Name + "} записался в формат GeoJSON.");
+                
+                foreach (var street in streets)
+                {
+                    var streetGeoJson = MultiLineSerializer.Serialize(street, osmData);
+                    if (grouper.Group(cityGeoJson, streetGeoJson))
+                    {
+                        var streetGeometry = JsonSerializer.Deserialize<FeatureCollection>(streetGeoJson);
+                        var streetFeature = streetGeometry!.Features.First();
+                        features.Add(streetFeature);
+                        Console.WriteLine("Объект {" + street.Name + "} записался в формат GeoJSON.");
+                        
+                        var houses = houseParser.ParseAll(osmData, street.Name);
+                        foreach (var house in houses)
+                        {
+                            var houseGeoJson = MultiPolygonSerializer.Serialize(house, osmData);
+                            if (grouper.Group(cityGeoJson, houseGeoJson))
+                            {
+                                var houseGeometry = JsonSerializer.Deserialize<FeatureCollection>(houseGeoJson);
+                                var houseFeature = houseGeometry!.Features.First();
+                                features.Add(houseFeature);
+                                Console.WriteLine($"Объект с адресом {house.Name}, " +
+                                                  $"д. {house.Number} записался в формат GeoJson.");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        var featureCollection = new FeatureCollection(features);
+
+        var options = new JsonSerializerOptions
+        {
+            WriteIndented = true,
+            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+        };
+        
+        var geoJson = JsonSerializer.Serialize(featureCollection, options);
+        
+        await File.WriteAllTextAsync(OutputFilePath, geoJson);
     }
 
     private static async Task<OsmData> GetSortedOsmData()
@@ -83,8 +116,7 @@ public class Client
         var osmData = new OsmData();
         await using var fileStream = new FileInfo(PathToPbf).OpenRead();
         using var osmStreamSource = new PBFOsmStreamSource(fileStream);
-
-        // сортируем объекты OSM-модели по категориям
+        
         foreach (var element in osmStreamSource)
             if (element.Type is OsmGeoType.Node)
                 osmData.Nodes.Add((Node)element);
@@ -96,21 +128,5 @@ public class Client
                 osmData.Relations.Add((Relation)element);
 
         return osmData;
-    }
-
-    private static Task<string> GetXmlFromOverpassApi()
-    {
-        const string url = "https://overpass-api.de/api/interpreter";
-        var overpassClient = new OverpassApiClient(url);
-
-        const string query = "[out:xml];" +
-                             "\nnode(54.979788, 73.414227, 54.983705, 73.423204);" +
-                             "\nout body;" +
-                             "\nway(54.979788, 73.414227, 54.983705, 73.423204);" +
-                             "\nout body;" +
-                             "\nrelation(54.979788, 73.414227, 54.983705, 73.423204);" +
-                             "\nout body;";
-
-        return overpassClient.ExecuteOverpassQueryAsync(query);
     }
 }
