@@ -19,10 +19,7 @@ namespace Gems.AddressRegistry.Entities
         public virtual RoadNetworkElement? RoadNetworkElement { get; set; }
         public virtual Building? Building { get; set; }
 
-        [NotMapped]
-        public virtual String? NormalizedString { get; set; }
-
-        public virtual void BuildNormalizedString()
+        public virtual String GetNormalizedAddress()
         {
             StringBuilder builder = new StringBuilder("");
             builder.Append($"{Region.Name}#");
@@ -36,7 +33,7 @@ namespace Gems.AddressRegistry.Entities
                 builder.Append($"{RoadNetworkElement.Name}#");
             if (Building != null)
                 builder.Append($"{Building.Number}");
-            this.NormalizedString = builder.ToString();
+            return builder.ToString();
         }
 
     }

@@ -356,8 +356,8 @@ namespace Gems.DataMergeServices.Services
                 address.Region = region;
                 FindParents(9, address);
                 // Создание нормализованой строки.
-                address.BuildNormalizedString();
-                var normalizedString = address.NormalizedString;
+                address.GetNormalizedAddress();
+                var normalizedString = address.GetNormalizedAddress;
                 Debug.WriteLine("NORMALIZED STRING: " + normalizedString);
                 addresses.Add(address);
             }
