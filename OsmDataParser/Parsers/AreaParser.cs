@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Gems.AddressRegistry.OsmDataParser.Factories;
 using Gems.AddressRegistry.OsmDataParser.Interfaces;
 using Gems.AddressRegistry.OsmDataParser.Model;
@@ -31,7 +32,7 @@ public class AreaParser : IOsmParser<Area>
                 resultArea.GeoJson = converter.Serialize(components, cleanedName, osmData);
             }
         }
-        Console.WriteLine("Объект {" + resultArea.Name + "} успешно получен.");
+        Debug.WriteLine("Объект {" + resultArea.Name + "} успешно получен.");
 
         return resultArea;
     }

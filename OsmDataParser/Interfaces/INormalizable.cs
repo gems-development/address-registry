@@ -1,4 +1,4 @@
-﻿namespace Gems.DataMergeServices.Interfaces;
+﻿namespace Gems.AddressRegistry.OsmDataParser.Interfaces;
 
 public interface INormalizable
 {

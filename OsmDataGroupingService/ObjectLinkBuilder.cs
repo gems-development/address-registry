@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Gems.AddressRegistry.OsmDataParser.Model;
 
 namespace Gems.AddressRegistry.OsmDataGroupingService;
@@ -14,14 +15,14 @@ public static class ObjectLinkBuilder
         foreach (var district in districts)
         {
             district.Area = area;
-            Console.WriteLine($"Району <{district.Name}> присвоена область <{area.Name}>");
+            Debug.WriteLine($"Району <{district.Name}> присвоена область <{area.Name}>");
             
             foreach (var city in cities)
             {
                 if (ObjectIntersector.Intersects(district, city))
                 {
                     city.District = district;
-                    Console.WriteLine($"Городу <{city.Name}> присвоен район <{district.Name}>");
+                    Debug.WriteLine($"Городу <{city.Name}> присвоен район <{district.Name}>");
                 }
 
                 foreach (var street in streets)
@@ -29,7 +30,7 @@ public static class ObjectLinkBuilder
                     if (ObjectIntersector.Intersects(city, street) && street.City == null)
                     {
                         street.City = city;
-                        Console.WriteLine($"Улице <{street.Name}> присвоен город <{city.Name}>");
+                        Debug.WriteLine($"Улице <{street.Name}> присвоен город <{city.Name}>");
                     }
 
                     foreach (var house in houses
@@ -38,7 +39,7 @@ public static class ObjectLinkBuilder
                                                  && house.Street == null))
                     {
                         house.Street = street;
-                        Console.WriteLine($"Дому <{house.Number}> присвоена улица <{street.Name}>");
+                        Debug.WriteLine($"Дому <{house.Number}> присвоена улица <{street.Name}>");
                     }
                 }
             }
@@ -48,7 +49,7 @@ public static class ObjectLinkBuilder
                 if (ObjectIntersector.Intersects(district, village))
                 {
                     village.District = district;
-                    Console.WriteLine($"Селу <{village.Name}> присвоен район <{district.Name}>");
+                    Debug.WriteLine($"Селу <{village.Name}> присвоен район <{district.Name}>");
                 }
             
                 foreach (var street in streets)
@@ -56,7 +57,7 @@ public static class ObjectLinkBuilder
                     if (ObjectIntersector.Intersects(village, street) && street.Village == null)
                     {
                         street.Village = village;
-                        Console.WriteLine($"Улице <{street.Name}> присвоено село <{village.Name}>");
+                        Debug.WriteLine($"Улице <{street.Name}> присвоено село <{village.Name}>");
                     }
 
                     foreach (var house in houses
@@ -65,7 +66,7 @@ public static class ObjectLinkBuilder
                                                  && house.Street == null))
                     {
                         house.Street = street;
-                        Console.WriteLine($"Дому <{house.Number}> присвоена улица <{street.Name}>");
+                        Debug.WriteLine($"Дому <{house.Number}> присвоена улица <{street.Name}>");
                     }
                 }
             }

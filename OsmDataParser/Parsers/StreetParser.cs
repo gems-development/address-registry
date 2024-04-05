@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Gems.AddressRegistry.OsmDataParser.Factories;
 using Gems.AddressRegistry.OsmDataParser.Interfaces;
 using Gems.AddressRegistry.OsmDataParser.Model;
@@ -101,7 +102,7 @@ internal sealed class StreetParser : IOsmParser<Street>
                     };
                     
                     streetList.Add(newStreet);
-                    Console.WriteLine("Объект {" + newStreet.Name + "} добавлен в коллекцию улиц.");
+                    Debug.WriteLine("Объект {" + newStreet.Name + "} добавлен в коллекцию улиц.");
 
                     osmObjects.RemoveAt(i);
                     i--;

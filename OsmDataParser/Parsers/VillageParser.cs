@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Gems.AddressRegistry.OsmDataParser.Factories;
 using Gems.AddressRegistry.OsmDataParser.Interfaces;
 using Gems.AddressRegistry.OsmDataParser.Model;
@@ -43,7 +44,7 @@ public class VillageParser : IOsmParser<Village>
                     GeoJson = converter.Serialize(new List<Way> { way }, cleanedName, osmData)
                 };
                 villages.Add(resultTown);
-                Console.WriteLine("Объект {" + resultTown.Name + "} добавлен в коллекцию сёл.");
+                Debug.WriteLine("Объект {" + resultTown.Name + "} добавлен в коллекцию сёл.");
             }
         }
 
@@ -68,7 +69,7 @@ public class VillageParser : IOsmParser<Village>
                 };
                 
                 villages.Add(resultVillage);
-                Console.WriteLine("Объект {" + resultVillage.Name + "} добавлен в коллекцию сёл.");
+                Debug.WriteLine("Объект {" + resultVillage.Name + "} добавлен в коллекцию сёл.");
             }
         }
 

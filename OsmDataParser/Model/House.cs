@@ -1,5 +1,5 @@
 using System.Text;
-using Gems.DataMergeServices.Interfaces;
+using Gems.AddressRegistry.OsmDataParser.Interfaces;
 
 namespace Gems.AddressRegistry.OsmDataParser.Model;
 

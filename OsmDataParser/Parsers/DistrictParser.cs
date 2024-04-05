@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Gems.AddressRegistry.OsmDataParser.Factories;
 using Gems.AddressRegistry.OsmDataParser.Interfaces;
 using Gems.AddressRegistry.OsmDataParser.Model;
@@ -41,7 +42,7 @@ internal sealed class DistrictParser : IOsmParser<District>
             };
         
             districtList.Add(resultDistrict);
-            Console.WriteLine("Объект {" + resultDistrict.Name + "} добавлен в коллекцию районов.");
+            Debug.WriteLine("Объект {" + resultDistrict.Name + "} добавлен в коллекцию районов.");
         }
             
         return districtList;

@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Gems.AddressRegistry.OsmDataParser.Factories;
 using Gems.AddressRegistry.OsmDataParser.Interfaces;
 using Gems.AddressRegistry.OsmDataParser.Model;
@@ -42,8 +43,8 @@ public class HouseParser : IOsmParser<House>
                     GeoJson = converter.Serialize(new List<Way> { way }, cleanedName, osmData)
                 };
                 housesList.Add(resultHouse);
-                Console.WriteLine($"Объект с адресом {resultHouse.Name}, " +
-                                  $"д. {resultHouse.Number} добавлен в коллекцию домов.");
+                Debug.WriteLine($"Объект с адресом {resultHouse.Name}, " +
+                                $"д. {resultHouse.Number} добавлен в коллекцию домов.");
             }
         }
 

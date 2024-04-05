@@ -2,10 +2,11 @@
 using Gems.AddressRegistry.Entities.DataSources;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
+using Gems.AddressRegistry.OsmDataParser.Interfaces;
 
 namespace Gems.AddressRegistry.Entities
 {
-    public class Address : BaseGeoEntity
+    public class Address : BaseGeoEntity, INormalizable
     {
         public virtual ICollection<AddressDataSource> DataSources { get; set; } = new List<AddressDataSource>(0);
         public virtual Country Country { get; set; } = null!;
