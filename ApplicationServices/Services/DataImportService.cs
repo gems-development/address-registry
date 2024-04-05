@@ -247,7 +247,7 @@ namespace Gems.ApplicationServices.Services
             }
             return await _appDbContext.SaveChangesAsync(cancellationToken);
         }
-        public async Task<int> ImportAddressAsync(IReadOnlyCollection<Address> addressesImport, CancellationToken cancellationToken = default)
+        public async Task<int> ImportAddressesAsync(IReadOnlyCollection<Address> addressesImport, CancellationToken cancellationToken = default)
         {
             foreach (Address addressImport in addressesImport)
             {

@@ -2,7 +2,7 @@ using Gems.AddressRegistry.OsmDataParser.Model;
 using NetTopologySuite.Features;
 using NetTopologySuite.IO;
 
-namespace Gems.AddressRegistry.OsmDataGroupingService;
+namespace Gems.AddressRegistry.OsmDataParser.DataGroupingServices;
 
 public static class ObjectIntersector
 {

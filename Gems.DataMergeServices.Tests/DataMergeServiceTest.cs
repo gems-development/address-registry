@@ -1,6 +1,5 @@
 ﻿using Gems.AddressRegistry.Entities;
 using Gems.AddressRegistry.Entities.DataSources;
-using Gems.AddressRegistry.OsmDataGroupingService;
 using Gems.AddressRegistry.OsmDataParser.Model;
 using City = Gems.AddressRegistry.OsmDataParser.Model.City;
 

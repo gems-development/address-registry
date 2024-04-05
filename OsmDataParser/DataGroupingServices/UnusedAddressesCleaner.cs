@@ -1,6 +1,6 @@
 using Gems.AddressRegistry.OsmDataParser.Model;
 
-namespace Gems.AddressRegistry.OsmDataGroupingService;
+namespace Gems.AddressRegistry.OsmDataParser.DataGroupingServices;
 
 public static class UnusedAddressesCleaner
 {

@@ -82,7 +82,7 @@ namespace Gems.DataMergeServices.Services
 
         }
 
-        async public void ConvertRegion(String uri)
+        public async Task ConvertRegion(String uri)
         {
 
             XmlReaderSettings settings = new XmlReaderSettings();
@@ -191,8 +191,6 @@ namespace Gems.DataMergeServices.Services
                                     Debug.WriteLine(roadNetworkElement.Name);
                                     break;
                             }
-
-                            Debug.WriteLine($"Start Element {reader.GetAttribute("OBJECTGUID")} {reader.GetAttribute("NAME")}");
                             break;
                         case XmlNodeType.Text:
                             Console.WriteLine("Text Node: {0}",
@@ -213,7 +211,7 @@ namespace Gems.DataMergeServices.Services
 
         }
 
-        async public void ConvertBuildings(String uri)
+        public async Task ConvertBuildings(String uri)
         {
             XmlReaderSettings settings = new XmlReaderSettings();
             settings.Async = true;
@@ -241,7 +239,6 @@ namespace Gems.DataMergeServices.Services
                                 Debug.WriteLine($"Не удалось добавить здание с id: {int.Parse(buildingDataSource.Id)}" );
                             Debug.WriteLine(building.Number);
 
-                            Debug.WriteLine($"Start Element {reader.GetAttribute("OBJECTGUID")} {reader.GetAttribute("NAME")}");
                             break;
                         case XmlNodeType.Text:
                             Console.WriteLine("Text Node: {0}",
@@ -261,7 +258,7 @@ namespace Gems.DataMergeServices.Services
 
         }
 
-        async public void ReadAdmHierarchy(String uri)
+        public async Task ReadAdmHierarchy(String uri)
         {
             XmlReaderSettings settings = new XmlReaderSettings();
             settings.Async = true;
@@ -282,7 +279,6 @@ namespace Gems.DataMergeServices.Services
                             var parentObjId = reader.GetAttribute("PARENTOBJID");
                             if(objId!= null && parentObjId != null)
                             AdmHierarchy.Add(int.Parse(objId), int.Parse(parentObjId));
-                            Debug.WriteLine($"Start Element {reader.GetAttribute("OBJECTGUID")} {reader.GetAttribute("NAME")}");
                             if(region.Code == null)
                             region.Code = reader.GetAttribute("REGIONCODE")!;//TODO как вытащить код региона не выполняя этот код каждую итерацию
                             break;
@@ -323,8 +319,7 @@ namespace Gems.DataMergeServices.Services
                             var parentObjId = reader.GetAttribute("PARENTOBJID");
                             if (objId != null && parentObjId != null)
                                 MunHierarchy.Add(int.Parse(objId), int.Parse(parentObjId));
-                            Debug.WriteLine($"Start Element {reader.GetAttribute("OBJECTGUID")} {reader.GetAttribute("NAME")}");
-                            break;
+                           break;
                         case XmlNodeType.Text:
                             Console.WriteLine("Text Node: {0}",
                                      await reader.GetValueAsync());
@@ -344,21 +339,21 @@ namespace Gems.DataMergeServices.Services
         }
 
 
-        public IReadOnlyCollection<Address> BuildAddresses()
+        public async Task<IReadOnlyCollection<Address>> ReadAndBuildAddresses(String pathAdm, String pathMun, String pathBuildings, String pathReg)
         {
+            await ReadAdmHierarchy(pathAdm);
+            await ReadMunHierarchy(pathMun);
+            await ConvertRegion(pathReg);
+            await ConvertBuildings(pathBuildings);
             var addresses = new List<Address>();
             foreach(var item in buildingDictionary)
             {
                 var address = new Address();
                 address.Building = item.Value;
-                //TODO убрать хардкод региона и страны
                 address.Country = country;
                 address.Region = region;
                 FindParents(9, address);
-                // Создание нормализованой строки.
-                address.GetNormalizedAddress();
-                var normalizedString = address.GetNormalizedAddress;
-                Debug.WriteLine("NORMALIZED STRING: " + normalizedString);
+                Debug.WriteLine(address.GetNormalizedAddress());
                 addresses.Add(address);
             }
             return addresses;

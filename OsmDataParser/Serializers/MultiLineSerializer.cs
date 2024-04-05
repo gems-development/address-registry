@@ -47,9 +47,12 @@ public class MultiLineSerializer : IOsmToGeoJsonConverter
                 foreach (var node in wayNodes)
                     coordinates.Add(new Position((double)node.Latitude!, (double)node.Longitude!));
             }
-            
-            var streetPart = new LineString(coordinates);
-            totalStreet.Add(streetPart);
+
+            if (coordinates.Count >= 2)
+            {
+                var streetPart = new LineString(coordinates);
+                totalStreet.Add(streetPart);
+            }
         }
 
         var properties = new Dictionary<string, object>

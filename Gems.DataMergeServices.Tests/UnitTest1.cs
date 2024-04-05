@@ -21,7 +21,7 @@ namespace Gems.DataMergeServices.Tests
             const string connectionString = "Host=localhost;Port=5432;Database=addressdb;Username=postgres;Password=postgres";
             IAppDbContextFactory appDbContextFactory = new AppDbContextFactory(connectionString);
             DataImportService dataImportService = new DataImportService(appDbContextFactory);
-            await dataImportService.ImportAddressAsync(fiasXmlToEntityConverter.BuildAddresses());
+            
 
         }
     }

@@ -45,8 +45,11 @@ public class MultiPolygonSerializer : IOsmToGeoJsonConverter
                     coordinates.Add(new Position((double)node.Latitude!, (double)node.Longitude!));
             }
 
-            var borderPart = new List<LineString> { new LineString(coordinates) };
-            totalBorder.Add(borderPart);
+            if (coordinates.Count >= 2)
+            {
+                var borderPart = new List<LineString> { new LineString(coordinates) };
+                totalBorder.Add(borderPart);
+            }
         }
 
         var properties = new Dictionary<string, object>
@@ -57,8 +60,11 @@ public class MultiPolygonSerializer : IOsmToGeoJsonConverter
         var polygonList = new List<Polygon>();
         foreach (var borderPart in totalBorder)
         {
-            var polygon = new Polygon(borderPart);
-            polygonList.Add(polygon);
+            if (borderPart.Count >= 4)
+            {
+                var polygon = new Polygon(borderPart);
+                polygonList.Add(polygon);
+            }
         }
 
         var multiPolygon = new MultiPolygon(polygonList);
