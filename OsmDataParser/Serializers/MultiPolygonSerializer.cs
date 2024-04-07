@@ -15,7 +15,7 @@ public class MultiPolygonSerializer : IOsmToGeoJsonConverter
     public string Serialize(List<Way> components, string objectName, OsmData osmData)
     {
         var features = new List<Feature>();
-        var totalBorder = new List<List<LineString>>();
+        var totalBorder = new List<LineString>();
 
         foreach (var way in components)
         {
@@ -47,7 +47,7 @@ public class MultiPolygonSerializer : IOsmToGeoJsonConverter
 
             if (coordinates.Count >= 2)
             {
-                var borderPart = new List<LineString> { new LineString(coordinates) };
+                var borderPart = new LineString(coordinates);
                 totalBorder.Add(borderPart);
             }
         }
@@ -58,14 +58,11 @@ public class MultiPolygonSerializer : IOsmToGeoJsonConverter
         };
 
         var polygonList = new List<Polygon>();
-        foreach (var borderPart in totalBorder)
-        {
-            if (borderPart.Count >= 4)
-            {
-                var polygon = new Polygon(borderPart);
-                polygonList.Add(polygon);
-            }
-        }
+        var borderLines = totalBorder.Where(borderPart 
+            => borderPart.Coordinates.Count >= 4).ToList();
+
+        var polygon = new Polygon(borderLines);
+        polygonList.Add(polygon);
 
         var multiPolygon = new MultiPolygon(polygonList);
 

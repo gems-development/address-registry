@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text;
 using Gems.AddressRegistry.OsmDataParser.Interfaces;
 
@@ -52,6 +53,7 @@ public class House : RealObject, INormalizable
 
         var resultAddress = normalizedAddress.ToString().ToUpper();
         Address = resultAddress;
+        Debug.WriteLine($"Построен адрес: {resultAddress}");
 
         return Address;
     }
