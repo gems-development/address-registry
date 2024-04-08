@@ -1,15 +1,9 @@
 ﻿using System.Diagnostics;
 using Gems.AddressRegistry.DataAccess;
 using Gems.AddressRegistry.OsmDataParser;
-using Gems.AddressRegistry.OsmDataParser.DataGroupingServices;
-using Gems.AddressRegistry.OsmDataParser.Factories;
-using Gems.AddressRegistry.OsmDataParser.Model;
-using Gems.AddressRegistry.OsmDataParser.Support;
 using Gems.ApplicationServices.Services;
 using Gems.DataMergeServices.Services;
 using Microsoft.Extensions.Configuration;
-using OsmSharp;
-using OsmSharp.Streams;
 
 namespace Gems.AddressRegistry.OsmClient;
 

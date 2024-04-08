@@ -56,13 +56,17 @@ public class MultiPolygonSerializer : IOsmToGeoJsonConverter
         {
             { "ObjectName", objectName }
         };
-
+        
         var polygonList = new List<Polygon>();
-        var borderLines = totalBorder.Where(borderPart 
-            => borderPart.Coordinates.Count >= 4).ToList();
-
-        var polygon = new Polygon(borderLines);
-        polygonList.Add(polygon);
+        try
+        {
+            var polygon = new Polygon(totalBorder);
+            polygonList.Add(polygon);
+        }
+        catch (Exception)
+        {
+            return "";
+        }
 
         var multiPolygon = new MultiPolygon(polygonList);
 

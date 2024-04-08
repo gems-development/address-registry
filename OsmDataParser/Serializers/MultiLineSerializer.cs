@@ -38,9 +38,6 @@ public class MultiLineSerializer : IOsmToGeoJsonConverter
                     }
                 }
             }
-            
-            if (wayNodes.Count < 2)
-                continue;
 
             if (wayNodes.Any())
             {
@@ -59,7 +56,6 @@ public class MultiLineSerializer : IOsmToGeoJsonConverter
         {
             { "ObjectName", objectName }
         };
-        
         
         var multiLine = new MultiLineString(totalStreet);
 
