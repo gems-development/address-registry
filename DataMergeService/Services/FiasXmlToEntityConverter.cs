@@ -208,7 +208,7 @@ namespace Gems.DataMergeServices.Services
                     }
                 }
             }
-
+            Debug.WriteLine("ФИАС || Завершено считывание файла региона");
         }
 
         public async Task ConvertBuildings(String uri)
@@ -236,8 +236,8 @@ namespace Gems.DataMergeServices.Services
                             buildingDataSource.SourceType = AddressRegistry.Entities.Enums.SourceType.Fias;
                             building.DataSources.Add(buildingDataSource);
                             if (!buildingDictionary.TryAdd(int.Parse(buildingDataSource.Id), building))
-                                Debug.WriteLine($"Не удалось добавить здание с id: {int.Parse(buildingDataSource.Id)}" );
-                            Debug.WriteLine(building.Number);
+                                Debug.WriteLine($"ФИАС ||Не удалось добавить здание с id: {int.Parse(buildingDataSource.Id)}" );
+                            Debug.WriteLine($"ФИАС || Добавлен дом № {building.Number}");
 
                             break;
                         case XmlNodeType.Text:
@@ -255,7 +255,7 @@ namespace Gems.DataMergeServices.Services
                     }
                 }
             }
-
+            Debug.WriteLine("ФИАС || Завершено считывание файла с зданиями");
         }
 
         public async Task ReadAdmHierarchy(String uri)
@@ -297,6 +297,7 @@ namespace Gems.DataMergeServices.Services
                     }
                 }
             }
+            Debug.WriteLine("ФИАС || Завершено считывание файла административной иерархии");
         }
         public async Task ReadMunHierarchy(String uri)
         {
@@ -335,7 +336,7 @@ namespace Gems.DataMergeServices.Services
                     }
                 }
             }
-
+            Debug.WriteLine("ФИАС || Завершено считывание файла муниципальной иерархии");
         }
 
 
@@ -353,7 +354,7 @@ namespace Gems.DataMergeServices.Services
                 address.Country = country;
                 address.Region = region;
                 FindParents(9, address);
-                Debug.WriteLine(address.GetNormalizedAddress());
+                Debug.WriteLine($"ФИАС || Собрана иерархия адреса: {address.GetNormalizedAddress()}");
                 addresses.Add(address);
             }
             return addresses;
