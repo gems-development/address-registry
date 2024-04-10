@@ -223,7 +223,7 @@ namespace Gems.ApplicationServices.Services
             }
             return await _appDbContext.SaveChangesAsync(cancellationToken);
         }
-        public async Task<int> ImportCountryAsync(Country countryImport, CancellationToken cancellationToken = default)
+        /*public async Task<int> ImportCountryAsync(Country countryImport, CancellationToken cancellationToken = default)
         {
             
                 var externalCountryId = countryImport.DataSources.First(o => o.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias).Id;
@@ -246,7 +246,7 @@ namespace Gems.ApplicationServices.Services
                     _appDbContext.Add(countryImport);
             }
             return await _appDbContext.SaveChangesAsync(cancellationToken);
-        }
+        }*/
         public async Task<int> ImportAddressesAsync(IReadOnlyCollection<Address> addressesImport, CancellationToken cancellationToken = default)
         {
             foreach (Address addressImport in addressesImport)
@@ -264,7 +264,7 @@ namespace Gems.ApplicationServices.Services
                         .Any(p => p.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias && p.Id == externalAddressId) is true);
                 if (address != null)
                 {
-                    if(address.Building != null)
+                    if (address.Building != null)
                         await ImportBuildingAsync(addressImport.Building!, cancellationToken);
                     if (address.RoadNetworkElement != null)
                         await ImportRoadNetworkElementAsync(addressImport.RoadNetworkElement!, cancellationToken);
@@ -282,11 +282,22 @@ namespace Gems.ApplicationServices.Services
                         await ImportMunicipalAreaAsync(addressImport.MunicipalArea!, cancellationToken);
                     if (address.Region != null)
                         await ImportRegionAsync(addressImport.Region, cancellationToken);
+                 /*   if (address.Country != null)
+                        await ImportCountryAsync(addressImport.Country, cancellationToken);*/
 
-                    _appDbContext.Update(address);
+                    _appDbContext.Addresses.Update(address);
                 }
                 else
-                    _appDbContext.Add(addressImport);
+
+                if (addressImport.IsCorrect())
+                {
+                    _appDbContext.Addresses.Add(addressImport);
+                }
+                else
+                {
+                   /* var invalidAddress = new InvalidAddress(addressImport);
+                    _appDbContext.InvalidAddresses.Add(invalidAddress);*/
+                }
             }
             return await _appDbContext.SaveChangesAsync(cancellationToken);
 

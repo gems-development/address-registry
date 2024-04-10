@@ -9,7 +9,7 @@ namespace Gems.AddressRegistry.Entities
     public class Address : BaseGeoEntity, INormalizable
     {
         public virtual ICollection<AddressDataSource> DataSources { get; set; } = new List<AddressDataSource>(0);
-        public virtual Country Country { get; set; } = null!;
+        
         public virtual Region Region { get; set; } = null!;
         public virtual MunicipalArea? MunicipalArea { get; set; }
         public virtual AdministrativeArea? AdministrativeArea { get; set; }
@@ -35,6 +35,17 @@ namespace Gems.AddressRegistry.Entities
             if (Building != null)
                 builder.Append($"{Building.Number}");
             return builder.ToString().ToUpper();
+        }
+
+        public bool IsCorrect()
+        {
+            if ((City != null || Settlement != null) && RoadNetworkElement != null && MunicipalArea != null && Building != null )
+            {
+                return true;
+            } else
+            {
+                return false; 
+            }
         }
 
     }

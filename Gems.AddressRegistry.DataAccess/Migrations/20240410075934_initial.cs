@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Gems.AddressRegistry.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -59,33 +59,13 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Countries",
+                name: "Country",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Updated = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    GeoJson = table.Column<string>(type: "text", nullable: true)
+                    Name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Countries", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "LandPlots",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Updated = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    GeoJson = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_LandPlots", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -166,22 +146,6 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Spaces",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Number = table.Column<string>(type: "text", nullable: false),
-                    SpaceType = table.Column<int>(type: "integer", nullable: false),
-                    Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Updated = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    GeoJson = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Spaces", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Territories",
                 columns: table => new
                 {
@@ -201,7 +165,6 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    CountryId = table.Column<Guid>(type: "uuid", nullable: false),
                     RegionId = table.Column<Guid>(type: "uuid", nullable: false),
                     MunicipalAreaId = table.Column<Guid>(type: "uuid", nullable: true),
                     AdministrativeAreaId = table.Column<Guid>(type: "uuid", nullable: true),
@@ -210,9 +173,8 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                     SettlementId = table.Column<Guid>(type: "uuid", nullable: true),
                     PlaningStructureElementId = table.Column<Guid>(type: "uuid", nullable: true),
                     RoadNetworkElementId = table.Column<Guid>(type: "uuid", nullable: true),
-                    LandPlotId = table.Column<Guid>(type: "uuid", nullable: true),
                     BuildingId = table.Column<Guid>(type: "uuid", nullable: true),
-                    SpaceId = table.Column<Guid>(type: "uuid", nullable: true),
+                    Discriminator = table.Column<string>(type: "text", nullable: false),
                     Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Updated = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     GeoJson = table.Column<string>(type: "text", nullable: true)
@@ -234,17 +196,6 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                         name: "FK_Addresses_Cities_CityId",
                         column: x => x.CityId,
                         principalTable: "Cities",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Addresses_Countries_CountryId",
-                        column: x => x.CountryId,
-                        principalTable: "Countries",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Addresses_LandPlots_LandPlotId",
-                        column: x => x.LandPlotId,
-                        principalTable: "LandPlots",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Addresses_MunicipalAreas_MunicipalAreaId",
@@ -273,11 +224,6 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                         principalTable: "Settlements",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Addresses_Spaces_SpaceId",
-                        column: x => x.SpaceId,
-                        principalTable: "Spaces",
-                        principalColumn: "Id");
-                    table.ForeignKey(
                         name: "FK_Addresses_Territories_TerritoryId",
                         column: x => x.TerritoryId,
                         principalTable: "Territories",
@@ -295,14 +241,11 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                     AdministrativeAreaId = table.Column<Guid>(type: "uuid", nullable: true),
                     BuildingId = table.Column<Guid>(type: "uuid", nullable: true),
                     CityId = table.Column<Guid>(type: "uuid", nullable: true),
-                    CountryId = table.Column<Guid>(type: "uuid", nullable: true),
                     EpsId = table.Column<Guid>(type: "uuid", nullable: true),
                     ErnId = table.Column<Guid>(type: "uuid", nullable: true),
-                    LandPlotId = table.Column<Guid>(type: "uuid", nullable: true),
                     MunicipalAreaId = table.Column<Guid>(type: "uuid", nullable: true),
                     RegionId = table.Column<Guid>(type: "uuid", nullable: true),
                     SettlementId = table.Column<Guid>(type: "uuid", nullable: true),
-                    SpaceId = table.Column<Guid>(type: "uuid", nullable: true),
                     TerritoryId = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
@@ -330,18 +273,6 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                         name: "FK_DataSource_Cities_CityId",
                         column: x => x.CityId,
                         principalTable: "Cities",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_DataSource_Countries_CountryId",
-                        column: x => x.CountryId,
-                        principalTable: "Countries",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_DataSource_LandPlots_LandPlotId",
-                        column: x => x.LandPlotId,
-                        principalTable: "LandPlots",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -375,12 +306,6 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_DataSource_Spaces_SpaceId",
-                        column: x => x.SpaceId,
-                        principalTable: "Spaces",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_DataSource_Territories_TerritoryId",
                         column: x => x.TerritoryId,
                         principalTable: "Territories",
@@ -402,16 +327,6 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                 name: "IX_Addresses_CityId",
                 table: "Addresses",
                 column: "CityId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Addresses_CountryId",
-                table: "Addresses",
-                column: "CountryId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Addresses_LandPlotId",
-                table: "Addresses",
-                column: "LandPlotId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Addresses_MunicipalAreaId",
@@ -439,11 +354,6 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                 column: "SettlementId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Addresses_SpaceId",
-                table: "Addresses",
-                column: "SpaceId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Addresses_TerritoryId",
                 table: "Addresses",
                 column: "TerritoryId");
@@ -469,11 +379,6 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                 column: "CityId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DataSource_CountryId",
-                table: "DataSource",
-                column: "CountryId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_DataSource_EpsId",
                 table: "DataSource",
                 column: "EpsId");
@@ -482,11 +387,6 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                 name: "IX_DataSource_ErnId",
                 table: "DataSource",
                 column: "ErnId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DataSource_LandPlotId",
-                table: "DataSource",
-                column: "LandPlotId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DataSource_MunicipalAreaId",
@@ -504,11 +404,6 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                 column: "SettlementId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DataSource_SpaceId",
-                table: "DataSource",
-                column: "SpaceId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_DataSource_TerritoryId",
                 table: "DataSource",
                 column: "TerritoryId");
@@ -517,6 +412,9 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Country");
+
             migrationBuilder.DropTable(
                 name: "DataSource");
 
@@ -533,12 +431,6 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                 name: "Cities");
 
             migrationBuilder.DropTable(
-                name: "Countries");
-
-            migrationBuilder.DropTable(
-                name: "LandPlots");
-
-            migrationBuilder.DropTable(
                 name: "MunicipalAreas");
 
             migrationBuilder.DropTable(
@@ -552,9 +444,6 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
 
             migrationBuilder.DropTable(
                 name: "Settlements");
-
-            migrationBuilder.DropTable(
-                name: "Spaces");
 
             migrationBuilder.DropTable(
                 name: "Territories");

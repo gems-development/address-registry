@@ -6,8 +6,9 @@ namespace Gems.AddressRegistry.DataAccess
 {
     public interface IAppDbContext
     {
-        DbSet<Country> Countries { get; }
+        
         DbSet<Address> Addresses { get; }
+     
         DbSet<Region> Regions { get; }
         DbSet<AdministrativeArea> AdministrativeAreas { get; }
         DbSet<MunicipalArea> MunicipalAreas { get; }

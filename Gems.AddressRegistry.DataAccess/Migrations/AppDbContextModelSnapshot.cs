@@ -40,9 +40,6 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                     b.Property<Guid?>("CityId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("CountryId")
-                        .HasColumnType("uuid");
-
                     b.Property<DateTime>("Created")
                         .HasColumnType("timestamp with time zone");
 
@@ -77,8 +74,6 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                     b.HasIndex("BuildingId");
 
                     b.HasIndex("CityId");
-
-                    b.HasIndex("CountryId");
 
                     b.HasIndex("MunicipalAreaId");
 
@@ -196,26 +191,11 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
 
             modelBuilder.Entity("Gems.AddressRegistry.Entities.Country", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("GeoJson")
-                        .HasColumnType("text");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("Updated")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Countries");
+                    b.ToTable("Country");
                 });
 
             modelBuilder.Entity("Gems.AddressRegistry.Entities.MunicipalArea", b =>
@@ -417,18 +397,6 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                     b.HasDiscriminator().HasValue("CityDataSource");
                 });
 
-            modelBuilder.Entity("Gems.AddressRegistry.Entities.DataSources.CountryDataSource", b =>
-                {
-                    b.HasBaseType("Gems.AddressRegistry.Entities.Common.DataSourceBase");
-
-                    b.Property<Guid>("CountryId")
-                        .HasColumnType("uuid");
-
-                    b.HasIndex("CountryId");
-
-                    b.HasDiscriminator().HasValue("CountryDataSource");
-                });
-
             modelBuilder.Entity("Gems.AddressRegistry.Entities.DataSources.EpsDataSource", b =>
                 {
                     b.HasBaseType("Gems.AddressRegistry.Entities.Common.DataSourceBase");
@@ -515,12 +483,6 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                         .WithMany()
                         .HasForeignKey("CityId");
 
-                    b.HasOne("Gems.AddressRegistry.Entities.Country", "Country")
-                        .WithMany()
-                        .HasForeignKey("CountryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Gems.AddressRegistry.Entities.MunicipalArea", "MunicipalArea")
                         .WithMany()
                         .HasForeignKey("MunicipalAreaId");
@@ -552,8 +514,6 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                     b.Navigation("Building");
 
                     b.Navigation("City");
-
-                    b.Navigation("Country");
 
                     b.Navigation("MunicipalArea");
 
@@ -610,17 +570,6 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                         .IsRequired();
 
                     b.Navigation("City");
-                });
-
-            modelBuilder.Entity("Gems.AddressRegistry.Entities.DataSources.CountryDataSource", b =>
-                {
-                    b.HasOne("Gems.AddressRegistry.Entities.Country", "Country")
-                        .WithMany("DataSources")
-                        .HasForeignKey("CountryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Country");
                 });
 
             modelBuilder.Entity("Gems.AddressRegistry.Entities.DataSources.EpsDataSource", b =>
@@ -705,11 +654,6 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                 });
 
             modelBuilder.Entity("Gems.AddressRegistry.Entities.City", b =>
-                {
-                    b.Navigation("DataSources");
-                });
-
-            modelBuilder.Entity("Gems.AddressRegistry.Entities.Country", b =>
                 {
                     b.Navigation("DataSources");
                 });

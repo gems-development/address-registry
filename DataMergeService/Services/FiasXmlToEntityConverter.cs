@@ -347,11 +347,13 @@ namespace Gems.DataMergeServices.Services
             await ConvertRegion(pathReg);
             await ConvertBuildings(pathBuildings);
             var addresses = new List<Address>();
+            var country1 = new Country();
+            country1.Name = "123";
             foreach(var item in buildingDictionary)
             {
                 var address = new Address();
                 address.Building = item.Value;
-                address.Country = country;
+                
                 address.Region = region;
                 FindParents(9, address);
                 Debug.WriteLine($"ФИАС || Собрана иерархия адреса: {address.GetNormalizedAddress()}");

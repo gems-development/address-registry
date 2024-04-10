@@ -7,7 +7,8 @@ namespace Gems.AddressRegistry.DataAccess
     internal class AppDbContext : DbContext, IAppDbContext
     {
         public DbSet<Address> Addresses { get; set; }
-        public DbSet<Country> Countries { get; set; }
+       
+        
         public DbSet<Region> Regions { get; set; }
         public DbSet<AdministrativeArea> AdministrativeAreas { get; set; }
         public DbSet<MunicipalArea> MunicipalAreas { get; set; }
@@ -18,7 +19,7 @@ namespace Gems.AddressRegistry.DataAccess
         public DbSet<RoadNetworkElement> RoadNetworkElements { get; set; }
         public DbSet<Building> Buildings { get; set; }
 
-        private readonly string _connectionString = "Host=localhost;Port=5432;Database=addressdb;Username=postgres;Password=postgres";
+        private readonly string _connectionString = "Host=localhost;Port=5432;Database=addressdb;Username=postgres;Password=admin";
 
         public AppDbContext()
         { }
@@ -35,6 +36,7 @@ namespace Gems.AddressRegistry.DataAccess
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Country>().HasNoKey();
             modelBuilder.Entity<DataSourceBase>().HasDiscriminator();
             modelBuilder.Entity<DataSourceBase>().ToTable("DataSource");
 

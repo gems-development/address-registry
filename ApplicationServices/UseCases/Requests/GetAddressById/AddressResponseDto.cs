@@ -21,7 +21,7 @@ namespace Gems.ApplicationServices.UseCases.Requests.GetAddressById
 
         public AddressResponseDto(Address address)
         {
-            NameOfCountry = address.Country.Name;
+           
             NameOfRegion = address.Region.Name;
             NameOfAdministrativeArea = address.AdministrativeArea?.Name;
             NameOfMunicipalArea = address.MunicipalArea?.Name;

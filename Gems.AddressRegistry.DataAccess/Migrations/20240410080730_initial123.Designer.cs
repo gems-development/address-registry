@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Gems.AddressRegistry.DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240313110812_Initial")]
-    partial class Initial
+    [Migration("20240410080730_initial123")]
+    partial class initial123
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -43,17 +43,11 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                     b.Property<Guid?>("CityId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("CountryId")
-                        .HasColumnType("uuid");
-
                     b.Property<DateTime>("Created")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("GeoJson")
                         .HasColumnType("text");
-
-                    b.Property<Guid?>("LandPlotId")
-                        .HasColumnType("uuid");
 
                     b.Property<Guid?>("MunicipalAreaId")
                         .HasColumnType("uuid");
@@ -70,9 +64,6 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                     b.Property<Guid?>("SettlementId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("SpaceId")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid?>("TerritoryId")
                         .HasColumnType("uuid");
 
@@ -87,10 +78,6 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
 
                     b.HasIndex("CityId");
 
-                    b.HasIndex("CountryId");
-
-                    b.HasIndex("LandPlotId");
-
                     b.HasIndex("MunicipalAreaId");
 
                     b.HasIndex("PlaningStructureElementId");
@@ -100,8 +87,6 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                     b.HasIndex("RoadNetworkElementId");
 
                     b.HasIndex("SettlementId");
-
-                    b.HasIndex("SpaceId");
 
                     b.HasIndex("TerritoryId");
 
@@ -209,50 +194,11 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
 
             modelBuilder.Entity("Gems.AddressRegistry.Entities.Country", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("GeoJson")
-                        .HasColumnType("text");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("Updated")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Countries");
-                });
-
-            modelBuilder.Entity("Gems.AddressRegistry.Entities.LandPlot", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("GeoJson")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("Updated")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("LandPlots");
+                    b.ToTable("Country");
                 });
 
             modelBuilder.Entity("Gems.AddressRegistry.Entities.MunicipalArea", b =>
@@ -382,33 +328,6 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                     b.ToTable("Settlements");
                 });
 
-            modelBuilder.Entity("Gems.AddressRegistry.Entities.Space", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("GeoJson")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Number")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("SpaceType")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("Updated")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Spaces");
-                });
-
             modelBuilder.Entity("Gems.AddressRegistry.Entities.Territory", b =>
                 {
                     b.Property<Guid>("Id")
@@ -481,18 +400,6 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                     b.HasDiscriminator().HasValue("CityDataSource");
                 });
 
-            modelBuilder.Entity("Gems.AddressRegistry.Entities.DataSources.CountryDataSource", b =>
-                {
-                    b.HasBaseType("Gems.AddressRegistry.Entities.Common.DataSourceBase");
-
-                    b.Property<Guid>("CountryId")
-                        .HasColumnType("uuid");
-
-                    b.HasIndex("CountryId");
-
-                    b.HasDiscriminator().HasValue("CountryDataSource");
-                });
-
             modelBuilder.Entity("Gems.AddressRegistry.Entities.DataSources.EpsDataSource", b =>
                 {
                     b.HasBaseType("Gems.AddressRegistry.Entities.Common.DataSourceBase");
@@ -515,18 +422,6 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                     b.HasIndex("ErnId");
 
                     b.HasDiscriminator().HasValue("ErnDataSource");
-                });
-
-            modelBuilder.Entity("Gems.AddressRegistry.Entities.DataSources.LandPlotDataSource", b =>
-                {
-                    b.HasBaseType("Gems.AddressRegistry.Entities.Common.DataSourceBase");
-
-                    b.Property<Guid>("LandPlotId")
-                        .HasColumnType("uuid");
-
-                    b.HasIndex("LandPlotId");
-
-                    b.HasDiscriminator().HasValue("LandPlotDataSource");
                 });
 
             modelBuilder.Entity("Gems.AddressRegistry.Entities.DataSources.MunicipalAreaDataSource", b =>
@@ -565,18 +460,6 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                     b.HasDiscriminator().HasValue("SettlementDataSource");
                 });
 
-            modelBuilder.Entity("Gems.AddressRegistry.Entities.DataSources.SpaceDataSource", b =>
-                {
-                    b.HasBaseType("Gems.AddressRegistry.Entities.Common.DataSourceBase");
-
-                    b.Property<Guid>("SpaceId")
-                        .HasColumnType("uuid");
-
-                    b.HasIndex("SpaceId");
-
-                    b.HasDiscriminator().HasValue("SpaceDataSource");
-                });
-
             modelBuilder.Entity("Gems.AddressRegistry.Entities.DataSources.TerritoryDataSource", b =>
                 {
                     b.HasBaseType("Gems.AddressRegistry.Entities.Common.DataSourceBase");
@@ -603,16 +486,6 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                         .WithMany()
                         .HasForeignKey("CityId");
 
-                    b.HasOne("Gems.AddressRegistry.Entities.Country", "Country")
-                        .WithMany()
-                        .HasForeignKey("CountryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Gems.AddressRegistry.Entities.LandPlot", "LandPlot")
-                        .WithMany()
-                        .HasForeignKey("LandPlotId");
-
                     b.HasOne("Gems.AddressRegistry.Entities.MunicipalArea", "MunicipalArea")
                         .WithMany()
                         .HasForeignKey("MunicipalAreaId");
@@ -635,10 +508,6 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                         .WithMany()
                         .HasForeignKey("SettlementId");
 
-                    b.HasOne("Gems.AddressRegistry.Entities.Space", "Space")
-                        .WithMany()
-                        .HasForeignKey("SpaceId");
-
                     b.HasOne("Gems.AddressRegistry.Entities.Territory", "Territory")
                         .WithMany()
                         .HasForeignKey("TerritoryId");
@@ -649,10 +518,6 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
 
                     b.Navigation("City");
 
-                    b.Navigation("Country");
-
-                    b.Navigation("LandPlot");
-
                     b.Navigation("MunicipalArea");
 
                     b.Navigation("PlaningStructureElement");
@@ -662,8 +527,6 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                     b.Navigation("RoadNetworkElement");
 
                     b.Navigation("Settlement");
-
-                    b.Navigation("Space");
 
                     b.Navigation("Territory");
                 });
@@ -712,17 +575,6 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                     b.Navigation("City");
                 });
 
-            modelBuilder.Entity("Gems.AddressRegistry.Entities.DataSources.CountryDataSource", b =>
-                {
-                    b.HasOne("Gems.AddressRegistry.Entities.Country", "Country")
-                        .WithMany("DataSources")
-                        .HasForeignKey("CountryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Country");
-                });
-
             modelBuilder.Entity("Gems.AddressRegistry.Entities.DataSources.EpsDataSource", b =>
                 {
                     b.HasOne("Gems.AddressRegistry.Entities.PlaningStructureElement", "Eps")
@@ -743,17 +595,6 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                         .IsRequired();
 
                     b.Navigation("Ern");
-                });
-
-            modelBuilder.Entity("Gems.AddressRegistry.Entities.DataSources.LandPlotDataSource", b =>
-                {
-                    b.HasOne("Gems.AddressRegistry.Entities.LandPlot", "LandPlot")
-                        .WithMany("DataSources")
-                        .HasForeignKey("LandPlotId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("LandPlot");
                 });
 
             modelBuilder.Entity("Gems.AddressRegistry.Entities.DataSources.MunicipalAreaDataSource", b =>
@@ -789,17 +630,6 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                     b.Navigation("Settlement");
                 });
 
-            modelBuilder.Entity("Gems.AddressRegistry.Entities.DataSources.SpaceDataSource", b =>
-                {
-                    b.HasOne("Gems.AddressRegistry.Entities.Space", "Space")
-                        .WithMany("DataSources")
-                        .HasForeignKey("SpaceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Space");
-                });
-
             modelBuilder.Entity("Gems.AddressRegistry.Entities.DataSources.TerritoryDataSource", b =>
                 {
                     b.HasOne("Gems.AddressRegistry.Entities.Territory", "Territory")
@@ -831,16 +661,6 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                     b.Navigation("DataSources");
                 });
 
-            modelBuilder.Entity("Gems.AddressRegistry.Entities.Country", b =>
-                {
-                    b.Navigation("DataSources");
-                });
-
-            modelBuilder.Entity("Gems.AddressRegistry.Entities.LandPlot", b =>
-                {
-                    b.Navigation("DataSources");
-                });
-
             modelBuilder.Entity("Gems.AddressRegistry.Entities.MunicipalArea", b =>
                 {
                     b.Navigation("DataSources");
@@ -862,11 +682,6 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                 });
 
             modelBuilder.Entity("Gems.AddressRegistry.Entities.Settlement", b =>
-                {
-                    b.Navigation("DataSources");
-                });
-
-            modelBuilder.Entity("Gems.AddressRegistry.Entities.Space", b =>
                 {
                     b.Navigation("DataSources");
                 });

@@ -15,8 +15,7 @@ namespace ApplicationServices.Tests
             IAppDbContextFactory appDbContextFactory = new AppDbContextFactory(connectionString);
             DataImportService dataImportService = new DataImportService(appDbContextFactory);
             Address address = new Address();
-            address.Country = new Country();
-            address.Country.Name = "Russia";
+            
             address.Region = new Region();
             address.Region.Name = "Omskaya Oblast";
             address.Region.Code = "55";
