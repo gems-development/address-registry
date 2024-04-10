@@ -109,7 +109,7 @@ namespace Gems.DataMergeServices.Services
                                     regionDataSource.Id = reader.GetAttribute("OBJECTID")!;
                                     regionDataSource.SourceType = AddressRegistry.Entities.Enums.SourceType.Fias;
                                     region.DataSources.Add(regionDataSource);
-                                    Debug.WriteLine(region.Name);
+                                    Debug.WriteLine($"ФИАС || Считана область: {region.Name}");
                                     break;
 
                                 case ("2"):
@@ -121,7 +121,7 @@ namespace Gems.DataMergeServices.Services
                                     administrativeAreaDataSource.SourceType = AddressRegistry.Entities.Enums.SourceType.Fias;
                                     administrativeArea.DataSources.Add(administrativeAreaDataSource);
                                     administrativeAreaDictionary.Add(int.Parse(administrativeAreaDataSource.Id), administrativeArea);
-                                    Debug.WriteLine(administrativeArea.Name);
+                                    Debug.WriteLine($"ФИАС || Считана административная область: {administrativeArea.Name}");
                                     break;
 
                                 case ("3"):
@@ -133,7 +133,7 @@ namespace Gems.DataMergeServices.Services
                                     municipalAreaDataSource.SourceType = AddressRegistry.Entities.Enums.SourceType.Fias;
                                     municipalArea.DataSources.Add(municipalAreaDataSource);
                                     municipalAreaDictionary.Add(int.Parse(municipalAreaDataSource.Id), municipalArea);
-                                    Debug.WriteLine(municipalArea.Name);
+                                    Debug.WriteLine($"ФИАС || Считана муниципальная бласть: {municipalArea.Name}");
                                     break;
                                 case ("4"):
                                     Territory territory = new Territory();
@@ -144,7 +144,7 @@ namespace Gems.DataMergeServices.Services
                                     terrytoryDataSource.SourceType = AddressRegistry.Entities.Enums.SourceType.Fias;
                                     territory.DataSources.Add(terrytoryDataSource);
                                     territoryDictionary.Add(int.Parse(terrytoryDataSource.Id), territory);
-                                    Debug.WriteLine(territory.Name);
+                                    Debug.WriteLine($"ФИАС || Считана территория: {territory.Name}");
                                     break;
                                 case ("5"):
                                     City city = new City();
@@ -155,7 +155,7 @@ namespace Gems.DataMergeServices.Services
                                     cityDataSource.SourceType = AddressRegistry.Entities.Enums.SourceType.Fias;
                                     city.DataSources.Add(cityDataSource);
                                     cityDictionary.Add(int.Parse(cityDataSource.Id), city);
-                                    Debug.WriteLine(city.Name);
+                                    Debug.WriteLine($"ФИАС || Считан город: {city.Name}");
                                     break;
                                 case ("6"):
                                     Settlement settlement = new Settlement();
@@ -166,7 +166,7 @@ namespace Gems.DataMergeServices.Services
                                     settlementDataSource.SourceType = AddressRegistry.Entities.Enums.SourceType.Fias;
                                     settlement.DataSources.Add(settlementDataSource);
                                     settlementDictionary.Add(int.Parse(settlementDataSource.Id), settlement);
-                                    Debug.WriteLine(settlement.Name);
+                                    Debug.WriteLine($"ФИАС || Считано поселение: {settlement.Name}");
                                     break;
                                 case ("7"):
                                     PlaningStructureElement planingStructure = new PlaningStructureElement();
@@ -177,7 +177,7 @@ namespace Gems.DataMergeServices.Services
                                     epsDataSource.SourceType = AddressRegistry.Entities.Enums.SourceType.Fias;
                                     planingStructure.DataSources.Add(epsDataSource);
                                     planingStructureElementDictionary.Add(int.Parse(epsDataSource.Id), planingStructure);
-                                    Debug.WriteLine(planingStructure.Name);
+                                    Debug.WriteLine($"ФИАС || Считан элемент планировочной структуры {planingStructure.Name}");
                                     break;
                                 case ("8"):
                                     RoadNetworkElement roadNetworkElement = new RoadNetworkElement();
@@ -188,7 +188,7 @@ namespace Gems.DataMergeServices.Services
                                     ernDataSource.SourceType = AddressRegistry.Entities.Enums.SourceType.Fias;
                                     roadNetworkElement.DataSources.Add(ernDataSource);
                                     roadNetworkElementDictionary.Add(int.Parse(ernDataSource.Id), roadNetworkElement);
-                                    Debug.WriteLine(roadNetworkElement.Name);
+                                    Debug.WriteLine($"ФИАС || Считан элемент улично-дорожной сети {roadNetworkElement.Name}");
                                     break;
                             }
                             break;
