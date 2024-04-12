@@ -12,6 +12,7 @@ namespace Gems.DataMergeServices.Services
         
         public static void MergeAddresses(IReadOnlyCollection<House> addressesOsm, IReadOnlyCollection<Address> addressesFias)
         {
+            var c = 0;
             foreach (var addressOsm in addressesOsm)
             {
                 var normalizedAddress = addressOsm.GetNormalizedAddress();
@@ -30,6 +31,8 @@ namespace Gems.DataMergeServices.Services
                 {
                     var correspondingFiasAddress = NormalizedFiasAddresses[normalizedAddress];
                     AddGeometryToAddress(correspondingFiasAddress, correspondingOsmAddress);
+                    if (c++ > 3)
+                        return;
                 }
             }
         }
@@ -42,7 +45,7 @@ namespace Gems.DataMergeServices.Services
             buildingDataSource.SourceType = SourceType.Osm;
             
             address.Building!.GeoJson = house.GeoJson;
-            address.Building.DataSources.Add(buildingDataSource);
+            DataMergeHelper.TryAddOsmDataSource(address.Building, buildingDataSource);
 
             var roadNetworkElementDataSource = new ErnDataSource();
             roadNetworkElementDataSource.Ern = address.RoadNetworkElement;
@@ -50,7 +53,7 @@ namespace Gems.DataMergeServices.Services
             roadNetworkElementDataSource.SourceType = SourceType.Osm;
             
             address.RoadNetworkElement!.GeoJson = house.Street!.GeoJson;
-            address.RoadNetworkElement.DataSources.Add(roadNetworkElementDataSource);
+            DataMergeHelper.TryAddOsmDataSource(address.RoadNetworkElement, roadNetworkElementDataSource);
             if (house.Street.City != null)
             {
                 var cityDataSource = new CityDataSource();
@@ -59,23 +62,23 @@ namespace Gems.DataMergeServices.Services
                 cityDataSource.SourceType = SourceType.Osm;
                 
                 address.City.GeoJson = house.Street.City.GeoJson;
-                address.City.DataSources.Add(cityDataSource);
-                
+                DataMergeHelper.TryAddOsmDataSource(address.City, cityDataSource);
+
                 var municipalAreaDataSource = new MunicipalAreaDataSource();
                 municipalAreaDataSource.MunicipalArea = address.MunicipalArea;
                 municipalAreaDataSource.Id = house.Street.City.District.Id.ToString();
                 municipalAreaDataSource.SourceType = SourceType.Osm;
                 
                 address.MunicipalArea.GeoJson = house.Street.City.District.GeoJson;
-                address.MunicipalArea.DataSources.Add(municipalAreaDataSource);
-                
+                DataMergeHelper.TryAddOsmDataSource(address.MunicipalArea, municipalAreaDataSource);
+
                 var regionDataSource = new RegionDataSource();
                 regionDataSource.Region = address.Region;
                 regionDataSource.Id = house.Street.City.District.Area.Id.ToString();
                 regionDataSource.SourceType = SourceType.Osm;
                 
                 address.Region.GeoJson = house.Street.City.District.Area.GeoJson;
-                address.Region.DataSources.Add(regionDataSource);
+                DataMergeHelper.TryAddOsmDataSource(address.Region, regionDataSource);
             }
 
             else if (house.Street.Village != null)
@@ -86,23 +89,23 @@ namespace Gems.DataMergeServices.Services
                 settelmentDataSource.SourceType = SourceType.Osm;
                 
                 address.Settlement.GeoJson = house.Street.Village.GeoJson;
-                address.Settlement.DataSources.Add(settelmentDataSource);
-                
+                DataMergeHelper.TryAddOsmDataSource(address.Settlement, settelmentDataSource);
+
                 var municipalAreaDataSource = new MunicipalAreaDataSource();
                 municipalAreaDataSource.MunicipalArea = address.MunicipalArea;
                 municipalAreaDataSource.Id = house.Street.City.District.Id.ToString();
                 municipalAreaDataSource.SourceType = SourceType.Osm;
                 
                 address.MunicipalArea.GeoJson = house.Street.City.District.GeoJson;
-                address.MunicipalArea.DataSources.Add(municipalAreaDataSource);
-                
+                DataMergeHelper.TryAddOsmDataSource(address.MunicipalArea, municipalAreaDataSource);
+
                 var regionDataSource = new RegionDataSource();
                 regionDataSource.Region = address.Region;
                 regionDataSource.Id = house.Street.City.District.Area.Id.ToString();
                 regionDataSource.SourceType = SourceType.Osm;
                 
                 address.Region.GeoJson = house.Street.City.District.Area.GeoJson;
-                address.Region.DataSources.Add(regionDataSource);
+                DataMergeHelper.TryAddOsmDataSource(address.Region, regionDataSource);
             }
         }
         

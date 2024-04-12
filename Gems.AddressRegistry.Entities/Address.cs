@@ -22,6 +22,7 @@ namespace Gems.AddressRegistry.Entities
 
         public virtual String GetNormalizedAddress()
         {
+            ClearNames();
             StringBuilder builder = new StringBuilder("");
             builder.Append($"{Region.Name}#");
             if (MunicipalArea != null)
@@ -48,5 +49,12 @@ namespace Gems.AddressRegistry.Entities
             }
         }
 
+        public void ClearNames()
+        {
+            if(MunicipalArea != null)
+            {
+            MunicipalArea.Name = MunicipalArea.Name.ToUpper().Replace("ГОРОД ", "");
+            }
+        }
     }
 }

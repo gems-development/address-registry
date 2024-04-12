@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Gems.AddressRegistry.DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240410080730_initial123")]
-    partial class initial123
+    [Migration("20240412075518_new")]
+    partial class @new
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

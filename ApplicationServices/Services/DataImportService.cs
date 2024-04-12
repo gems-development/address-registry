@@ -14,8 +14,8 @@ namespace Gems.ApplicationServices.Services
 
         public async Task<int> ImportBuildingAsync(Building buildingImport, CancellationToken cancellationToken = default)
         {
-            
-                var externalBuildingId = buildingImport.DataSources.First(o => o.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias).Id;
+
+            var externalBuildingId = buildingImport.DataSources.First(o => o.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias).Id;
             if (externalBuildingId != null)
             {
                 var building = (await _appDbContext
@@ -33,14 +33,14 @@ namespace Gems.ApplicationServices.Services
                 else
                     _appDbContext.Add(buildingImport);
             }
-            
+
             return await _appDbContext.SaveChangesAsync(cancellationToken);
         }
         public async Task<int> ImportRoadNetworkElementAsync(RoadNetworkElement roadNetworkElementImport, CancellationToken cancellationToken = default)
         {
-            
-                var externalRoadNetworkElementPlotId = roadNetworkElementImport.DataSources.First(o => o.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias).Id;
-                if (externalRoadNetworkElementPlotId != null)
+
+            var externalRoadNetworkElementPlotId = roadNetworkElementImport.DataSources.First(o => o.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias).Id;
+            if (externalRoadNetworkElementPlotId != null)
             {
                 var roadNetworkElement = (await _appDbContext
                     .RoadNetworkElements
@@ -61,9 +61,9 @@ namespace Gems.ApplicationServices.Services
         }
         public async Task<int> ImportPlaningStructureElementAsync(PlaningStructureElement planingStructureElementImport, CancellationToken cancellationToken = default)
         {
-            
-                var externalPlaningStructureElementId = planingStructureElementImport.DataSources.First(o => o.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias).Id;
-                if (externalPlaningStructureElementId != null)
+
+            var externalPlaningStructureElementId = planingStructureElementImport.DataSources.First(o => o.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias).Id;
+            if (externalPlaningStructureElementId != null)
             {
                 var planingStructureElement = (await _appDbContext
                     .PlaningStructureElements
@@ -85,9 +85,9 @@ namespace Gems.ApplicationServices.Services
         }
         public async Task<int> ImportSettlementAsync(Settlement settlementImport, CancellationToken cancellationToken = default)
         {
-            
-                var externalSettlementId = settlementImport.DataSources.First(o => o.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias).Id;
-                if (externalSettlementId != null)
+
+            var externalSettlementId = settlementImport.DataSources.First(o => o.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias).Id;
+            if (externalSettlementId != null)
             {
                 var settlement = (await _appDbContext
                     .Settlements
@@ -97,7 +97,7 @@ namespace Gems.ApplicationServices.Services
                         .Any(p => p.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias && p.Id == externalSettlementId) is true);
                 if (settlement != null)
                 {
-                    DataImportHelper.Map (settlementImport, settlement);
+                    DataImportHelper.Map(settlementImport, settlement);
 
 
                     _appDbContext.Update(settlement);
@@ -109,9 +109,9 @@ namespace Gems.ApplicationServices.Services
         }
         public async Task<int> ImportCityAsync(City cityImport, CancellationToken cancellationToken = default)
         {
-            
-                var externalCityId = cityImport.DataSources.First(o => o.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias).Id;
-                if (externalCityId != null)
+
+            var externalCityId = cityImport.DataSources.First(o => o.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias).Id;
+            if (externalCityId != null)
             {
                 var city = (await _appDbContext
                     .Cities
@@ -121,7 +121,7 @@ namespace Gems.ApplicationServices.Services
                         .Any(p => p.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias && p.Id == externalCityId) is true);
                 if (city != null)
                 {
-                    DataImportHelper.Map (cityImport, city);
+                    DataImportHelper.Map(cityImport, city);
 
                     _appDbContext.Update(city);
                 }
@@ -132,10 +132,10 @@ namespace Gems.ApplicationServices.Services
         }
         public async Task<int> ImportTerritoryAsync(Territory territoryImport, CancellationToken cancellationToken = default)
         {
-            
-                var externalTerritoryId = territoryImport.DataSources.First(o => o.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias).Id;
-                if (externalTerritoryId != null)
-            { 
+
+            var externalTerritoryId = territoryImport.DataSources.First(o => o.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias).Id;
+            if (externalTerritoryId != null)
+            {
                 var territory = (await _appDbContext
                     .Territories
                     .ToArrayAsync())
@@ -144,7 +144,7 @@ namespace Gems.ApplicationServices.Services
                         .Any(p => p.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias && p.Id == externalTerritoryId) is true);
                 if (territory != null)
                 {
-                    DataImportHelper .Map (territoryImport, territory);
+                    DataImportHelper.Map(territoryImport, territory);
                 }
                 else
                     _appDbContext.Add(territoryImport);
@@ -153,9 +153,9 @@ namespace Gems.ApplicationServices.Services
         }
         public async Task<int> ImportMunicipalAreaAsync(MunicipalArea municipalAreaImport, CancellationToken cancellationToken = default)
         {
-            
-                var externalMunicipalAreaId = municipalAreaImport.DataSources.First(o => o.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias).Id;
-                if (externalMunicipalAreaId != null)
+
+            var externalMunicipalAreaId = municipalAreaImport.DataSources.First(o => o.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias).Id;
+            if (externalMunicipalAreaId != null)
             {
                 var municipalArea = (await _appDbContext
                     .MunicipalAreas
@@ -177,9 +177,9 @@ namespace Gems.ApplicationServices.Services
         }
         public async Task<int> ImportAdministrativeAreaAsync(AdministrativeArea administrativeAreaImport, CancellationToken cancellationToken = default)
         {
-            
-                var externalAdministrativeAreaId = administrativeAreaImport.DataSources.First(o => o.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias).Id;
-                if (externalAdministrativeAreaId != null)
+
+            var externalAdministrativeAreaId = administrativeAreaImport.DataSources.First(o => o.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias).Id;
+            if (externalAdministrativeAreaId != null)
             {
                 var administrativeArea = (await _appDbContext
                     .AdministrativeAreas
@@ -201,9 +201,8 @@ namespace Gems.ApplicationServices.Services
         }
         public async Task<int> ImportRegionAsync(Region regionImport, CancellationToken cancellationToken = default)
         {
-            
-                var externalRegionId = regionImport.DataSources.First(o => o.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias).Id;
-                if (externalRegionId != null)
+            var externalRegionId = regionImport.DataSources.First(o => o.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias).Id;
+            if (externalRegionId != null)
             {
                 var region = (await _appDbContext
                     .Regions
@@ -214,8 +213,6 @@ namespace Gems.ApplicationServices.Services
                 if (region != null)
                 {
                     DataImportHelper.Map(regionImport, region);
-
-
                     _appDbContext.Update(region);
                 }
                 else
@@ -223,30 +220,7 @@ namespace Gems.ApplicationServices.Services
             }
             return await _appDbContext.SaveChangesAsync(cancellationToken);
         }
-        /*public async Task<int> ImportCountryAsync(Country countryImport, CancellationToken cancellationToken = default)
-        {
-            
-                var externalCountryId = countryImport.DataSources.First(o => o.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias).Id;
-                if (externalCountryId != null)
-            {
-                var country = (await _appDbContext
-                    .Countries
-                    .ToArrayAsync())
-                    .FirstOrDefault(o => o
-                        .DataSources
-                        .Any(p => p.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias && p.Id == externalCountryId) is true);
-                if (country != null)
-                {
-                    DataImportHelper .Map(countryImport, country);
 
-
-                    _appDbContext.Update(country);
-                }
-                else
-                    _appDbContext.Add(countryImport);
-            }
-            return await _appDbContext.SaveChangesAsync(cancellationToken);
-        }*/
         public async Task<int> ImportAddressesAsync(IReadOnlyCollection<Address> addressesImport, CancellationToken cancellationToken = default)
         {
             foreach (Address addressImport in addressesImport)
@@ -282,8 +256,8 @@ namespace Gems.ApplicationServices.Services
                         await ImportMunicipalAreaAsync(addressImport.MunicipalArea!, cancellationToken);
                     if (address.Region != null)
                         await ImportRegionAsync(addressImport.Region, cancellationToken);
-                 /*   if (address.Country != null)
-                        await ImportCountryAsync(addressImport.Country, cancellationToken);*/
+                    /*   if (address.Country != null)
+                           await ImportCountryAsync(addressImport.Country, cancellationToken);*/
 
                     _appDbContext.Addresses.Update(address);
                 }
@@ -295,8 +269,8 @@ namespace Gems.ApplicationServices.Services
                 }
                 else
                 {
-                   /* var invalidAddress = new InvalidAddress(addressImport);
-                    _appDbContext.InvalidAddresses.Add(invalidAddress);*/
+                    /* var invalidAddress = new InvalidAddress(addressImport);
+                     _appDbContext.InvalidAddresses.Add(invalidAddress);*/
                 }
             }
             return await _appDbContext.SaveChangesAsync(cancellationToken);

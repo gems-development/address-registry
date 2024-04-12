@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Gems.AddressRegistry.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class initial : Migration
+    public partial class @new : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -174,7 +174,6 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                     PlaningStructureElementId = table.Column<Guid>(type: "uuid", nullable: true),
                     RoadNetworkElementId = table.Column<Guid>(type: "uuid", nullable: true),
                     BuildingId = table.Column<Guid>(type: "uuid", nullable: true),
-                    Discriminator = table.Column<string>(type: "text", nullable: false),
                     Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Updated = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     GeoJson = table.Column<string>(type: "text", nullable: true)
