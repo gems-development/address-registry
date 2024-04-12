@@ -7,20 +7,29 @@ namespace Gems.DataMergeServices.Services
 {
     public static class DataMergeService
     {
+        private static readonly Dictionary<string, House> NormalizedOsmAddresses = new Dictionary<string, House>();
+        private static readonly Dictionary<string, Address> NormalizedFiasAddresses = new Dictionary<string, Address>();
+        
         public static void MergeAddresses(IReadOnlyCollection<House> addressesOsm, IReadOnlyCollection<Address> addressesFias)
         {
-            var c = 0;
+            foreach (var addressOsm in addressesOsm)
+            {
+                var normalizedAddress = addressOsm.GetNormalizedAddress();
+                NormalizedOsmAddresses[normalizedAddress] = addressOsm;
+            }
+            
             foreach (var addressFias in addressesFias)
             {
-                foreach (var addressOsm in addressesOsm)
+                var normalizedAddress = addressFias.GetNormalizedAddress();
+                NormalizedFiasAddresses[normalizedAddress] = addressFias;
+            }
+            
+            foreach (var normalizedAddress in NormalizedFiasAddresses.Keys)
+            {
+                if (NormalizedOsmAddresses.TryGetValue(normalizedAddress, out var correspondingOsmAddress))
                 {
-                    if (addressFias.GetNormalizedAddress() == addressOsm.GetNormalizedAddress())
-                    {
-                        AddGeometryToAddress(addressFias, addressOsm);
-                        if(c++ > 3)
-                            return;
-                        break;
-                    }
+                    var correspondingFiasAddress = NormalizedFiasAddresses[normalizedAddress];
+                    AddGeometryToAddress(correspondingFiasAddress, correspondingOsmAddress);
                 }
             }
         }
