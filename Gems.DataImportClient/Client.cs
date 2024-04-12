@@ -24,33 +24,66 @@ public static class Client
 
     public static async Task Main(string[] args)
     {
-        var sw = Stopwatch.StartNew();
-        var fiasConverter = new FiasXmlToEntityConverter();
-        var connectionString = Configuration.GetSection("ConnectionString").Value;
-        var pathToPbf = Configuration.GetSection("Pbf File").Value;
-        var areaName = Configuration.GetSection("Target Area").Value;
-        var pathAdm = Configuration.GetSection("PathAdm").Value;
-        var pathMun = Configuration.GetSection("PathMun").Value;
-        var pathReg = Configuration.GetSection("PathReg").Value;
-        var pathBuildings = Configuration.GetSection("PathBuildings").Value;
+        var swTotal = Stopwatch.StartNew();
 
-        var osmTask = Task.Run(() => OsmParserTask.Execute(pathToPbf!, areaName!));
-        var fiasTask = Task.Run(() => fiasConverter.ReadAndBuildAddresses(pathAdm!, pathMun!, pathReg!, pathBuildings!));
-        var tasks = new Task[]
+        try
         {
-            osmTask,
-            fiasTask
-        };
+            var fiasConverter = new FiasXmlToEntityConverter();
+            var connectionString = Configuration.GetSection("ConnectionString").Value;
+            var pathToPbf = Configuration.GetSection("Pbf File").Value;
+            var areaName = Configuration.GetSection("Target Area").Value;
+            var pathAdm = Configuration.GetSection("PathAdm").Value;
+            var pathMun = Configuration.GetSection("PathMun").Value;
+            var pathReg = Configuration.GetSection("PathReg").Value;
+            var pathBuildings = Configuration.GetSection("PathBuildings").Value;
 
-        await Task.WhenAll(tasks).ContinueWith(task
-            => DataMergeService.MergeAddresses(osmTask.Result, fiasTask.Result));
+            var osmTask = Task.Run(async () =>
+            {
+                var sw = Stopwatch.StartNew();
+                var result = await OsmParserTask.Execute(pathToPbf!, areaName!);
 
-        IAppDbContextFactory appDbContextFactory = new AppDbContextFactory(connectionString!);
-        DataImportService dataImportService = new DataImportService(appDbContextFactory);
+                Console.WriteLine($">>> Завершён импорт OSM: {sw.Elapsed}");
 
-        await dataImportService.ImportAddressesAsync(fiasTask.Result);
+                return result;
+            });
+            var fiasTask = Task.Run(async () =>
+            {
+                var sw = Stopwatch.StartNew();
+                var result = await fiasConverter.ReadAndBuildAddresses(pathAdm!, pathMun!, pathBuildings!, pathReg!);
 
-        sw.Stop();
-        Debug.WriteLine(sw.Elapsed);
+                Console.WriteLine($">>> Завершён импорт ФИАС: {sw.Elapsed}");
+
+                return result;
+            });
+            var tasks = new Task[]
+            {
+                osmTask,
+                fiasTask
+            };
+
+            await Task
+                .WhenAll(tasks)
+                .ContinueWith(task =>
+                {
+                    var sw = Stopwatch.StartNew();
+
+                    DataMergeService.MergeAddresses(osmTask.Result, fiasTask.Result);
+                    Console.WriteLine($">>> Слияние адресов завершено: {sw.Elapsed}");
+                });
+
+            var appDbContextFactory = new AppDbContextFactory(connectionString!);
+            var dataImportService = new DataImportService(appDbContextFactory);
+            var sw = Stopwatch.StartNew();
+
+            await dataImportService.ImportAddressesAsync(fiasTask.Result);
+            Console.WriteLine($">>> Импорт адресов в БД завершён: {sw.Elapsed}");
+            Console.WriteLine($">>> Общая продолжительность: {swTotal.Elapsed}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($">>> Исключение: {swTotal.Elapsed}");
+            Console.WriteLine(ex.Message);
+            Console.WriteLine(ex.StackTrace);
+        }
     }
 }

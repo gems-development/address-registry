@@ -9,6 +9,7 @@ namespace Gems.DataMergeServices.Services
     {
         public static void MergeAddresses(IReadOnlyCollection<House> addressesOsm, IReadOnlyCollection<Address> addressesFias)
         {
+            var c = 0;
             foreach (var addressFias in addressesFias)
             {
                 foreach (var addressOsm in addressesOsm)
@@ -16,6 +17,8 @@ namespace Gems.DataMergeServices.Services
                     if (addressFias.GetNormalizedAddress() == addressOsm.GetNormalizedAddress())
                     {
                         AddGeometryToAddress(addressFias, addressOsm);
+                        if(c++ > 3)
+                            return;
                         break;
                     }
                 }
