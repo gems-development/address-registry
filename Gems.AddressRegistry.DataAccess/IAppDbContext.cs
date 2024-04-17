@@ -8,7 +8,7 @@ namespace Gems.AddressRegistry.DataAccess
     {
         
         DbSet<Address> Addresses { get; }
-     
+        DbSet<InvalidAddress> InvalidAddresses { get; }
         DbSet<Region> Regions { get; }
         DbSet<AdministrativeArea> AdministrativeAreas { get; }
         DbSet<MunicipalArea> MunicipalAreas { get; }

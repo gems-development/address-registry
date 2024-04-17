@@ -31,8 +31,6 @@ namespace Gems.DataMergeServices.Services
                 {
                     var correspondingFiasAddress = NormalizedFiasAddresses[normalizedAddress];
                     AddGeometryToAddress(correspondingFiasAddress, correspondingOsmAddress);
-                    if (c++ > 3)
-                        return;
                 }
             }
         }

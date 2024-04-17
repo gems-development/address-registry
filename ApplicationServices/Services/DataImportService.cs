@@ -256,8 +256,6 @@ namespace Gems.ApplicationServices.Services
                         await ImportMunicipalAreaAsync(addressImport.MunicipalArea!, cancellationToken);
                     if (address.Region != null)
                         await ImportRegionAsync(addressImport.Region, cancellationToken);
-                    /*   if (address.Country != null)
-                           await ImportCountryAsync(addressImport.Country, cancellationToken);*/
 
                     _appDbContext.Addresses.Update(address);
                 }
@@ -269,8 +267,8 @@ namespace Gems.ApplicationServices.Services
                 }
                 else
                 {
-                    /* var invalidAddress = new InvalidAddress(addressImport);
-                     _appDbContext.InvalidAddresses.Add(invalidAddress);*/
+                    var invalidAddress = new InvalidAddress(addressImport);
+                     _appDbContext.InvalidAddresses.Add(invalidAddress);
                 }
             }
             return await _appDbContext.SaveChangesAsync(cancellationToken);

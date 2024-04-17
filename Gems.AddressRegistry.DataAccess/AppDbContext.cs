@@ -7,8 +7,7 @@ namespace Gems.AddressRegistry.DataAccess
     internal class AppDbContext : DbContext, IAppDbContext
     {
         public DbSet<Address> Addresses { get; set; }
-       
-        
+        public DbSet<InvalidAddress> InvalidAddresses { get; set; }
         public DbSet<Region> Regions { get; set; }
         public DbSet<AdministrativeArea> AdministrativeAreas { get; set; }
         public DbSet<MunicipalArea> MunicipalAreas { get; set; }
