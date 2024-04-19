@@ -3,6 +3,7 @@ using Gems.AddressRegistry.Entities.DataSources;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using Gems.AddressRegistry.OsmDataParser.Interfaces;
+using System.Diagnostics;
 
 namespace Gems.AddressRegistry.Entities
 {
@@ -27,7 +28,7 @@ namespace Gems.AddressRegistry.Entities
             builder.Append($"{Region.Name}#");
             if (MunicipalArea != null)
                 builder.Append($"{MunicipalArea.Name}#");
-            if (City != null)
+            if (City != null && Settlement == null)
                 builder.Append($"{City.Name}#");
             if (Settlement != null)
                 builder.Append($"{Settlement.Name}#");
@@ -35,6 +36,7 @@ namespace Gems.AddressRegistry.Entities
                 builder.Append($"{RoadNetworkElement.Name}#");
             if (Building != null)
                 builder.Append($"{Building.Number}");
+            Debug.WriteLine($"ФИАС || Построен нормализованный адрес: { builder.ToString().ToUpper()}");
             return builder.ToString().ToUpper();
         }
 
