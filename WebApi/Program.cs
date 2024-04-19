@@ -1,3 +1,4 @@
+using Gems.ApplicationServices.DependencyInjection;
 using WebApi.Helpers;
 
 
@@ -13,6 +14,10 @@ builder.Services.AddApplicationServices();
 builder.Services.AddDataAccess();
 builder.Services.AddSerilogServices();
 
+builder.Services.AddMediatR(cfg =>
+{
+    cfg.RegisterServicesFromAssembly(typeof(ApplicationServicesServiceCollectionExtension).Assembly);
+});
 
 var app = builder.Build();
 
