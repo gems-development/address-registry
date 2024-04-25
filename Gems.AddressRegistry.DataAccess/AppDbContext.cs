@@ -18,7 +18,7 @@ namespace Gems.AddressRegistry.DataAccess
         public DbSet<RoadNetworkElement> RoadNetworkElements { get; set; }
         public DbSet<Building> Buildings { get; set; }
 
-        private readonly string _connectionString = "Host=localhost;Port=5432;Database=addressdb;Username=postgres;Password=admin";
+        private readonly string _connectionString = "Host=localhost;Port=5432;Database=addressdb;Username=postgres;Password=postgres";
 
         public AppDbContext()
         { }
@@ -38,6 +38,7 @@ namespace Gems.AddressRegistry.DataAccess
             modelBuilder.Entity<Country>().HasNoKey();
             modelBuilder.Entity<DataSourceBase>().HasDiscriminator();
             modelBuilder.Entity<DataSourceBase>().ToTable("DataSource");
+            modelBuilder.Entity<DataSourceBase>().HasKey(nameof(DataSourceBase.Id), nameof(DataSourceBase.SourceType));
 
         }
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

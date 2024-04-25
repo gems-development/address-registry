@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Gems.AddressRegistry.DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240417074749_addedInvalidAddress")]
-    partial class addedInvalidAddress
+    [Migration("20240424155113_newMigration")]
+    partial class newMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -184,14 +184,14 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("text");
 
+                    b.Property<int>("SourceType")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Discriminator")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("SourceType")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
+                    b.HasKey("Id", "SourceType");
 
                     b.ToTable("DataSource", (string)null);
 
