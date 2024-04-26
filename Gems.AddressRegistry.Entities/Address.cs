@@ -1,6 +1,5 @@
 ﻿using Gems.AddressRegistry.Entities.Common;
 using Gems.AddressRegistry.Entities.DataSources;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using Gems.AddressRegistry.OsmDataParser.Interfaces;
 using System.Diagnostics;
@@ -53,9 +52,9 @@ namespace Gems.AddressRegistry.Entities
 
         public void ClearNames()
         {
-            if(MunicipalArea != null)
+            if (MunicipalArea != null)
             {
-            MunicipalArea.Name = MunicipalArea.Name.ToUpper().Replace("ГОРОД ", "");
+                MunicipalArea.Name = MunicipalArea.Name.ToUpper().Replace("ГОРОД ", "");
             }
         }
     }

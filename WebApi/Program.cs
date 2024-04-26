@@ -1,5 +1,9 @@
 using Gems.ApplicationServices.DependencyInjection;
+using MediatR;
+using WebApi.Dto.Response;
+using WebApi.Handlers;
 using WebApi.Helpers;
+using WebApi.MediatrRequests;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +22,10 @@ builder.Services.AddMediatR(cfg =>
 {
     cfg.RegisterServicesFromAssembly(typeof(ApplicationServicesServiceCollectionExtension).Assembly);
 });
+
+builder.Services.AddScoped<IRequestHandler<GetAddressByIdRequest, AddressDtoResponse>, GetAddressByIdHandler>();
+builder.Services.AddScoped<IRequestHandler<GetAddressByLocationRequest, AddressDtoResponse>, GetAddressByLocationHandler>();
+builder.Services.AddScoped<IRequestHandler<GetAddressByNameRequest, AddressDtoResponse>, GetAddressByNameHandler>();
 
 var app = builder.Build();
 

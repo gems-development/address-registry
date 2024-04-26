@@ -7,7 +7,7 @@ using WebApi.MediatrRequests;
 namespace WebApi.Controllers
 {
     [ApiController]
-    [Route("api/addresses/[action]")]
+    [Route("api/v1/address")]
     public class AddressController : ControllerBase
     {
         private readonly ISender _sender;
@@ -17,16 +17,16 @@ namespace WebApi.Controllers
             _sender = sender;
         }
 
-        [HttpGet("{addressId:guid}")]
+        [HttpGet("{id:guid}")]
         [SwaggerResponse(StatusCodes.Status200OK)]
         [SwaggerResponse(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetAddressById(Guid addressId, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAddressById(Guid id, CancellationToken cancellationToken)
         {
-            var addressDto = await _sender.Send(new GetAddressByIdRequest(addressId), cancellationToken);
+            var addressDto = await _sender.Send(new GetAddressByIdRequest(id), cancellationToken);
             return StatusCode(StatusCodes.Status200OK, addressDto);
         }
 
-        [HttpGet]
+        [HttpGet("location")]
         [SwaggerResponse(StatusCodes.Status200OK)]
         [SwaggerResponse(StatusCodes.Status400BadRequest)]
         [SwaggerResponse(StatusCodes.Status500InternalServerError)]
@@ -40,14 +40,14 @@ namespace WebApi.Controllers
             return StatusCode(StatusCodes.Status200OK, addressDto);
         }
 
-        [HttpGet("{addressName}")]
+        [HttpGet("{name}")]
         [SwaggerResponse(StatusCodes.Status200OK)]
         [SwaggerResponse(StatusCodes.Status400BadRequest)]
         [SwaggerResponse(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetAddressByName(string? addressName, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAddressByName(string? name, CancellationToken cancellationToken)
         {
-            if (addressName is null)
-                return BadRequest("Wrong addressName");
+            if (name is null)
+                return BadRequest("Wrong address_name");
             
             return StatusCode(StatusCodes.Status200OK);
         }

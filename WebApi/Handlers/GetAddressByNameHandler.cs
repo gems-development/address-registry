@@ -15,7 +15,6 @@ public class GetAddressByNameHandler : IRequestHandler<GetAddressByNameRequest, 
     }
     public async Task<AddressDtoResponse> Handle(GetAddressByNameRequest request, CancellationToken cancellationToken)
     {
-        var addressResponseDto = new AddressDtoResponse(new Address());
-        return addressResponseDto;
+        throw new NotImplementedException();
     }
 }
