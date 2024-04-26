@@ -61,6 +61,7 @@ namespace Gems.DataMergeServices.Services
                6,
                new Func<int, (BaseIdentifiableEntity BaseEntity, int LevelNumber)?>[]
                {
+                    key => municipalAreaDictionary.TryGetValue(key, out var result) ? (result, 3) : null,
                     key => territoryDictionary.TryGetValue(key, out var result) ? (result, 4) : null,
                     key => cityDictionary.TryGetValue(key, out var result) ? (result, 5) : null,
                });
@@ -347,8 +348,6 @@ namespace Gems.DataMergeServices.Services
             await ConvertRegion(pathReg);
             await ConvertBuildings(pathBuildings);
             var addresses = new List<Address>();
-            var country1 = new Country();
-            country1.Name = "123";
             foreach(var item in buildingDictionary)
             {
                 var address = new Address();
@@ -454,10 +453,13 @@ namespace Gems.DataMergeServices.Services
                         }
                         if (entryMunicipal is not null)
                         {
-                            var LevelNumber = entryMunicipal.Value.LevelNumber;
-                            if (LevelNumber == 4)
+                            var levelNumber = entryMunicipal.Value.LevelNumber;
+                            if (levelNumber == 4)
                                 address.Territory = (Territory)entryMunicipal.Value.BaseEntity;
-                            FindParents(LevelNumber, address);
+                            FindParents(levelNumber, address);
+                            if (levelNumber == 3)
+                                address.MunicipalArea = (MunicipalArea)entryMunicipal.Value.BaseEntity;
+                            FindParents(levelNumber, address);
                         }
                     }
                     break;

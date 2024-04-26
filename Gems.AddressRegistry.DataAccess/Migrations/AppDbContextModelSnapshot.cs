@@ -181,14 +181,14 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("text");
 
+                    b.Property<int>("SourceType")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Discriminator")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("SourceType")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
+                    b.HasKey("Id", "SourceType");
 
                     b.ToTable("DataSource", (string)null);
 
