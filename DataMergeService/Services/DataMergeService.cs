@@ -25,11 +25,11 @@ namespace Gems.DataMergeServices.Services
                 NormalizedFiasAddresses[normalizedAddress] = addressFias;
             }
             
-            foreach (var normalizedAddress in NormalizedFiasAddresses.Keys)
+            foreach (var normalizedAddress in NormalizedOsmAddresses.Keys)
             {
-                if (NormalizedOsmAddresses.TryGetValue(normalizedAddress, out var correspondingOsmAddress))
+                if (NormalizedFiasAddresses.TryGetValue(normalizedAddress, out var correspondingFiasAddress))
                 {
-                    var correspondingFiasAddress = NormalizedFiasAddresses[normalizedAddress];
+                    var correspondingOsmAddress = NormalizedOsmAddresses[normalizedAddress];
                     AddGeometryToAddress(correspondingFiasAddress, correspondingOsmAddress);
                 }
             }

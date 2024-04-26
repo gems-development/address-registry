@@ -274,6 +274,15 @@ namespace Gems.ApplicationServices.Services
             return await _appDbContext.SaveChangesAsync(cancellationToken);
 
         }
+        public bool help(Address address)
+        {
+            var arr = address.RoadNetworkElement.DataSources.ToArray();
+            if (arr.Length > 2)
+                return false;
+            if (arr.Length == 2 && arr[0].Id == arr[1].Id)
+                return false;
+            return true;
+        }
 
 
 

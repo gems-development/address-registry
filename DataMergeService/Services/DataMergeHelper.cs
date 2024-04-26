@@ -23,7 +23,9 @@ namespace Gems.DataMergeServices.Services
             }
         }
         public static void TryAddOsmDataSource(RoadNetworkElement roadNetworkElement, ErnDataSource newErnDataSource)
-        {       
+        {
+            if (newErnDataSource.Id == " " || newErnDataSource.Id == null || newErnDataSource.Id == "")
+                return;
                 var oldDataSource = roadNetworkElement.DataSources.FirstOrDefault(o 
                         => o.SourceType == AddressRegistry.Entities.Enums.SourceType.Osm);
 

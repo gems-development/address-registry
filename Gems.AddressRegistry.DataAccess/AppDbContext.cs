@@ -18,7 +18,7 @@ namespace Gems.AddressRegistry.DataAccess
         public DbSet<RoadNetworkElement> RoadNetworkElements { get; set; }
         public DbSet<Building> Buildings { get; set; }
 
-        private readonly string _connectionString = "Host=localhost;Port=5432;Database=addressdb;Username=postgres;Password=postgres";
+        private readonly string _connectionString = "Host=localhost;Port=5432;Database=addressdb;Username=postgres;Password=admin";
 
         public AppDbContext()
         { }
@@ -32,6 +32,7 @@ namespace Gems.AddressRegistry.DataAccess
         {
             optionsBuilder.UseLazyLoadingProxies();
             optionsBuilder.UseNpgsql(_connectionString);
+            optionsBuilder.EnableSensitiveDataLogging();
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

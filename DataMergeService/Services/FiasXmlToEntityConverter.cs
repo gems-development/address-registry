@@ -459,7 +459,7 @@ namespace Gems.DataMergeServices.Services
                             FindParents(levelNumber, address);
                             if (levelNumber == 3)
                                 address.MunicipalArea = (MunicipalArea)entryMunicipal.Value.BaseEntity;
-                            FindParents(levelNumber, address);
+                        
                         }
                     }
                     break;
@@ -488,7 +488,7 @@ namespace Gems.DataMergeServices.Services
                             FindParents(levelNumber, address);
                             if (levelNumber == 3)
                                 address.MunicipalArea = (MunicipalArea)entryMunicipal.Value.BaseEntity;
-                            FindParents(levelNumber, address);
+                            
                         }
                     }
                     break;
