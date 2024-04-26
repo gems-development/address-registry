@@ -23,21 +23,14 @@ namespace Gems.DataMergeServices.Services
             }
         }
         public static void TryAddOsmDataSource(RoadNetworkElement roadNetworkElement, ErnDataSource newErnDataSource)
-        {
-            try
-            {
-                if (roadNetworkElement.DataSources.Any(o => o.SourceType == AddressRegistry.Entities.Enums.SourceType.Osm))
-                {
-                    var oldDataSource = roadNetworkElement.DataSources.First(o 
+        {       
+                var oldDataSource = roadNetworkElement.DataSources.FirstOrDefault(o 
                         => o.SourceType == AddressRegistry.Entities.Enums.SourceType.Osm);
-                    roadNetworkElement.DataSources.Remove(oldDataSource);
+
+                if (oldDataSource == null)
+                {
+                    roadNetworkElement.DataSources.Add(newErnDataSource);  
                 }
-                roadNetworkElement.DataSources.Add(newErnDataSource);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Не удалось добавить источник данных, вызвано исключение: {ex}");
-            }
         }
         public static void TryAddOsmDataSource(Settlement settlement, SettlementDataSource newSettelmentDataSource)
         {
