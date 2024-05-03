@@ -1,6 +1,6 @@
 ﻿using Gems.AddressRegistry.Entities;
 
-namespace WebApi.Dto.Response
+namespace WebApi.Dto
 {
     public class AddressDtoResponse
     {

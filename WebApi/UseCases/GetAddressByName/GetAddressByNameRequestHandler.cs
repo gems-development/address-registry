@@ -1,15 +1,13 @@
 using Gems.AddressRegistry.DataAccess;
-using Gems.AddressRegistry.Entities;
 using MediatR;
-using WebApi.Dto.Response;
-using WebApi.MediatrRequests;
+using WebApi.Dto;
 
-namespace WebApi.Handlers;
+namespace WebApi.UseCases.GetAddressByName;
 
-public class GetAddressByNameHandler : IRequestHandler<GetAddressByNameRequest, AddressDtoResponse>
+public class GetAddressByNameRequestHandler : IRequestHandler<GetAddressByNameRequest, AddressDtoResponse>
 {
     private readonly IAppDbContext _context;
-    public GetAddressByNameHandler(IAppDbContextFactory appDbContextFactory)
+    public GetAddressByNameRequestHandler(IAppDbContextFactory appDbContextFactory)
     {
         _context = appDbContextFactory.Create();
     }

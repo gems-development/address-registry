@@ -1,8 +1,8 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
-using WebApi.Dto.Request;
-using WebApi.MediatrRequests;
+using WebApi.UseCases.GetAddressById;
+using WebApi.UseCases.GetAddressByLocation;
 
 namespace WebApi.Controllers
 {

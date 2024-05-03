@@ -1,21 +1,21 @@
 using Gems.AddressRegistry.DataAccess;
 using Gems.AddressRegistry.Entities;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using NetTopologySuite.Features;
 using NetTopologySuite.Geometries;
 using NetTopologySuite.IO;
-using WebApi.Dto.Response;
-using WebApi.MediatrRequests;
+using WebApi.Dto;
 
-namespace WebApi.Handlers;
+namespace WebApi.UseCases.GetAddressByLocation;
 
-public class GetAddressByLocationHandler : IRequestHandler<GetAddressByLocationRequest, AddressDtoResponse>
+public class GetAddressByLocationRequestHandler : IRequestHandler<GetAddressByLocationRequest, AddressDtoResponse>
 {
     private readonly IAppDbContext _context;
     private const float BufferRadius = 0.00009F; // 10м
     private static readonly GeoJsonReader Reader = new GeoJsonReader();
     
-    public GetAddressByLocationHandler(IAppDbContextFactory appDbContextFactory)
+    public GetAddressByLocationRequestHandler(IAppDbContextFactory appDbContextFactory)
     {
         _context = appDbContextFactory.Create();
     }
@@ -28,24 +28,24 @@ public class GetAddressByLocationHandler : IRequestHandler<GetAddressByLocationR
         var sortPoint  = new Point(lat,lon);
         var buffer = sortPoint.Buffer(BufferRadius, 8);
         
-        var cities = _context.Cities.ToList();
-        var settlements = _context.Settlements.ToList();
-        var roadNetworkElements = _context.RoadNetworkElements.ToList();
-        var planingStructureElements = _context.PlaningStructureElements.ToList();
-        var buildings = _context.Buildings.ToList();
+        var cities = await _context.Cities.ToArrayAsync(cancellationToken);
+        var settlements = await _context.Settlements.ToArrayAsync(cancellationToken);
+        var roadNetworkElements = await _context.RoadNetworkElements.ToArrayAsync(cancellationToken);
+        var planingStructureElements = await _context.PlaningStructureElements.ToArrayAsync(cancellationToken);
+        var buildings = await _context.Buildings.ToArrayAsync(cancellationToken);
         var address = new Address();
 
         foreach (var city in cities)
         {
             var cityGeometry = Reader.Read<FeatureCollection>(city.GeoJson);
-            var cityFeature = cityGeometry.FirstOrDefault();
+            var cityFeature = cityGeometry.First();
             
-            if (buffer.Intersects(cityFeature!.Geometry))
+            if (buffer.Intersects(cityFeature.Geometry))
             {
                 address.City = city;
-                var rneInCity = roadNetworkElements.Where(street => street.City == city).ToList();
-                var pseInCity = planingStructureElements.Where(street => street.City == city).ToList();
-                var villagesInCity = settlements.Where(village => village.City == city).ToList();
+                var rneInCity = roadNetworkElements.Where(street => street.City == city).ToArray();
+                var pseInCity = planingStructureElements.Where(street => street.City == city).ToArray();
+                var villagesInCity = settlements.Where(village => village.City == city).ToArray();
 
                 AddLowerElementsToAddress(buffer, address, buildings, rneInCity, pseInCity);
 
@@ -54,8 +54,8 @@ public class GetAddressByLocationHandler : IRequestHandler<GetAddressByLocationR
                     foreach (var village in villagesInCity)
                     {
                         var villageGeometry = Reader.Read<FeatureCollection>(village.GeoJson);
-                        var villageFeature = villageGeometry.FirstOrDefault();
-                        if (buffer.Intersects(villageFeature!.Geometry))
+                        var villageFeature = villageGeometry.First();
+                        if (buffer.Intersects(villageFeature.Geometry))
                         {
                             address.Settlement = village;
                         }
@@ -65,8 +65,8 @@ public class GetAddressByLocationHandler : IRequestHandler<GetAddressByLocationR
             if (city.Territory is not null)
             {
                 var territoryGeometry = Reader.Read<FeatureCollection>(city.Territory?.GeoJson);
-                var territoryFeature = territoryGeometry.FirstOrDefault();
-                if (buffer.Intersects(territoryFeature!.Geometry))
+                var territoryFeature = territoryGeometry.First();
+                if (buffer.Intersects(territoryFeature.Geometry))
                 {
                     address.Territory = city.Territory;
                     address.Region = city.Territory!.MunicipalArea!.Region;
@@ -75,8 +75,8 @@ public class GetAddressByLocationHandler : IRequestHandler<GetAddressByLocationR
             if (city.MunicipalArea is not null)
             {
                 var munAreaGeometry = Reader.Read<FeatureCollection>(city.MunicipalArea?.GeoJson);
-                var munAreaFeature = munAreaGeometry.FirstOrDefault();
-                if (buffer.Intersects(munAreaFeature!.Geometry))
+                var munAreaFeature = munAreaGeometry.First();
+                if (buffer.Intersects(munAreaFeature.Geometry))
                 {
                     address.MunicipalArea = city.MunicipalArea;
                     address.Region = city.MunicipalArea!.Region;
@@ -85,8 +85,8 @@ public class GetAddressByLocationHandler : IRequestHandler<GetAddressByLocationR
             if (city.AdministrativeArea is not null)
             {
                 var admAreaGeometry = Reader.Read<FeatureCollection>(city.AdministrativeArea?.GeoJson);
-                var admAreaFeature = admAreaGeometry.FirstOrDefault();
-                if (buffer.Intersects(admAreaFeature!.Geometry))
+                var admAreaFeature = admAreaGeometry.First();
+                if (buffer.Intersects(admAreaFeature.Geometry))
                 {
                     address.AdministrativeArea = city.AdministrativeArea;
                     address.Region = city.AdministrativeArea!.Region;
@@ -97,22 +97,22 @@ public class GetAddressByLocationHandler : IRequestHandler<GetAddressByLocationR
         foreach (var settlement in settlements)
         {
             var settlementGeometry = Reader.Read<FeatureCollection>(settlement.GeoJson);
-            var settlementFeature = settlementGeometry.FirstOrDefault();
-            if (buffer.Intersects(settlementFeature!.Geometry))
+            var settlementFeature = settlementGeometry.First();
+            if (buffer.Intersects(settlementFeature.Geometry))
             {
                 address.Settlement = settlement;
                 var rneInSettlement = roadNetworkElements
-                    .Where(street => street.Settlement == settlement).ToList();
+                    .Where(street => street.Settlement == settlement).ToArray();
                 var pseInSettlement = planingStructureElements
-                    .Where(street => street.Settlement == settlement).ToList();
+                    .Where(street => street.Settlement == settlement).ToArray();
                 
                 AddLowerElementsToAddress(buffer, address, buildings, rneInSettlement, pseInSettlement);
             }
             if (settlement.Territory is not null)
             {
                 var territoryGeometry = Reader.Read<FeatureCollection>(settlement.Territory?.GeoJson);
-                var territoryFeature = territoryGeometry.FirstOrDefault();
-                if (buffer.Intersects(territoryFeature!.Geometry))
+                var territoryFeature = territoryGeometry.First();
+                if (buffer.Intersects(territoryFeature.Geometry))
                 {
                     address.Territory = settlement.Territory;
                     address.Region = settlement.Territory!.MunicipalArea!.Region;
@@ -121,8 +121,8 @@ public class GetAddressByLocationHandler : IRequestHandler<GetAddressByLocationR
             if (settlement.MunicipalArea is not null)
             {
                 var munAreaGeometry = Reader.Read<FeatureCollection>(settlement.MunicipalArea?.GeoJson);
-                var munAreaFeature = munAreaGeometry.FirstOrDefault();
-                if (buffer.Intersects(munAreaFeature!.Geometry))
+                var munAreaFeature = munAreaGeometry.First();
+                if (buffer.Intersects(munAreaFeature.Geometry))
                 {
                     address.MunicipalArea = settlement.MunicipalArea;
                     address.Region = settlement.MunicipalArea!.Region;
@@ -137,48 +137,48 @@ public class GetAddressByLocationHandler : IRequestHandler<GetAddressByLocationR
     private static void AddLowerElementsToAddress(
         Geometry buffer,
         Address address,
-        List<Building> buildings,
-        List<RoadNetworkElement> rneList, 
-        List<PlaningStructureElement> pseList)
+        Building[] buildings,
+        RoadNetworkElement[] rneArray, 
+        PlaningStructureElement[] pseArray)
     {
-        if (rneList.Any())
+        if (rneArray.Any())
         {
-            foreach (var rne in rneList)
+            foreach (var rne in rneArray)
             {
                 var rneGeometry = Reader.Read<FeatureCollection>(rne.GeoJson);
                 var rneFeature = rneGeometry.FirstOrDefault();
                 if (buffer.Intersects(rneFeature!.Geometry))
                 {
                     address.RoadNetworkElement = rne;
-                    var buildingsOnRne = buildings.Where(building => building.RoadNetworkElement == rne).ToList();
+                    var buildingsOnRne = buildings.Where(building => building.RoadNetworkElement == rne).ToArray();
 
                     foreach (var building in buildingsOnRne)
                     {
                         var buildingGeometry = Reader.Read<FeatureCollection>(building.GeoJson);
-                        var buildingFeature = buildingGeometry.FirstOrDefault();
-                        if (buffer.Intersects(buildingFeature!.Geometry))
+                        var buildingFeature = buildingGeometry.First();
+                        if (buffer.Intersects(buildingFeature.Geometry))
                             address.Building = building;
                     }
                 }
             }
         }
 
-        if (pseList.Any())
+        if (pseArray.Any())
         {
-            foreach (var pse in pseList)
+            foreach (var pse in pseArray)
             {
                 var pseGeometry = Reader.Read<FeatureCollection>(pse.GeoJson);
                 var pseFeature = pseGeometry.FirstOrDefault();
                 if (buffer.Intersects(pseFeature!.Geometry))
                 {
                     address.PlaningStructureElement = pse;
-                    var buildingsOnPse = buildings.Where(building => building.PlaningStructureElement == pse).ToList();
+                    var buildingsOnPse = buildings.Where(building => building.PlaningStructureElement == pse).ToArray();
 
                     foreach (var building in buildingsOnPse)
                     {
                         var buildingGeometry = Reader.Read<FeatureCollection>(building.GeoJson);
-                        var buildingFeature = buildingGeometry.FirstOrDefault();
-                        if (buffer.Intersects(buildingFeature!.Geometry))
+                        var buildingFeature = buildingGeometry.First();
+                        if (buffer.Intersects(buildingFeature.Geometry))
                             address.Building = building;
                     }
                 }

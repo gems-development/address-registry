@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace WebApi.Dto.Request;
+namespace WebApi.UseCases.GetAddressByLocation;
 
 public class GetAddressByLocationDto
 {
