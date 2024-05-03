@@ -15,9 +15,4 @@
     <ProjectReference Include="..\Gems.AddressRegistry.DataAccess\Gems.AddressRegistry.DataAccess.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="UseCases\Commands\" />
-    <Folder Include="UseCases\Requests\GetSpaceByCoordinates\" />
-  </ItemGroup>
-
 </Project>

@@ -5,6 +5,6 @@ namespace Gems.AddressRegistry.Entities
 {
     public class Country
     {
-        public String Name { get; set; } = null!;
+        public string Name { get; set; } = null!;
     }
 }

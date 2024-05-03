@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Gems.AddressRegistry.DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240424155113_newMigration")]
-    partial class newMigration
+    [Migration("20240426061157_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -117,10 +117,15 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<Guid>("RegionId")
+                        .HasColumnType("uuid");
+
                     b.Property<DateTime>("Updated")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("RegionId");
 
                     b.ToTable("AdministrativeAreas");
                 });
@@ -144,13 +149,23 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<Guid?>("PlaningStructureElementId")
+                        .HasColumnType("uuid");
+
                     b.Property<int>("Postcode")
                         .HasColumnType("integer");
+
+                    b.Property<Guid?>("RoadNetworkElementId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("Updated")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("PlaningStructureElementId");
+
+                    b.HasIndex("RoadNetworkElementId");
 
                     b.ToTable("Buildings");
                 });
@@ -161,20 +176,35 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<Guid?>("AdministrativeAreaId")
+                        .HasColumnType("uuid");
+
                     b.Property<DateTime>("Created")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("GeoJson")
                         .HasColumnType("text");
 
+                    b.Property<Guid?>("MunicipalAreaId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<Guid?>("TerritoryId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("Updated")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AdministrativeAreaId");
+
+                    b.HasIndex("MunicipalAreaId");
+
+                    b.HasIndex("TerritoryId");
 
                     b.ToTable("Cities");
                 });
@@ -225,10 +255,15 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<Guid>("RegionId")
+                        .HasColumnType("uuid");
+
                     b.Property<DateTime>("Updated")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("RegionId");
 
                     b.ToTable("MunicipalAreas");
                 });
@@ -237,6 +272,9 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("CityId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("Created")
@@ -249,10 +287,17 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<Guid?>("SettlementId")
+                        .HasColumnType("uuid");
+
                     b.Property<DateTime>("Updated")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CityId");
+
+                    b.HasIndex("SettlementId");
 
                     b.ToTable("PlaningStructureElements");
                 });
@@ -291,31 +336,7 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("GeoJson")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("RoadNetworkElementType")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("Updated")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("RoadNetworkElements");
-                });
-
-            modelBuilder.Entity("Gems.AddressRegistry.Entities.Settlement", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<Guid?>("CityId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("Created")
@@ -328,10 +349,64 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<Guid?>("PlaningStructureElementId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("RoadNetworkElementType")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid?>("SettlementId")
+                        .HasColumnType("uuid");
+
                     b.Property<DateTime>("Updated")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CityId");
+
+                    b.HasIndex("PlaningStructureElementId");
+
+                    b.HasIndex("SettlementId");
+
+                    b.ToTable("RoadNetworkElements");
+                });
+
+            modelBuilder.Entity("Gems.AddressRegistry.Entities.Settlement", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("CityId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("GeoJson")
+                        .HasColumnType("text");
+
+                    b.Property<Guid?>("MunicipalAreaId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid?>("TerritoryId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("Updated")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CityId");
+
+                    b.HasIndex("MunicipalAreaId");
+
+                    b.HasIndex("TerritoryId");
 
                     b.ToTable("Settlements");
                 });
@@ -348,6 +423,9 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                     b.Property<string>("GeoJson")
                         .HasColumnType("text");
 
+                    b.Property<Guid?>("MunicipalAreaId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
@@ -356,6 +434,8 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("MunicipalAreaId");
 
                     b.ToTable("Territories");
                 });
@@ -544,6 +624,130 @@ namespace Gems.AddressRegistry.DataAccess.Migrations
                     b.Navigation("Settlement");
 
                     b.Navigation("Territory");
+                });
+
+            modelBuilder.Entity("Gems.AddressRegistry.Entities.AdministrativeArea", b =>
+                {
+                    b.HasOne("Gems.AddressRegistry.Entities.Region", "Region")
+                        .WithMany()
+                        .HasForeignKey("RegionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Region");
+                });
+
+            modelBuilder.Entity("Gems.AddressRegistry.Entities.Building", b =>
+                {
+                    b.HasOne("Gems.AddressRegistry.Entities.PlaningStructureElement", "PlaningStructureElement")
+                        .WithMany()
+                        .HasForeignKey("PlaningStructureElementId");
+
+                    b.HasOne("Gems.AddressRegistry.Entities.RoadNetworkElement", "RoadNetworkElement")
+                        .WithMany()
+                        .HasForeignKey("RoadNetworkElementId");
+
+                    b.Navigation("PlaningStructureElement");
+
+                    b.Navigation("RoadNetworkElement");
+                });
+
+            modelBuilder.Entity("Gems.AddressRegistry.Entities.City", b =>
+                {
+                    b.HasOne("Gems.AddressRegistry.Entities.AdministrativeArea", "AdministrativeArea")
+                        .WithMany()
+                        .HasForeignKey("AdministrativeAreaId");
+
+                    b.HasOne("Gems.AddressRegistry.Entities.MunicipalArea", "MunicipalArea")
+                        .WithMany()
+                        .HasForeignKey("MunicipalAreaId");
+
+                    b.HasOne("Gems.AddressRegistry.Entities.Territory", "Territory")
+                        .WithMany()
+                        .HasForeignKey("TerritoryId");
+
+                    b.Navigation("AdministrativeArea");
+
+                    b.Navigation("MunicipalArea");
+
+                    b.Navigation("Territory");
+                });
+
+            modelBuilder.Entity("Gems.AddressRegistry.Entities.MunicipalArea", b =>
+                {
+                    b.HasOne("Gems.AddressRegistry.Entities.Region", "Region")
+                        .WithMany()
+                        .HasForeignKey("RegionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Region");
+                });
+
+            modelBuilder.Entity("Gems.AddressRegistry.Entities.PlaningStructureElement", b =>
+                {
+                    b.HasOne("Gems.AddressRegistry.Entities.City", "City")
+                        .WithMany()
+                        .HasForeignKey("CityId");
+
+                    b.HasOne("Gems.AddressRegistry.Entities.Settlement", "Settlement")
+                        .WithMany()
+                        .HasForeignKey("SettlementId");
+
+                    b.Navigation("City");
+
+                    b.Navigation("Settlement");
+                });
+
+            modelBuilder.Entity("Gems.AddressRegistry.Entities.RoadNetworkElement", b =>
+                {
+                    b.HasOne("Gems.AddressRegistry.Entities.City", "City")
+                        .WithMany()
+                        .HasForeignKey("CityId");
+
+                    b.HasOne("Gems.AddressRegistry.Entities.PlaningStructureElement", "PlaningStructureElement")
+                        .WithMany()
+                        .HasForeignKey("PlaningStructureElementId");
+
+                    b.HasOne("Gems.AddressRegistry.Entities.Settlement", "Settlement")
+                        .WithMany()
+                        .HasForeignKey("SettlementId");
+
+                    b.Navigation("City");
+
+                    b.Navigation("PlaningStructureElement");
+
+                    b.Navigation("Settlement");
+                });
+
+            modelBuilder.Entity("Gems.AddressRegistry.Entities.Settlement", b =>
+                {
+                    b.HasOne("Gems.AddressRegistry.Entities.City", "City")
+                        .WithMany()
+                        .HasForeignKey("CityId");
+
+                    b.HasOne("Gems.AddressRegistry.Entities.MunicipalArea", "MunicipalArea")
+                        .WithMany()
+                        .HasForeignKey("MunicipalAreaId");
+
+                    b.HasOne("Gems.AddressRegistry.Entities.Territory", "Territory")
+                        .WithMany()
+                        .HasForeignKey("TerritoryId");
+
+                    b.Navigation("City");
+
+                    b.Navigation("MunicipalArea");
+
+                    b.Navigation("Territory");
+                });
+
+            modelBuilder.Entity("Gems.AddressRegistry.Entities.Territory", b =>
+                {
+                    b.HasOne("Gems.AddressRegistry.Entities.MunicipalArea", "MunicipalArea")
+                        .WithMany()
+                        .HasForeignKey("MunicipalAreaId");
+
+                    b.Navigation("MunicipalArea");
                 });
 
             modelBuilder.Entity("Gems.AddressRegistry.Entities.DataSources.AddressDataSource", b =>

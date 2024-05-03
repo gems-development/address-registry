@@ -1,8 +1,8 @@
+using WebApi.Exceptions;
+
 namespace WebApi.Helpers;
 
-using Gems.AplicationServices.Exceptions;
 using Serilog;
-using System.Net;
 using System.Text.Json;
 
 public class ErrorHandlerMiddleware
@@ -24,19 +24,16 @@ public class ErrorHandlerMiddleware
         }
         catch (Exception error)
         {
-
             var response = context.Response;
             response.ContentType = "application/json";
 
             switch (error)
             {
                 case EntityNotFoundException e:
-                    // custom application error
-                    response.StatusCode = (int)HttpStatusCode.NotFound;
+                    response.StatusCode = StatusCodes.Status404NotFound;
                     break;
                 default:
-                    // unhandled error
-                    response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                    response.StatusCode = StatusCodes.Status500InternalServerError;
                     break;
             }
 

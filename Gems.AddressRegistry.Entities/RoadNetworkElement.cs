@@ -9,8 +9,11 @@ namespace Gems.AddressRegistry.Entities
     {
         public virtual ICollection<ErnDataSource> DataSources { get; set; } = new List<ErnDataSource>(0);
         public RoadNetworkElementType RoadNetworkElementType { get; set; }
-        public String Name { get; set; } = null!;
+        public string Name { get; set; } = null!;
+        public virtual City? City { get; set; }
+        public virtual Settlement? Settlement { get; set; }
+        public virtual PlaningStructureElement? PlaningStructureElement { get; set; }
         [NotMapped]
-        public String NormalizedName { get; set; } = null!;
+        public string NormalizedName { get; set; } = null!;
     }
 }

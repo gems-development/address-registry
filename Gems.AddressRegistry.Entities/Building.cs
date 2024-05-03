@@ -6,12 +6,11 @@ namespace Gems.AddressRegistry.Entities
 {
     public class Building : BaseGeoEntity
     {
-
         public virtual ICollection<BuildingDataSource> DataSources { get; set; } = new List<BuildingDataSource>(0);
         public int Postcode { get; set; }
-        public String Number { get; set; } = null!;
+        public string Number { get; set; } = null!;
+        public virtual RoadNetworkElement? RoadNetworkElement { get; set; }
+        public virtual PlaningStructureElement? PlaningStructureElement { get; set; }
         public BuildingType BuildingType { get; set; }
-
-
     }
 }

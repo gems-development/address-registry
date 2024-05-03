@@ -6,6 +6,9 @@ namespace Gems.AddressRegistry.Entities
     public class City : BaseGeoEntity
     {
         public virtual ICollection<CityDataSource> DataSources { get; set; } = new List<CityDataSource>(0);
-        public String Name { get; set; } = null!;
+        public virtual Territory? Territory { get; set; }
+        public virtual MunicipalArea? MunicipalArea { get; set; }
+        public virtual AdministrativeArea? AdministrativeArea { get; set; }
+        public string Name { get; set; } = null!;
     }
 }
