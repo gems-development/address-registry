@@ -271,7 +271,13 @@ namespace Gems.ApplicationServices.Services
                      _appDbContext.InvalidAddresses.Add(invalidAddress);
                 }
             }
-            return await _appDbContext.SaveChangesAsync(cancellationToken);
+            try
+            {
+                return await _appDbContext.SaveChangesAsync(cancellationToken);
+            } catch (Exception ex)
+            {
+                throw;
+            }
 
         }
         public bool help(Address address)
