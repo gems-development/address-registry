@@ -102,5 +102,6 @@ namespace Gems.DataMergeServices.Services
                 Debug.WriteLine($"Не удалось добавить источник данных, вызвано исключение: {ex}");
             }
         }
+        
     }
 }

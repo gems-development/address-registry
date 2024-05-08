@@ -16,7 +16,7 @@
         }
         public IAppDbContext Create()
         {
-            return new AppDbContext(_asNoTracking);
+            return new AppDbContext(_connectionString);
         }
     }
 }
