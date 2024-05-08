@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>React App</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="bootstrap.min.css" />
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 40px;
+      }
+      #map {
+        width: 90%; /* Задаем ширину */
+        height: 100%; /* Задаем высоту */
+        border-radius: 20px;
+      }
+      .h3 {
+        color: aliceblue;
+      }
+      .coord-display {
+        margin-top: 20px;
+        text-align: center;
+        font-size: 18px;
+      }
+    </style>
+  </head>
+  <body>
+    <div style="display: flex; flex-direction: column;">
+      <div class="largest-area container" style="display: flex;">
+        <div class="left-block" style="margin-right: 40px;">
+          <h2>Введите адрес:</h2>
+          <input type="text" class="search-area" placeholder="Введите адрес" />
+          <div class="info-container" style="display: flex; flex-direction: column;">
+            <h3 style="margin-top: 40px;">Адреса</h3>
+            <p>Адрес в муниципальном делении</p>
+            <p>Адрес в административном делении</p>
+            <p>ОКАТО</p>
+            <p>ОКТМО</p>
+            <p>Почтовый индекс</p>
+          </div>
+        </div>
+        <div class="map-block" id="map" style="margin: 4px; width: 1000px;">
+          <div class="coord-display">
+            <p>Координаты: <span class="display-lat"></span> : <span class="display-lon"></span></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="empty-place"></div>
+
+      <div class="coord-search" style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <h2>Введите координаты:</h2>
+        <div style="display: flex; flex-direction: row;">
+          <input type="text" class="lat" placeholder="Введите широту" />
+          <input type="text" class="lon" placeholder="Введите долготу" />
+        </div>
+        <button style="margin-top: 20px;" class="btn btn-primary mbtn" id="findButton">Найти</button>
+      </div>
+    </div>
+    <script src="WEB-INF/js/bootstrap.bundle.min.js"></script>
+    <script src="MapComponent.js"></script>
+  </body>
+</html>

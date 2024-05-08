@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>САРГ</title>
+    <style>
+        body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        }
+        .empty-place {
+            width: 100%;
+            height: 100pt;
+        }
+    </style>
+</head>
+<body>
+
+        <div class="largest-area container" style="display: flex;">
+            <div class="left-block column">
+                <h2>Введите координаты:</h2>
+                <input type="text" class="search-area" placeholder="Введите адрес" />
+                <div class="info-container" style="display: flex; flex-direction: column;"">
+                    <h3>Адреса</h3>
+                    <p>Адрес в муниципальном делении</p>
+                    <p>Адрес в административном делении</p>
+                    <p>Адрес в административном делении</p>
+                </div>
+            </div>
+            <div class="map-block container"></div>
+        </div>
+
+        <div class="empty-place"></div>
+
+        <div class="coord-search" style="display: flex; flex-direction: column;">
+            <h2 class="text">Введите координаты:</h2>
+            <div style="display: flex; flex-direction: row;">
+                <input type="number" class="lat" placeholder="Введите широту"/>
+                <input type="number" class="lon" placeholder="Введите долготу"/>
+            </div>
+        </div>
+
+</body>
+</html>
