@@ -19,10 +19,14 @@ namespace Gems.AddressRegistry.DataAccess
         public DbSet<Building> Buildings { get; set; }
 
         private readonly string _connectionString = "Host=localhost;Port=5432;Database=addressdb;Username=postgres;Password=admin";
+        private readonly bool _asNoTracking;
 
         public AppDbContext()
         { }
-
+        public AppDbContext(bool asNoTracking)
+        {
+            _asNoTracking = asNoTracking;
+        }
         public AppDbContext(string connectionString)
         {
             _connectionString = connectionString;
@@ -33,6 +37,9 @@ namespace Gems.AddressRegistry.DataAccess
             optionsBuilder.UseLazyLoadingProxies();
             optionsBuilder.UseNpgsql(_connectionString);
             optionsBuilder.EnableSensitiveDataLogging();
+
+            if (_asNoTracking)
+                optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
