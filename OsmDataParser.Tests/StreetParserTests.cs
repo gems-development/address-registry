@@ -1,10 +1,7 @@
-using System.Text.Json;
-using Gems.AddressRegistry.OsmDataParser.Factories;
 using Gems.AddressRegistry.OsmDataParser.Interfaces;
 using Gems.AddressRegistry.OsmDataParser.Model;
 using Gems.AddressRegistry.OsmDataParser.Support;
-using GeoJSON.Text.Feature;
-using GeoJSON.Text.Geometry;
+using OsmSharp;
 using OsmSharp.Tags;
 
 namespace Gems.AddressRegistry.OsmDataParser.Tests;
@@ -24,58 +21,32 @@ public class StreetParserTests
             {"name", "улица Ленина"}
         };
 
-        var node1 = TestHelper.CreateNode(123, 73.3333333, 54.3333333);
-        var node2 = TestHelper.CreateNode(456, 73.3333334, 54.3333334);
-        var node3 = TestHelper.CreateNode(789, 73.3333335, 54.3333335);
-        var node4 = TestHelper.CreateNode(121, 73.3333336, 54.3333336);
-        var node5 = TestHelper.CreateNode(111, 73.3333337, 54.3333337);
-    
         var way1 = TestHelper.CreateWay(1, tags,
-            new [] { (long)node1.Id!, (long)node2.Id!, (long)node3.Id! });
-        
+            new []
+            {
+                (long)TestHelper.CreateNode(123).Id!, 
+                (long)TestHelper.CreateNode(456).Id!, 
+                (long)TestHelper.CreateNode(789).Id!
+            }
+        );
         var way2 = TestHelper.CreateWay(2, tags,
-            new [] { (long)node4.Id!, (long)node5.Id!, (long)node1.Id! });
-        
-        var expectedCoordinates = new List<(double latitude, double longitude)>
-        {
-            (73.3333336, 54.3333336),
-            (73.3333337, 54.3333337),
-            (73.3333333, 54.3333333),
-            (73.3333334, 54.3333334),
-            (73.3333335, 54.3333335)
-        };
-    
+            new []
+            {
+                (long)TestHelper.CreateNode(121).Id!, 
+                (long)TestHelper.CreateNode(111).Id!, 
+                (long)TestHelper.CreateNode(123).Id!
+            }
+        );
+        var expectedNodeIds = new [] { 121L, 111, 123, 456, 789 };
+
         //Act.
-        _osmData.Nodes.Add(node1);
-        _osmData.Nodes.Add(node2);
-        _osmData.Nodes.Add(node3);
-        _osmData.Nodes.Add(node4);
-        _osmData.Nodes.Add(node5);
-        
         _osmData.Ways.Add(way1);
         _osmData.Ways.Add(way2);
-        
-        var streets = _streetParser.ParseAll(_osmData, null!);
-        
-        var streetGeometry = JsonSerializer.Deserialize<FeatureCollection>(streets.First().GeoJson);
-        var multiLine = streetGeometry!.Features.First().Geometry as MultiLineString;
-        var positions = multiLine!.Coordinates.First().Coordinates;
-        var nodes = positions.Select(position 
-            => TestHelper.CreateNode(default, position.Latitude, position.Longitude)).ToList();
+        var streets = _streetParser.ParseAll(_osmData, null);
+        var nodeIds = streets.First().Components.First().Nodes;
         
         //Assert.
-        Assert.NotNull(streetGeometry);
-        Assert.NotNull(multiLine);
-        Assert.NotNull(positions);
-        Assert.NotNull(nodes);
-        
-        Assert.Equal(expectedCoordinates.Count, nodes.Count);
-        
-        for (var i = 0; i < expectedCoordinates.Count; i++)
-        {
-            Assert.Equal(expectedCoordinates[i].latitude, nodes[i].Latitude);
-            Assert.Equal(expectedCoordinates[i].longitude, nodes[i].Longitude);
-        }
+        Assert.Equal(expectedNodeIds, nodeIds);
     }
     
     [Fact]
@@ -87,69 +58,44 @@ public class StreetParserTests
             {"highway", "residential"},
             {"name", "улица Ленина"}
         };
-        
-        var node1 = TestHelper.CreateNode(123, 73.3333333, 54.3333333);
-        var node2 = TestHelper.CreateNode(456, 73.3333334, 54.3333334);
-        var node3 = TestHelper.CreateNode(789, 73.3333335, 54.3333335);
-        var node4 = TestHelper.CreateNode(121, 73.3333336, 54.3333336);
-        var node5 = TestHelper.CreateNode(111, 73.3333337, 54.3333337);
-        var node6 = TestHelper.CreateNode(988, 73.3333338, 54.3333338);
-        var node7 = TestHelper.CreateNode(353, 73.3333339, 54.3333339);
-    
+
         var way1 = TestHelper.CreateWay(1, tags,
-            new [] { (long)node1.Id!, (long)node2.Id!, (long)node3.Id! });
+            new []
+            {
+                (long)TestHelper.CreateNode(123).Id!, 
+                (long)TestHelper.CreateNode(456).Id!, 
+                (long)TestHelper.CreateNode(789).Id!
+            }
+        );
         
         var way2 = TestHelper.CreateWay(2, tags,
-            new [] { (long)node4.Id!, (long)node5.Id!, (long)node1.Id! });
+            new []
+            {
+                (long)TestHelper.CreateNode(121).Id!, 
+                (long)TestHelper.CreateNode(111).Id!, 
+                (long)TestHelper.CreateNode(123).Id!
+            }
+        );
         
         var way3 = TestHelper.CreateWay(3, tags,
-            new [] { (long)node6.Id!, (long)node7.Id!, (long)node4.Id! });
-        
-        var expectedCoordinates = new List<(double latitude, double longitude)>
-        {
-            (73.3333338, 54.3333338),
-            (73.3333339, 54.3333339),
-            (73.3333336, 54.3333336),
-            (73.3333337, 54.3333337),
-            (73.3333333, 54.3333333),
-            (73.3333334, 54.3333334),
-            (73.3333335, 54.3333335)
-        };
+            new []
+            {
+                (long)TestHelper.CreateNode(988).Id!, 
+                (long)TestHelper.CreateNode(353).Id!, 
+                (long)TestHelper.CreateNode(121).Id!
+            }
+        );
+        var expectedNodeIds = new [] { 988L, 353, 121, 111, 123, 456, 789 };
         
         //Act.
-        _osmData.Nodes.Add(node1);
-        _osmData.Nodes.Add(node2);
-        _osmData.Nodes.Add(node3);
-        _osmData.Nodes.Add(node4);
-        _osmData.Nodes.Add(node5);
-        _osmData.Nodes.Add(node6);
-        _osmData.Nodes.Add(node7);
-        
         _osmData.Ways.Add(way1);
         _osmData.Ways.Add(way2);
         _osmData.Ways.Add(way3);
-        
-        var streets = _streetParser.ParseAll(_osmData, null!);
-        
-        var streetGeometry = JsonSerializer.Deserialize<FeatureCollection>(streets.First().GeoJson);
-        var multiLine = streetGeometry!.Features.First().Geometry as MultiLineString;
-        var positions = multiLine!.Coordinates.First().Coordinates;
-        var nodes = positions.Select(position 
-            => TestHelper.CreateNode(default, position.Latitude, position.Longitude)).ToList();
+        var streets = _streetParser.ParseAll(_osmData, null);
+        var nodeIds = streets.First().Components.First().Nodes;
         
         //Assert.
-        Assert.NotNull(streetGeometry);
-        Assert.NotNull(multiLine);
-        Assert.NotNull(positions);
-        Assert.NotNull(nodes);
-        
-        Assert.Equal(expectedCoordinates.Count, nodes.Count);
-        
-        for (var i = 0; i < expectedCoordinates.Count; i++)
-        {
-            Assert.Equal(expectedCoordinates[i].latitude, nodes[i].Latitude);
-            Assert.Equal(expectedCoordinates[i].longitude, nodes[i].Longitude);
-        }
+        Assert.Equal(expectedNodeIds, nodeIds);
     }
     
     [Fact]
@@ -162,67 +108,130 @@ public class StreetParserTests
             {"name", "улица Ленина"}
         };
         
-        var node1 = TestHelper.CreateNode(123, 73.3333333, 54.3333333);
-        var node2 = TestHelper.CreateNode(456, 73.3333334, 54.3333334);
-        var node3 = TestHelper.CreateNode(789, 73.3333335, 54.3333335);
-        var node4 = TestHelper.CreateNode(315, 73.3333336, 54.3333336);
-        var node5 = TestHelper.CreateNode(811, 73.3333337, 54.3333337);
-        var node6 = TestHelper.CreateNode(563, 73.3333338, 54.3333338);
-        var node7 = TestHelper.CreateNode(353, 73.3333339, 54.3333339);
-        
         var way1 = TestHelper.CreateWay(1, tags,
-            new [] { (long)node1.Id!, (long)node2.Id!, (long)node3.Id! });
+            new []
+            {
+                (long)TestHelper.CreateNode(123).Id!, 
+                (long)TestHelper.CreateNode(456).Id!, 
+                (long)TestHelper.CreateNode(789).Id!
+            }
+        );
         
         var way2 = TestHelper.CreateWay(2, tags,
-            new [] { (long)node4.Id!, (long)node5.Id!, (long)node6.Id! });
+            new []
+            {
+                (long)TestHelper.CreateNode(315).Id!, 
+                (long)TestHelper.CreateNode(811).Id!, 
+                (long)TestHelper.CreateNode(563).Id!
+            }
+        );
         
         var way3 = TestHelper.CreateWay(3, tags,
-            new [] { (long)node6.Id!, (long)node7.Id!, (long)node1.Id! });
+            new []
+            {
+                (long)TestHelper.CreateNode(563).Id!, 
+                (long)TestHelper.CreateNode(353).Id!, 
+                (long)TestHelper.CreateNode(123).Id!
+            }
+        );
         
-        var expectedCoordinates = new List<(double latitude, double longitude)>
-        {
-            (73.3333336, 54.3333336),
-            (73.3333337, 54.3333337),
-            (73.3333338, 54.3333338),
-            (73.3333339, 54.3333339),
-            (73.3333333, 54.3333333),
-            (73.3333334, 54.3333334),
-            (73.3333335, 54.3333335)
-        };
+        var expectedNodeIds = new [] { 315L, 811, 563, 353, 123, 456, 789 };
         
         //Act.
-        _osmData.Nodes.Add(node1);
-        _osmData.Nodes.Add(node2);
-        _osmData.Nodes.Add(node3);
-        _osmData.Nodes.Add(node4);
-        _osmData.Nodes.Add(node5);
-        _osmData.Nodes.Add(node6);
-        _osmData.Nodes.Add(node7);
-        
         _osmData.Ways.Add(way1);
         _osmData.Ways.Add(way2);
         _osmData.Ways.Add(way3);
-        
-        var streets = _streetParser.ParseAll(_osmData, null!);
-        
-        var streetGeometry = JsonSerializer.Deserialize<FeatureCollection>(streets.First().GeoJson);
-        var multiLine = streetGeometry!.Features.First().Geometry as MultiLineString;
-        var positions = multiLine!.Coordinates.First().Coordinates;
-        var nodes = positions.Select(position 
-            => TestHelper.CreateNode(default, position.Latitude, position.Longitude)).ToList();
+        var streets = _streetParser.ParseAll(_osmData, null);
+        var nodeIds = streets.First().Components.First().Nodes;
         
         //Assert.
-        Assert.NotNull(streetGeometry);
-        Assert.NotNull(multiLine);
-        Assert.NotNull(positions);
-        Assert.NotNull(nodes);
-        
-        Assert.Equal(expectedCoordinates.Count, nodes.Count);
-        
-        for (var i = 0; i < expectedCoordinates.Count; i++)
+        Assert.Equal(expectedNodeIds, nodeIds);
+    }
+}
+        //Arrange.
+        var tags = new TagsCollection
         {
-            Assert.Equal(expectedCoordinates[i].latitude, nodes[i].Latitude);
-            Assert.Equal(expectedCoordinates[i].longitude, nodes[i].Longitude);
-        }
+            {"boundary", "administrative"},
+            {"admin_level", "6"},
+            {"name", "Омский район"}
+        };
+        
+        var way1 = TestHelper.CreateWay(1, null!,
+            new []
+            {
+                (long)TestHelper.CreateNode(123).Id!, 
+                (long)TestHelper.CreateNode(456).Id!, 
+                (long)TestHelper.CreateNode(789).Id!
+            }
+        );
+        
+        var way2 = TestHelper.CreateWay(2, null!,
+            new []
+            {
+                (long)TestHelper.CreateNode(315).Id!, 
+                (long)TestHelper.CreateNode(811).Id!, 
+                (long)TestHelper.CreateNode(563).Id!
+            }
+        );
+        
+        var way3 = TestHelper.CreateWay(3, null!,
+            new []
+            {
+                (long)TestHelper.CreateNode(563).Id!, 
+                (long)TestHelper.CreateNode(353).Id!, 
+                (long)TestHelper.CreateNode(123).Id!
+            }
+        );
+        
+        var way4 = TestHelper.CreateWay(4, null!,
+            new []
+            {
+                (long)TestHelper.CreateNode(315).Id!, 
+                (long)TestHelper.CreateNode(888).Id!, 
+                (long)TestHelper.CreateNode(789).Id!
+            }
+        );
+        
+        var adminCenter = TestHelper.CreateNode(5);
+        
+        var districtRelation = TestHelper.CreateRelation(999, tags, 
+            new []
+            {
+                new RelationMember { Id = (long)way1.Id! },
+                new RelationMember { Id = (long)way2.Id! },
+                new RelationMember { Id = (long)way3.Id! },
+                new RelationMember { Id = (long)way4.Id! },
+                new RelationMember { Id = (long)adminCenter.Id! }
+            }
+        );
+        
+        var areaTags = new TagsCollection
+        {
+            {"boundary", "administrative"},
+            {"admin_level", "4"},
+            {"name", "Омская область"}
+        };
+
+        var areaRelation = TestHelper.CreateRelation(1, areaTags,
+            new[]
+            {
+                new RelationMember { Id = (long)districtRelation.Id! }
+            }
+        );
+        
+        var expectedNodeIds = new [] { 789L, 888, 315, 811, 563, 353, 123, 456, 789 };
+        
+        //Act.
+        _osmData.Ways.Add(way1);
+        _osmData.Ways.Add(way2);
+        _osmData.Ways.Add(way3);
+        _osmData.Ways.Add(way4);
+        _osmData.Relations.Add(areaRelation);
+        _osmData.Relations.Add(districtRelation);
+        var localities = _osmDataParser.GetLocalities(_osmData);
+        var nodeIds = localities.First().Components.First().Nodes;
+        
+        //Assert.
+        Assert.Equal(expectedNodeIds, nodeIds);
     }
 }

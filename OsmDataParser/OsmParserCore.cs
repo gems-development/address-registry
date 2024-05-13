@@ -107,3 +107,64 @@ internal static class OsmParserCore
         return osmObjects;
     }
 }
+                            osmObjects.RemoveAt(i);
+                            osmObjects.RemoveAt(j - 1);
+                            osmObjects.Add(newWay);
+
+                            merged = true;
+                            break;
+                        }
+
+                        if (osmObjects[i].Nodes.LastOrDefault() == osmObjects[j].Nodes.FirstOrDefault())
+                        {
+                            var newWay = new Way
+                            {
+                                Nodes = osmObjects[i].Nodes.Concat(osmObjects[j].Nodes.Skip(1)).ToArray()
+                            };
+
+                            osmObjects.RemoveAt(i);
+                            osmObjects.RemoveAt(j - 1);
+                            osmObjects.Add(newWay);
+
+                            merged = true;
+                            break;
+                        }
+
+                        if (osmObjects[i].Nodes.FirstOrDefault() == osmObjects[j].Nodes.FirstOrDefault())
+                        {
+                            var newWay = new Way
+                            {
+                                Nodes = osmObjects[j].Nodes.Reverse().Concat(osmObjects[i].Nodes.Skip(1)).ToArray(),
+                            };
+
+                            osmObjects.RemoveAt(i);
+                            osmObjects.RemoveAt(j - 1);
+                            osmObjects.Add(newWay);
+
+                            merged = true;
+                            break;
+                        }
+
+                        if (osmObjects[i].Nodes.LastOrDefault() == osmObjects[j].Nodes.LastOrDefault())
+                        {
+                            var newWay = new Way
+                            {
+                                Nodes = osmObjects[i].Nodes.
+                                    Concat(osmObjects[j].Nodes.Take(osmObjects[j].Nodes.Length - 1).Reverse()).ToArray(),
+                            };
+
+                            osmObjects.RemoveAt(i);
+                            osmObjects.RemoveAt(j - 1);
+                            osmObjects.Add(newWay);
+
+                            merged = true;
+                            break;
+                        }
+                    }
+                if (merged) break;
+            }
+            if (!merged) break;
+        }
+        return osmObjects;
+    }
+}
