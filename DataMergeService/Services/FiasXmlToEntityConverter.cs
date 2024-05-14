@@ -485,14 +485,14 @@ namespace Gems.DataMergeServices.Services
                             {
                                 address.Territory = (Territory)entryMunicipal.Value.BaseEntity;
                                 address.Settlement.Territory = address.Territory;
+                                FindParents(levelNumber, address);
                             }
-                            FindParents(levelNumber, address);
-                            if (levelNumber == 3)
+                            else if (levelNumber == 3)
                             {
                                 address.MunicipalArea = (MunicipalArea)entryMunicipal.Value.BaseEntity;
                                 address.Settlement.MunicipalArea = address.MunicipalArea;
                             }
-                            FindParents(levelNumber, address);
+                            
                         }
                     }
                     break;
@@ -523,14 +523,14 @@ namespace Gems.DataMergeServices.Services
                             {
                                 address.Territory = (Territory)entryMunicipal.Value.BaseEntity;
                                 address.City.Territory = address.Territory;
+                                FindParents(levelNumber, address);
                             }
-                            FindParents(levelNumber, address);
-                            if (levelNumber == 3)
+                            else if (levelNumber == 3)
                             {
                                 address.MunicipalArea = (MunicipalArea)entryMunicipal.Value.BaseEntity;
                                 address.City.MunicipalArea = address.MunicipalArea;
                             }
-                            FindParents(levelNumber, address);
+
                         }
                     }
                     break;
