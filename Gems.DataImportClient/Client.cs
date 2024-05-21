@@ -11,32 +11,22 @@ namespace Gems.AddressRegistry.OsmClient;
 
 public static class Client
 {
-	private static readonly IConfiguration Configuration;
-
-	static Client()
-	{
-		var currentDirectory = Directory.GetCurrentDirectory();
-		var projectDirectory = Directory.GetParent(currentDirectory)?.Parent?.Parent?.FullName;
-
-		Configuration = new ConfigurationBuilder()
-			.SetBasePath(projectDirectory!)
-			.AddJsonFile("appsettings.json")
-			.Build();
-	}
-
 	public static async Task Main(string[] args)
 	{
+		var configuration = new ConfigurationBuilder()
+			.AddJsonFile("appsettings.json")
+			.Build();
 		var swTotal = Stopwatch.StartNew();
 
 		try
 		{
 			var fiasConverter = new FiasXmlToEntityConverter();
-			var connectionString = Configuration.GetConnectionString("Default")!;
+			var connectionString = configuration.GetConnectionString("Default")!;
 			var osmOptions = new OsmOptions();
 			var fiasOptions = new FiasOptions();
 
-			Configuration.GetSection("Osm").Bind(osmOptions);
-			Configuration.GetSection("Fias").Bind(fiasOptions);
+			configuration.GetSection("Osm").Bind(osmOptions);
+			configuration.GetSection("Fias").Bind(fiasOptions);
 
 			var pathToPbf = InputFileNameHelper.GetFilePathByExtension(osmOptions.PbfFile);
 			var areaName = osmOptions.TargetArea;

@@ -25,7 +25,7 @@ public static class OsmParserTask
 			Task.Run(() => houses = OsmParserFactory.Create<House>().ParseAll(osmData, string.Empty)));
 		await ObjectLinkBuilder.LinkAddressElements(area, districts!, cities!, villages!, streets!, houses!);
 
-		var resultHouses = UnusedAddressesCleaner.Clean(houses);
+		var resultHouses = UnusedAddressesCleaner.Clean(houses!);
 
 		return resultHouses;
 	}

@@ -25,3 +25,8 @@
 Ссылки на источники данных:
 * ФИАС: https://fias.nalog.ru/Frontend
 * OSM: http://download.openstreetmap.fr/extracts/russia/
+
+## Запуск
+
+После подготовки исходных данных следует запустить исполняемый файл `Gems.DataImportClient.exe`.
+Результаты импорта появятся в базе данных после завершения работы приложения.
