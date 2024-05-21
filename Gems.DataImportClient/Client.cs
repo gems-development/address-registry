@@ -1,5 +1,7 @@
 ﻿using System.Diagnostics;
 using Gems.AddressRegistry.DataAccess;
+using Gems.AddressRegistry.OsmClient.Helpers;
+using Gems.AddressRegistry.OsmClient.Options;
 using Gems.AddressRegistry.OsmDataParser;
 using Gems.ApplicationServices.Services;
 using Gems.DataMergeServices.Services;
@@ -29,13 +31,19 @@ public static class Client
         try
         {
             var fiasConverter = new FiasXmlToEntityConverter();
-            var connectionString = Configuration.GetSection("ConnectionString").Value;
-            var pathToPbf = Configuration.GetSection("Pbf File").Value;
-            var areaName = Configuration.GetSection("Target Area").Value;
-            var pathAdm = Configuration.GetSection("PathAdm").Value;
-            var pathMun = Configuration.GetSection("PathMun").Value;
-            var pathReg = Configuration.GetSection("PathReg").Value;
-            var pathBuildings = Configuration.GetSection("PathBuildings").Value;
+            var connectionString = Configuration.GetConnectionString("Default");
+            var osmOptions = new OsmOptions();
+            var fiasOptions = new FiasOptions();
+
+            Configuration.GetSection("Osm").Bind(osmOptions);
+            Configuration.GetSection("Fias").Bind(fiasOptions);
+
+            var pathToPbf = InputFileNameHelper.GetFilePathByExtension(osmOptions.PbfFile);
+            var areaName = osmOptions.TargetArea;
+            var pathAdm = InputFileNameHelper.GetFilePathByNamePrefix(fiasOptions.PathAdm);
+            var pathMun = InputFileNameHelper.GetFilePathByNamePrefix(fiasOptions.PathMun);
+            var pathReg = InputFileNameHelper.GetFilePathByNamePrefix(fiasOptions.PathReg);
+            var pathBuildings = InputFileNameHelper.GetFilePathByNamePrefix(fiasOptions.PathBuildings);;
 
             var osmTask = Task.Run(async () =>
             {
