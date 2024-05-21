@@ -31,7 +31,7 @@ public static class Client
 		try
 		{
 			var fiasConverter = new FiasXmlToEntityConverter();
-			var connectionString = Configuration.GetConnectionString("Default");
+			var connectionString = Configuration.GetConnectionString("Default")!;
 			var osmOptions = new OsmOptions();
 			var fiasOptions = new FiasOptions();
 
@@ -46,8 +46,10 @@ public static class Client
 			var pathBuildings = InputFileNameHelper.GetFilePathByNamePrefix(fiasOptions.PathBuildings);
 			var osmTask = Task.Run(async () =>
 			{
+				Console.WriteLine(">>> Начат импорт OSM");
+
 				var sw = Stopwatch.StartNew();
-				var result = await OsmParserTask.Execute(pathToPbf!, areaName!);
+				var result = await OsmParserTask.Execute(pathToPbf, areaName);
 
 				Console.WriteLine($">>> Завершён импорт OSM: {sw.Elapsed}");
 
@@ -55,8 +57,10 @@ public static class Client
 			});
 			var fiasTask = Task.Run(async () =>
 			{
+				Console.WriteLine(">>> Начат импорт ФИАС");
+
 				var sw = Stopwatch.StartNew();
-				var result = await fiasConverter.ReadAndBuildAddresses(pathAdm!, pathMun!, pathBuildings!, pathReg!);
+				var result = await fiasConverter.ReadAndBuildAddresses(pathAdm, pathMun, pathBuildings, pathReg);
 
 				Console.WriteLine($">>> Завершён импорт ФИАС: {sw.Elapsed}");
 
@@ -70,15 +74,17 @@ public static class Client
 
 			await Task
 				.WhenAll(tasks)
-				.ContinueWith(task =>
+				.ContinueWith(_ =>
 				{
+					Console.WriteLine(">>> Начато слияние адресов");
+
 					var sw = Stopwatch.StartNew();
 
 					DataMergeService.MergeAddresses(osmTask.Result, fiasTask.Result);
 					Console.WriteLine($">>> Слияние адресов завершено: {sw.Elapsed}");
 				});
 
-			var appDbContextFactory = new AppDbContextFactory(connectionString!);
+			var appDbContextFactory = new AppDbContextFactory(connectionString);
 			var dataImportService = new DataImportService(appDbContextFactory);
 			var sw = Stopwatch.StartNew();
 
