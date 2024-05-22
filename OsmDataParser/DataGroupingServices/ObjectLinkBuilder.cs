@@ -25,7 +25,11 @@ public static class ObjectLinkBuilder
 		}
 	}
 
-	private static void LinkByCities(District district, IReadOnlyCollection<City> cities, IReadOnlyCollection<Street> streets, IReadOnlyCollection<House> houses)
+	private static void LinkByCities(
+		District district,
+		IReadOnlyCollection<City> cities,
+		IReadOnlyCollection<Street> streets,
+		IReadOnlyCollection<House> houses)
 	{
 		foreach (var city in cities)
 		{
@@ -58,7 +62,11 @@ public static class ObjectLinkBuilder
 		}
 	}
 
-	private static void LinkByVillages(District district, IReadOnlyCollection<Village> villages, IReadOnlyCollection<Street> streets, IReadOnlyCollection<House> houses)
+	private static void LinkByVillages(
+		District district,
+		IReadOnlyCollection<Village> villages,
+		IReadOnlyCollection<Street> streets,
+		IReadOnlyCollection<House> houses)
 	{
 		foreach (var village in villages)
 		{

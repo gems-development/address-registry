@@ -56,27 +56,19 @@ public static class Client
 
 				return result;
 			});
-			var tasks = new Task[]
-			{
-				osmTask,
-				fiasTask
-			};
 
-			await Task
-				.WhenAll(tasks)
-				.ContinueWith(_ =>
-				{
-					Console.WriteLine(">>> Начато слияние адресов");
+			await Task.WhenAll(osmTask, fiasTask);
+			Console.WriteLine(">>> Начато слияние адресов");
 
-					var sw = Stopwatch.StartNew();
+			var sw = Stopwatch.StartNew();
 
-					DataMergeService.MergeAddresses(osmTask.Result, fiasTask.Result);
-					Console.WriteLine($">>> Слияние адресов завершено: {sw.Elapsed}");
-				});
+			await DataMergeService.MergeAddresses(osmTask.Result, fiasTask.Result);
+			Console.WriteLine($">>> Слияние адресов завершено: {sw.Elapsed}");
 
 			var appDbContextFactory = new AppDbContextFactory(connectionString);
 			var dataImportService = new DataImportService(appDbContextFactory);
-			var sw = Stopwatch.StartNew();
+
+			sw = Stopwatch.StartNew();
 
 			await dataImportService.ImportAddressesAsync(fiasTask.Result);
 			Console.WriteLine($">>> Импорт адресов в БД завершён: {sw.Elapsed}");

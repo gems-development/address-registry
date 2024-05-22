@@ -18,7 +18,7 @@ public static class OsmParserTask
 		IReadOnlyCollection<House>? houses = null;
 
 		await Task.WhenAll(
-			Task.Run(() => districts = OsmParserFactory.Create<District>().ParseAll(osmData, string.Empty)),
+			Task.Run(() => districts = OsmParserFactory.Create<District>().ParseAll(osmData, areaName)),
 			Task.Run(() => cities = OsmParserFactory.Create<City>().ParseAll(osmData, string.Empty)),
 			Task.Run(() => villages = OsmParserFactory.Create<Village>().ParseAll(osmData, string.Empty)),
 			Task.Run(() => streets = OsmParserFactory.Create<Street>().ParseAll(osmData, string.Empty)),

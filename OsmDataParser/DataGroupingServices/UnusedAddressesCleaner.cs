@@ -4,22 +4,19 @@ namespace Gems.AddressRegistry.OsmDataParser.DataGroupingServices;
 
 public static class UnusedAddressesCleaner
 {
-    public static IReadOnlyCollection<House> Clean(IReadOnlyCollection<House> houses)
-    {
-        var resultHouses = new List<House>();
-        
-        foreach (var house in houses)
-        {
-            var citySeq = house.Street?.City?.District?.Area;
-            var villageSeq = house.Street?.Village?.District?.Area;
-            
-            if (citySeq != null)
-                resultHouses.Add(house);
-            
-            else if (villageSeq != null)
-                resultHouses.Add(house);
-        }
+	public static IReadOnlyCollection<House> Clean(IReadOnlyCollection<House> houses)
+	{
+		var resultHouses = new List<House>();
 
-        return resultHouses;
-    }
+		foreach (var house in houses)
+		{
+			var citySeq = house.Street?.City?.District.Area;
+			var villageSeq = house.Street?.Village?.District.Area;
+
+			if (citySeq is not null || villageSeq is not null)
+				resultHouses.Add(house);
+		}
+
+		return resultHouses;
+	}
 }
