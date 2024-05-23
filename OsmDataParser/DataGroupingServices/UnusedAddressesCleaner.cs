@@ -10,8 +10,8 @@ public static class UnusedAddressesCleaner
 
 		foreach (var house in houses)
 		{
-			var citySeq = house.Street?.City?.District.Area;
-			var villageSeq = house.Street?.Village?.District.Area;
+			var citySeq = house.Street?.City?.District?.Area;
+			var villageSeq = house.Street?.Village?.District?.Area;
 
 			if (citySeq is not null || villageSeq is not null)
 				resultHouses.Add(house);

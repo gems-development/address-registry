@@ -1,9 +1,9 @@
-﻿using Gems.AddressRegistry.Entities;
+﻿using System.Diagnostics;
+using Gems.AddressRegistry.Entities;
 using Gems.AddressRegistry.Entities.Common;
 using Gems.AddressRegistry.Entities.DataSources;
 using Gems.AddressRegistry.Entities.Enums;
 using Gems.AddressRegistry.OsmDataParser.Model;
-using System.Diagnostics;
 
 namespace Gems.DataMergeServices.Services
 {

@@ -1,6 +1,6 @@
+using System.Collections.Concurrent;
 using NetTopologySuite.Features;
 using NetTopologySuite.IO;
-using System.Collections.Concurrent;
 using Gems.AddressRegistry.OsmDataParser.Model;
 
 namespace Gems.AddressRegistry.OsmDataParser.DataGroupingServices;

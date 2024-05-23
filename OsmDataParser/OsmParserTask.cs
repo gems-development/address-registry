@@ -1,6 +1,5 @@
 using Gems.AddressRegistry.OsmDataParser.DataGroupingServices;
 using Gems.AddressRegistry.OsmDataParser.Factories;
-using Gems.AddressRegistry.OsmDataParser.Interfaces;
 using Gems.AddressRegistry.OsmDataParser.Model;
 
 namespace Gems.AddressRegistry.OsmDataParser;
