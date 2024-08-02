@@ -3,6 +3,7 @@ using Gems.AddressRegistry.Entities.DataSources;
 using System.Text;
 using Gems.AddressRegistry.OsmDataParser.Interfaces;
 using System.Diagnostics;
+using Microsoft.Extensions.Logging;
 
 namespace Gems.AddressRegistry.Entities
 {
@@ -20,7 +21,7 @@ namespace Gems.AddressRegistry.Entities
         public virtual RoadNetworkElement? RoadNetworkElement { get; set; }
         public virtual Building? Building { get; set; }
 
-        public virtual String GetNormalizedAddress()
+        public virtual String GetNormalizedAddress(ILogger logger)
         {
             ClearNames();
             StringBuilder builder = new StringBuilder("");

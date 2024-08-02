@@ -174,7 +174,6 @@ namespace Gems.ApplicationServices.Services
 		}
 		public async Task<int> ImportAdministrativeAreaAsync(AdministrativeArea administrativeAreaImport, CancellationToken cancellationToken = default)
 		{
-
 			var externalAdministrativeAreaId = administrativeAreaImport.DataSources.First(o => o.SourceType == AddressRegistry.Entities.Enums.SourceType.Fias).Id;
 			if (externalAdministrativeAreaId != null)
 			{

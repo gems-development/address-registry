@@ -1,6 +1,8 @@
-﻿using Gems.AddressRegistry.Entities;
-using Gems.AddressRegistry.Entities.DataSources;
+﻿using Castle.Core.Logging;
+using Gems.AddressRegistry.Entities;
 using Gems.AddressRegistry.OsmDataParser.Model;
+using Serilog.Core;
+using System.Diagnostics.Eventing.Reader;
 using City = Gems.AddressRegistry.OsmDataParser.Model.City;
 
 namespace Gems.DataMergeServices.Tests;
@@ -57,7 +59,7 @@ public class DataMergeServiceTest
         addressesFias.Add(addressFias1);
         
         // Act
-        DataMergeServices.Services.DataMergeService.MergeAddresses(addressesOsm,addressesFias);
+        DataMergeServices.Services.DataMergeService.MergeAddresses(addressesOsm,addressesFias, null);
         
         // Assert
         Assert.Equal(addressesFias.First().Building!.GeoJson, addressesOsm.First().GeoJson);
@@ -117,7 +119,7 @@ public class DataMergeServiceTest
         addressesFias.Add(addressFias1);
 
         // Act
-        DataMergeServices.Services.DataMergeService.MergeAddresses(addressesOsm, addressesFias);
+        DataMergeServices.Services.DataMergeService.MergeAddresses(addressesOsm, addressesFias, null);
 
         // Assert
         Assert.NotEqual(addressesFias.First().Building!.GeoJson, addressesOsm.First().GeoJson);

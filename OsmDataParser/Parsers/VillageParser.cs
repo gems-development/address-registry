@@ -1,4 +1,4 @@
-using System.Diagnostics;
+using Microsoft.Extensions.Logging;
 using Gems.AddressRegistry.OsmDataParser.Factories;
 using Gems.AddressRegistry.OsmDataParser.Interfaces;
 using Gems.AddressRegistry.OsmDataParser.Model;
@@ -9,7 +9,7 @@ namespace Gems.AddressRegistry.OsmDataParser.Parsers;
 
 public class VillageParser : IOsmParser<Village>
 {
-    public Village Parse(OsmData osmData, string villageName, string? districtName = null)
+    public Village Parse(OsmData osmData, string villageName, ILogger logger, string? districtName = null)
     {
         var resultVillage = new Village();
         var villages = ParseAll(osmData, default);
@@ -22,7 +22,7 @@ public class VillageParser : IOsmParser<Village>
         return resultVillage;
     }
 
-    public IReadOnlyCollection<Village> ParseAll(OsmData osmData, string? areaName = null)
+    public IReadOnlyCollection<Village> ParseAll(OsmData osmData, ILogger logger, string? areaName = null)
     {
         var relations = osmData.Relations;
         var ways = osmData.Ways;
@@ -44,7 +44,7 @@ public class VillageParser : IOsmParser<Village>
                     GeoJson = converter.Serialize(new List<Way> { way }, cleanedName, osmData)
                 };
                 villages.Add(resultTown);
-                Debug.WriteLine("Объект {" + resultTown.Name + "} добавлен в коллекцию сёл.");
+                logger.LogTrace("Объект {" + resultTown.Name + "} добавлен в коллекцию сёл.");
             }
         }
 
@@ -69,7 +69,7 @@ public class VillageParser : IOsmParser<Village>
                 };
                 
                 villages.Add(resultVillage);
-                Debug.WriteLine("Объект {" + resultVillage.Name + "} добавлен в коллекцию сёл.");
+                logger.LogTrace("Объект {" + resultVillage.Name + "} добавлен в коллекцию сёл.");
             }
         }
 

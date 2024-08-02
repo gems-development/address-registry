@@ -1,12 +1,11 @@
-﻿using Gems.AddressRegistry.Entities;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Gems.AddressRegistry.Entities;
 
 namespace Gems.AddressRegistry.DataAccess
 {
     public interface IAppDbContext
     {
-        
         DbSet<Address> Addresses { get; }
         DbSet<InvalidAddress> InvalidAddresses { get; }
         DbSet<Region> Regions { get; }

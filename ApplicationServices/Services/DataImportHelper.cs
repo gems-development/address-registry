@@ -1,5 +1,4 @@
-﻿
-using Gems.AddressRegistry.Entities;
+﻿using Gems.AddressRegistry.Entities;
 
 namespace Gems.ApplicationServices.Services
 {

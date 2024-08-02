@@ -1,4 +1,4 @@
-using System.Diagnostics;
+using Microsoft.Extensions.Logging;
 using Gems.AddressRegistry.OsmDataParser.Factories;
 using Gems.AddressRegistry.OsmDataParser.Interfaces;
 using Gems.AddressRegistry.OsmDataParser.Model;
@@ -13,10 +13,10 @@ internal sealed class StreetParser : IOsmParser<Street>
     private const float BufferRadius = 0.045F; // 5км
     private readonly Dictionary<long, Node> _nodeCache = new Dictionary<long, Node>();
     
-    public Street Parse(OsmData osmData, string streetName, string? districtName = null)
+    public Street Parse(OsmData osmData, string streetName, ILogger logger, string? districtName = null)
     {
         var resultStreet = new Street();
-        var streets = ParseAll(osmData);
+        var streets = ParseAll(osmData, logger);
         foreach (var street in streets)
         {
             if (street.Name == streetName)
@@ -26,7 +26,7 @@ internal sealed class StreetParser : IOsmParser<Street>
         return resultStreet;
     }
     
-    public IReadOnlyCollection<Street> ParseAll(OsmData osmData, string? areaName = null)
+    public IReadOnlyCollection<Street> ParseAll(OsmData osmData, ILogger logger, string? areaName = null)
     {
         var ways = osmData.Ways;
         var streets = new List<Way>();
@@ -102,7 +102,7 @@ internal sealed class StreetParser : IOsmParser<Street>
                     };
                     
                     streetList.Add(newStreet);
-                    Debug.WriteLine("Объект {" + newStreet.Name + "} добавлен в коллекцию улиц.");
+                    logger.LogTrace("Объект {" + newStreet.Name + "} добавлен в коллекцию улиц.");
 
                     osmObjects.RemoveAt(i);
                     i--;

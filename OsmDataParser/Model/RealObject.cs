@@ -1,5 +1,3 @@
-using OsmSharp;
-
 namespace Gems.AddressRegistry.OsmDataParser.Model;
 
 public class RealObject

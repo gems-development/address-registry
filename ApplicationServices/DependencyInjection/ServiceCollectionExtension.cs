@@ -1,5 +1,5 @@
-﻿using Gems.ApplicationServices.Services;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Gems.ApplicationServices.Services;
 
 namespace Gems.ApplicationServices.DependencyInjection
 {

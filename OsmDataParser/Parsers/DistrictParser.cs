@@ -1,4 +1,4 @@
-using System.Diagnostics;
+using Microsoft.Extensions.Logging;
 using Gems.AddressRegistry.OsmDataParser.Factories;
 using Gems.AddressRegistry.OsmDataParser.Interfaces;
 using Gems.AddressRegistry.OsmDataParser.Model;
@@ -8,10 +8,10 @@ namespace Gems.AddressRegistry.OsmDataParser.Parsers;
 
 internal sealed class DistrictParser : IOsmParser<District>
 {
-    public District Parse(OsmData osmData, string areaName, string districtName)
+    public District Parse(OsmData osmData, string areaName, ILogger logger, string districtName)
     {
         var resultDistrict = new District();
-        var districts = ParseAll(osmData, areaName);
+        var districts = ParseAll(osmData, logger, areaName);
         foreach (var district in districts)
         {
             if (district.Name == districtName)
@@ -21,7 +21,7 @@ internal sealed class DistrictParser : IOsmParser<District>
         return resultDistrict;
     }
     
-    public IReadOnlyCollection<District> ParseAll(OsmData osmData, string areaName)
+    public IReadOnlyCollection<District> ParseAll(OsmData osmData, ILogger logger, string areaName)
     {
         var districtList = new List<District>();
         var districts = OsmParserCore.GetDistrictRelations(osmData, areaName);
@@ -42,7 +42,7 @@ internal sealed class DistrictParser : IOsmParser<District>
             };
         
             districtList.Add(resultDistrict);
-            Debug.WriteLine("Объект {" + resultDistrict.Name + "} добавлен в коллекцию районов.");
+            logger.LogTrace("Объект {" + resultDistrict.Name + "} добавлен в коллекцию районов.");
         }
             
         return districtList;
