@@ -5,6 +5,8 @@ using Gems.AddressRegistry.OsmDataParser.Model;
 using Gems.AddressRegistry.OsmDataParser.Support;
 using GeoJSON.Text.Feature;
 using GeoJSON.Text.Geometry;
+using Microsoft.Extensions.Logging;
+using Moq;
 using OsmSharp.Tags;
 
 namespace Gems.AddressRegistry.OsmDataParser.Tests;
@@ -13,7 +15,8 @@ public class StreetParserTests
 {
     private readonly IOsmParser<Street> _streetParser = OsmParserFactory.Create<Street>();
     private readonly OsmData _osmData = new OsmData();
-    
+    private readonly ILogger _logger = new Mock<ILogger>().Object;
+
     [Fact]
     public void GetInseparableStreetByTwoWays()
     {
@@ -55,7 +58,7 @@ public class StreetParserTests
         _osmData.Ways.Add(way1);
         _osmData.Ways.Add(way2);
         
-        var streets = _streetParser.ParseAll(_osmData, null, null!);
+        var streets = _streetParser.ParseAll(_osmData, _logger, null!);
         
         var streetGeometry = JsonSerializer.Deserialize<FeatureCollection>(streets.First().GeoJson);
         var multiLine = streetGeometry!.Features.First().Geometry as MultiLineString;
@@ -129,7 +132,7 @@ public class StreetParserTests
         _osmData.Ways.Add(way2);
         _osmData.Ways.Add(way3);
         
-        var streets = _streetParser.ParseAll(_osmData,null, null!);
+        var streets = _streetParser.ParseAll(_osmData, _logger, null!);
         
         var streetGeometry = JsonSerializer.Deserialize<FeatureCollection>(streets.First().GeoJson);
         var multiLine = streetGeometry!.Features.First().Geometry as MultiLineString;
@@ -203,7 +206,7 @@ public class StreetParserTests
         _osmData.Ways.Add(way2);
         _osmData.Ways.Add(way3);
         
-        var streets = _streetParser.ParseAll(_osmData, null, null!);
+        var streets = _streetParser.ParseAll(_osmData, _logger, null!);
         
         var streetGeometry = JsonSerializer.Deserialize<FeatureCollection>(streets.First().GeoJson);
         var multiLine = streetGeometry!.Features.First().Geometry as MultiLineString;
