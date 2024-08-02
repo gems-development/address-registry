@@ -17,7 +17,7 @@ builder
 	.AddEndpointsApiExplorer()
 	.AddSwaggerGen()
 	.AddApplicationServices()
-	.AddDataAccess(builder.Configuration.GetConnectionString("DefaultConnection")!, true)
+	.AddDataAccess(builder.Configuration.GetConnectionString("DefaultConnection")!, false)
 	.AddSerilogServices();
 
 builder.Services.AddMediatR(cfg =>
