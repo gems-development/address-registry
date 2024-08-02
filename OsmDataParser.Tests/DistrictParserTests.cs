@@ -5,6 +5,7 @@ using Gems.AddressRegistry.OsmDataParser.Model;
 using Gems.AddressRegistry.OsmDataParser.Support;
 using GeoJSON.Text.Feature;
 using GeoJSON.Text.Geometry;
+using Microsoft.Extensions.Logging;
 using OsmSharp;
 using OsmSharp.Tags;
 
@@ -102,7 +103,7 @@ public class DistrictParserTests
         _osmData.Relations.Add(areaRelation);
         _osmData.Relations.Add(districtRelation);
         
-        var districts = _districtParser.ParseAll(_osmData, "Омская область");
+        var districts = _districtParser.ParseAll(_osmData, null, "Омская область");
         
         var districtGeometry = JsonSerializer.Deserialize<FeatureCollection>(districts.First().GeoJson);
         var multiPolygon = districtGeometry!.Features.First().Geometry as MultiPolygon;

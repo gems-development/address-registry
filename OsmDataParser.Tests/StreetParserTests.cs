@@ -55,7 +55,7 @@ public class StreetParserTests
         _osmData.Ways.Add(way1);
         _osmData.Ways.Add(way2);
         
-        var streets = _streetParser.ParseAll(_osmData, null!);
+        var streets = _streetParser.ParseAll(_osmData, null, null!);
         
         var streetGeometry = JsonSerializer.Deserialize<FeatureCollection>(streets.First().GeoJson);
         var multiLine = streetGeometry!.Features.First().Geometry as MultiLineString;
@@ -129,7 +129,7 @@ public class StreetParserTests
         _osmData.Ways.Add(way2);
         _osmData.Ways.Add(way3);
         
-        var streets = _streetParser.ParseAll(_osmData, null!);
+        var streets = _streetParser.ParseAll(_osmData,null, null!);
         
         var streetGeometry = JsonSerializer.Deserialize<FeatureCollection>(streets.First().GeoJson);
         var multiLine = streetGeometry!.Features.First().Geometry as MultiLineString;
@@ -203,7 +203,7 @@ public class StreetParserTests
         _osmData.Ways.Add(way2);
         _osmData.Ways.Add(way3);
         
-        var streets = _streetParser.ParseAll(_osmData, null!);
+        var streets = _streetParser.ParseAll(_osmData, null, null!);
         
         var streetGeometry = JsonSerializer.Deserialize<FeatureCollection>(streets.First().GeoJson);
         var multiLine = streetGeometry!.Features.First().Geometry as MultiLineString;
