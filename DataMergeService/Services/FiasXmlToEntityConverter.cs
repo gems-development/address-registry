@@ -101,7 +101,8 @@ namespace Gems.DataMergeServices.Services
                                     region.Name = reader.GetAttribute("NAME")!;
                                     RegionDataSource regionDataSource = new RegionDataSource();
                                     regionDataSource.Region = region;
-                                    regionDataSource.Id = reader.GetAttribute("OBJECTID")!;
+                                    regionDataSource.AuxiliaryId = reader.GetAttribute("OBJECTID")!;
+                                    regionDataSource.Id = reader.GetAttribute("OBJECTGUID")!;
                                     regionDataSource.SourceType = AddressRegistry.Entities.Enums.SourceType.Fias;
                                     region.DataSources.Add(regionDataSource);
                                     logger.LogTrace($"ФИАС || Считана область: {region.Name}");
@@ -111,10 +112,11 @@ namespace Gems.DataMergeServices.Services
                                     administrativeArea.Name = reader.GetAttribute("NAME")!;
                                     AdministrativeAreaDataSource administrativeAreaDataSource = new AdministrativeAreaDataSource();
                                     administrativeAreaDataSource.AdministrativeArea = administrativeArea;
-                                    administrativeAreaDataSource.Id = reader.GetAttribute("OBJECTID")!;
+                                    administrativeAreaDataSource.AuxiliaryId = reader.GetAttribute("OBJECTID")!;
+                                    administrativeAreaDataSource.Id = reader.GetAttribute("OBJECTGUID")!;
                                     administrativeAreaDataSource.SourceType = AddressRegistry.Entities.Enums.SourceType.Fias;
                                     administrativeArea.DataSources.Add(administrativeAreaDataSource);
-                                    administrativeAreaDictionary.Add(int.Parse(administrativeAreaDataSource.Id), administrativeArea);
+                                    administrativeAreaDictionary.Add(int.Parse(administrativeAreaDataSource.AuxiliaryId), administrativeArea);
                                     logger.LogTrace($"ФИАС || Считана административная область: {administrativeArea.Name}");
                                     break;
                                 case ("3"):
@@ -122,10 +124,11 @@ namespace Gems.DataMergeServices.Services
                                     municipalArea.Name = reader.GetAttribute("NAME")!;
                                     MunicipalAreaDataSource municipalAreaDataSource = new MunicipalAreaDataSource();
                                     municipalAreaDataSource.MunicipalArea = municipalArea;
-                                    municipalAreaDataSource.Id = reader.GetAttribute("OBJECTID")!;
+                                    municipalAreaDataSource.AuxiliaryId = reader.GetAttribute("OBJECTID")!;
+                                    municipalAreaDataSource.Id = reader.GetAttribute("OBJECTGUID")!;
                                     municipalAreaDataSource.SourceType = AddressRegistry.Entities.Enums.SourceType.Fias;
                                     municipalArea.DataSources.Add(municipalAreaDataSource);
-                                    municipalAreaDictionary.Add(int.Parse(municipalAreaDataSource.Id), municipalArea);
+                                    municipalAreaDictionary.Add(int.Parse(municipalAreaDataSource.AuxiliaryId), municipalArea);
                                     logger.LogTrace($"ФИАС || Считана муниципальная бласть: {municipalArea.Name}");
                                     break;
                                 case ("4"):
@@ -133,10 +136,11 @@ namespace Gems.DataMergeServices.Services
                                     territory.Name = reader.GetAttribute("NAME")!;
                                     TerritoryDataSource terrytoryDataSource = new TerritoryDataSource();
                                     terrytoryDataSource.Territory = territory;
-                                    terrytoryDataSource.Id = reader.GetAttribute("OBJECTID")!;
+                                    terrytoryDataSource.AuxiliaryId = reader.GetAttribute("OBJECTID")!;
+                                    terrytoryDataSource.Id = reader.GetAttribute("OBJECTGUID")!;
                                     terrytoryDataSource.SourceType = AddressRegistry.Entities.Enums.SourceType.Fias;
                                     territory.DataSources.Add(terrytoryDataSource);
-                                    territoryDictionary.Add(int.Parse(terrytoryDataSource.Id), territory);
+                                    territoryDictionary.Add(int.Parse(terrytoryDataSource.AuxiliaryId), territory);
                                     logger.LogTrace($"ФИАС || Считана территория: {territory.Name}");
                                     break;
                                 case ("5"):
@@ -144,10 +148,11 @@ namespace Gems.DataMergeServices.Services
                                     city.Name = reader.GetAttribute("NAME")!;
                                     CityDataSource cityDataSource = new CityDataSource();
                                     cityDataSource.City = city;
-                                    cityDataSource.Id = reader.GetAttribute("OBJECTID")!;
+                                    cityDataSource.AuxiliaryId = reader.GetAttribute("OBJECTID")!;
+                                    cityDataSource.Id = reader.GetAttribute("OBJECTGUID")!;
                                     cityDataSource.SourceType = AddressRegistry.Entities.Enums.SourceType.Fias;
                                     city.DataSources.Add(cityDataSource);
-                                    cityDictionary.Add(int.Parse(cityDataSource.Id), city);
+                                    cityDictionary.Add(int.Parse(cityDataSource.AuxiliaryId), city);
                                     logger.LogTrace($"ФИАС || Считан город: {city.Name}");
                                     break;
                                 case ("6"):
@@ -155,10 +160,11 @@ namespace Gems.DataMergeServices.Services
                                     settlement.Name = reader.GetAttribute("NAME")!;
                                     SettlementDataSource settlementDataSource = new SettlementDataSource();
                                     settlementDataSource.Settlement = settlement;
-                                    settlementDataSource.Id = reader.GetAttribute("OBJECTID")!;
+                                    settlementDataSource.AuxiliaryId = reader.GetAttribute("OBJECTID")!;
+                                    settlementDataSource.Id = reader.GetAttribute("OBJECTGUID")!;
                                     settlementDataSource.SourceType = AddressRegistry.Entities.Enums.SourceType.Fias;
                                     settlement.DataSources.Add(settlementDataSource);
-                                    settlementDictionary.Add(int.Parse(settlementDataSource.Id), settlement);
+                                    settlementDictionary.Add(int.Parse(settlementDataSource.AuxiliaryId), settlement);
                                     logger.LogTrace($"ФИАС || Считано поселение: {settlement.Name}");
                                     break;
                                 case ("7"):
@@ -166,10 +172,11 @@ namespace Gems.DataMergeServices.Services
                                     planingStructure.Name = reader.GetAttribute("NAME")!;
                                     EpsDataSource epsDataSource = new EpsDataSource();
                                     epsDataSource.Eps = planingStructure;
-                                    epsDataSource.Id = reader.GetAttribute("OBJECTID")!;
+                                    epsDataSource.AuxiliaryId = reader.GetAttribute("OBJECTID")!;
+                                    epsDataSource.Id = reader.GetAttribute("OBJECTGUID")!;
                                     epsDataSource.SourceType = AddressRegistry.Entities.Enums.SourceType.Fias;
                                     planingStructure.DataSources.Add(epsDataSource);
-                                    planingStructureElementDictionary.Add(int.Parse(epsDataSource.Id), planingStructure);
+                                    planingStructureElementDictionary.Add(int.Parse(epsDataSource.AuxiliaryId), planingStructure);
                                     logger.LogTrace($"ФИАС || Считан элемент планировочной структуры {planingStructure.Name}");
                                     break;
                                 case ("8"):
@@ -177,10 +184,11 @@ namespace Gems.DataMergeServices.Services
                                     roadNetworkElement.Name = reader.GetAttribute("NAME")!;
                                     ErnDataSource ernDataSource = new ErnDataSource();
                                     ernDataSource.Ern = roadNetworkElement;
-                                    ernDataSource.Id = reader.GetAttribute("OBJECTID")!;
+                                    ernDataSource.AuxiliaryId = reader.GetAttribute("OBJECTID")!;
+                                    ernDataSource.Id = reader.GetAttribute("OBJECTGUID")!;
                                     ernDataSource.SourceType = AddressRegistry.Entities.Enums.SourceType.Fias;
                                     roadNetworkElement.DataSources.Add(ernDataSource);
-                                    roadNetworkElementDictionary.Add(int.Parse(ernDataSource.Id), roadNetworkElement);
+                                    roadNetworkElementDictionary.Add(int.Parse(ernDataSource.AuxiliaryId), roadNetworkElement);
                                     logger.LogTrace($"ФИАС || Считан элемент улично-дорожной сети {roadNetworkElement.Name}");
                                     break;
                             }
@@ -221,11 +229,12 @@ namespace Gems.DataMergeServices.Services
                             building.Number = reader.GetAttribute("HOUSENUM")!;
                             BuildingDataSource buildingDataSource = new BuildingDataSource();
                             buildingDataSource.Building = building;
-                            buildingDataSource.Id = reader.GetAttribute("OBJECTID")!;
+                            buildingDataSource.AuxiliaryId = reader.GetAttribute("OBJECTID")!;
+                            buildingDataSource.Id = reader.GetAttribute("OBJECTGUID")!;
                             buildingDataSource.SourceType = AddressRegistry.Entities.Enums.SourceType.Fias;
                             building.DataSources.Add(buildingDataSource);
-                            if (!buildingDictionary.TryAdd(int.Parse(buildingDataSource.Id), building))
-                                logger.LogTrace($"ФИАС ||Не удалось добавить здание с id: {int.Parse(buildingDataSource.Id)}" );
+                            if (!buildingDictionary.TryAdd(int.Parse(buildingDataSource.AuxiliaryId), building))
+                                logger.LogTrace($"ФИАС ||Не удалось добавить здание с id: {int.Parse(buildingDataSource.AuxiliaryId)}" );
                             logger.LogTrace($"ФИАС || Добавлен дом № {building.Number}");
                             break;
                         case XmlNodeType.Text:
@@ -351,7 +360,7 @@ namespace Gems.DataMergeServices.Services
             switch (level)
             {
                 case (9):
-                    objId = int.Parse(address.Building!.DataSources.First().Id);
+                    objId = int.Parse(address.Building!.DataSources.First().AuxiliaryId);
                     AdmHierarchy.TryGetValue(objId, out parentObjId);
                     if (parentObjId != 0)
                     {
@@ -380,7 +389,7 @@ namespace Gems.DataMergeServices.Services
                     }
                     break;
                 case (8):
-                    objId = int.Parse(address.RoadNetworkElement!.DataSources.First().Id);
+                    objId = int.Parse(address.RoadNetworkElement!.DataSources.First().AuxiliaryId);
                     AdmHierarchy.TryGetValue(objId, out parentObjId);
                     levelEntryParentMappings = levelToParentMap[8];
                     foreach (var mapper in levelEntryParentMappings)
@@ -410,7 +419,7 @@ namespace Gems.DataMergeServices.Services
                     }
                     break;
                 case (7):
-                    objId = int.Parse(address.PlaningStructureElement!.DataSources.First().Id);
+                    objId = int.Parse(address.PlaningStructureElement!.DataSources.First().AuxiliaryId);
                     AdmHierarchy.TryGetValue(objId, out parentObjId);
                     levelEntryParentMappings = levelToParentMap[7];
                     foreach (var mapper in levelEntryParentMappings)
@@ -435,7 +444,7 @@ namespace Gems.DataMergeServices.Services
                     }
                     break;
                 case (6):
-                    objId = int.Parse(address.Settlement!.DataSources.First().Id);
+                    objId = int.Parse(address.Settlement!.DataSources.First().AuxiliaryId);
                     AdmHierarchy.TryGetValue(objId, out parentObjId);
                     MunHierarchy.TryGetValue(objId, out parentMunicipalityObjId);
                     levelEntryParentMappings = levelToParentMap[6];
@@ -473,7 +482,7 @@ namespace Gems.DataMergeServices.Services
                     }
                     break;
                 case (5):
-                    objId = int.Parse(address.City!.DataSources.First().Id);
+                    objId = int.Parse(address.City!.DataSources.First().AuxiliaryId);
                     AdmHierarchy.TryGetValue(objId, out parentObjId);
                     MunHierarchy.TryGetValue(objId, out parentMunicipalityObjId);
                     levelEntryParentMappings = levelToParentMap[5];
@@ -510,7 +519,7 @@ namespace Gems.DataMergeServices.Services
                     }
                     break;
                 case (4):
-                    objId = int.Parse(address.Territory!.DataSources.First().Id);
+                    objId = int.Parse(address.Territory!.DataSources.First().AuxiliaryId);
                     MunHierarchy.TryGetValue(objId, out parentMunicipalityObjId);
                     levelEntryParentMappings = levelToParentMap[4];
                     foreach (var mapper in levelEntryParentMappings)

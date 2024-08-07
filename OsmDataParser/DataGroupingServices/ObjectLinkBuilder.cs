@@ -49,17 +49,17 @@ public static class ObjectLinkBuilder
 					street.City = city;
 
 					logger.LogTrace($"Улице <{street.Name}> присвоен город <{city.Name}>");
-				}
 
-				foreach (var house in houses
-					.Where(house => house.Street is null
-						&& house.Name == street.Name
-						&& ObjectIntersector.Intersects(city, house)))
-				{
-					house.Street = street;
+                    foreach (var house in houses
+                    .Where(house => house.Street is null
+                        && house.Name == street.Name
+                        && ObjectIntersector.Intersects(city, house)))
+                    {
+                        house.Street = street;
 
-					logger.LogTrace($"Дому <{house.Number}> присвоена улица <{street.Name}>");
-				}
+                        logger.LogTrace($"Дому <{house.Number}> присвоена улица <{street.Name}>");
+                    }
+                }				
 			}
 		}
 	}
@@ -87,17 +87,17 @@ public static class ObjectLinkBuilder
 					street.Village = village;
 
 					logger.LogTrace($"Улице <{street.Name}> присвоено село <{village.Name}>");
-				}
 
-				foreach (var house in houses
-					.Where(house => house.Street is null
-						&& house.Name == street.Name 
-						&& ObjectIntersector.Intersects(village, house)))
-				{
-					house.Street = street;
+                    foreach (var house in houses
+                    .Where(house => house.Street is null
+                        && house.Name == street.Name
+                        && ObjectIntersector.Intersects(village, house)))
+                    {
+                        house.Street = street;
 
-					logger.LogTrace($"Дому <{house.Number}> присвоена улица <{street.Name}>");
-				}
+                        logger.LogTrace($"Дому <{house.Number}> присвоена улица <{street.Name}>");
+                    }
+                }				
 			}
 		}
 	}

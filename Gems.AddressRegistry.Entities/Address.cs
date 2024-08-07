@@ -36,7 +36,7 @@ namespace Gems.AddressRegistry.Entities
                 builder.Append($"{RoadNetworkElement.Name}#");
             if (Building != null)
                 builder.Append($"{Building.Number}");
-            Debug.WriteLine($"ФИАС || Построен нормализованный адрес: { builder.ToString().ToUpper()}");
+            logger.LogTrace($"ФИАС || Построен нормализованный адрес: { builder.ToString().ToUpper()}");
             return builder.ToString().ToUpper();
         }
 
