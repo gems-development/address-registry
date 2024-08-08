@@ -51,6 +51,7 @@ namespace Gems.AddressRegistry.DataAccess
 			modelBuilder.Entity<DataSourceBase>().HasDiscriminator();
 			modelBuilder.Entity<DataSourceBase>().ToTable("DataSource");
 			modelBuilder.Entity<DataSourceBase>().HasKey(nameof(DataSourceBase.Id), nameof(DataSourceBase.SourceType));
+			modelBuilder.Entity<DataSourceBase>().Property(o => o.SourceType).HasConversion<string>();
 		}
 
 		public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
