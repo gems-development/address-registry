@@ -10,7 +10,7 @@ namespace Gems.AddressRegistry.OsmDataParser.Parsers;
 
 internal sealed class StreetParser : IOsmParser<Street>
 {
-    private const float BufferRadius = 0.045F; // 5км
+    private const float BufferRadius = 0.0045F; // 500м
     private readonly Dictionary<long, Node> _nodeCache = new Dictionary<long, Node>();
     
     public Street Parse(OsmData osmData, string streetName, ILogger logger, string? districtName = null)
