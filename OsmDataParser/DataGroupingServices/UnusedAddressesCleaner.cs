@@ -1,4 +1,4 @@
-using Gems.AddressRegistry.OsmDataParser.Model;
+﻿using Gems.AddressRegistry.OsmDataParser.Model;
 
 namespace Gems.AddressRegistry.OsmDataParser.DataGroupingServices;
 
@@ -10,10 +10,10 @@ public static class UnusedAddressesCleaner
 
 		foreach (var house in houses)
 		{
-			var citySeq = house.Street?.City?.District?.Area;
-			var villageSeq = house.Street?.Village?.District?.Area;
+			var cityAddressAssembly = house.Street?.City?.District?.Area;
+			var villageA​ddressAssembly = house.Street?.Village?.District?.Area;
 
-			if (citySeq is not null || villageSeq is not null)
+			if (cityA​ddressAssembly is not null || villageA​ddressAssembly is not null)
 				resultHouses.Add(house);
 		}
 

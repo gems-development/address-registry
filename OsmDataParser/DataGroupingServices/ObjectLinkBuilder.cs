@@ -40,27 +40,27 @@ public static class ObjectLinkBuilder
 				city.District = district;
 
 				logger.LogTrace($"Городу <{city.Name}> присвоен район <{district.Name}>");
-			}
 
-			foreach (var street in streets)
-			{
-				if (street.City is null && ObjectIntersector.Intersects(city, street))
-				{
-					street.City = city;
-
-					logger.LogTrace($"Улице <{street.Name}> присвоен город <{city.Name}>");
-
-                    foreach (var house in houses
-                    .Where(house => house.Street is null
-                        && house.Name == street.Name
-                        && ObjectIntersector.Intersects(city, house)))
+                foreach (var street in streets)
+                {
+                    if (street.City is null && ObjectContainer.Contains(city, street))
                     {
-                        house.Street = street;
+                        street.City = city;
 
-                        logger.LogTrace($"Дому <{house.Number}> присвоена улица <{street.Name}>");
+                        logger.LogTrace($"Улице <{street.Name}> присвоен город <{city.Name}>");
+
+                        foreach (var house in houses
+							.Where(house => house.Street is null
+								&& house.Name == street.Name
+								&& ObjectIntersector.Intersects(city, house)))
+                        {
+                            house.Street = street;
+
+                            logger.LogTrace($"Дому <{house.Number}> присвоена улица <{street.Name}>");
+                        }
                     }
-                }				
-			}
+                }
+            }
 		}
 	}
 
@@ -78,27 +78,27 @@ public static class ObjectLinkBuilder
 				village.District = district;
 
 				logger.LogTrace($"Селу <{village.Name}> присвоен район <{district.Name}>");
-			}
 
-			foreach (var street in streets)
-			{
-				if (street.Village is null && ObjectIntersector.Intersects(village, street))
-				{
-					street.Village = village;
-
-					logger.LogTrace($"Улице <{street.Name}> присвоено село <{village.Name}>");
-
-                    foreach (var house in houses
-                    .Where(house => house.Street is null
-                        && house.Name == street.Name
-                        && ObjectIntersector.Intersects(village, house)))
+                foreach (var street in streets)
+                {
+                    if (street.Village is null && ObjectContainer.Contains(village, street))
                     {
-                        house.Street = street;
+                        street.Village = village;
 
-                        logger.LogTrace($"Дому <{house.Number}> присвоена улица <{street.Name}>");
+                        logger.LogTrace($"Улице <{street.Name}> присвоено село <{village.Name}>");
+
+                        foreach (var house in houses
+							.Where(house => house.Street is null
+								&& house.Name == street.Name
+								&& ObjectIntersector.Intersects(village, house)))
+                        {
+                            house.Street = street;
+
+                            logger.LogTrace($"Дому <{house.Number}> присвоена улица <{street.Name}>");
+                        }
                     }
-                }				
-			}
+                }
+            }
 		}
 	}
 }
