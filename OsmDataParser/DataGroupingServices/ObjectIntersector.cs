@@ -23,16 +23,89 @@ namespace Gems.AddressRegistry.OsmDataParser.DataGroupingServices
             if (firstFeature is null || secondFeature is null)
                 return false;
 
-            if (firstFeature.Geometry.Intersects(secondFeature.Geometry))
+            Geometry newFeature;
+
+            if (firstFeature.Geometry.Boundary.NumGeometries == 1 && secondFeature.Geometry.Boundary.NumGeometries == 1)
             {
-                Geometry intersectionArea;
-                if(firstFeature.Geometry.Boundary.NumGeometries > 1)
-                    intersectionArea = secondFeature.Geometry.Difference(firstFeature.Geometry);
-                else
-                    intersectionArea = secondFeature.Geometry.Intersection(firstFeature.Geometry);
-                if(intersectionArea.Area/secondFeature.Geometry.Area > RequiredPercentageOfHitsInTheArea)
-                    return true;
+                if (firstFeature.Geometry.Intersects(secondFeature.Geometry))
+                {
+                    if (secondFeature.Geometry.Intersection(firstFeature.Geometry).Area / secondFeature.Geometry.Area > 0.9)
+                        return true;
+                    return false;
+                }
                 return false;
+            }
+
+            else if (firstFeature.Geometry.Boundary.NumGeometries > 1 && secondFeature.Geometry.Boundary.NumGeometries == 1)
+            {
+                var polygonsList = new List<Polygon>();
+                Polygon largestPolygon = null;
+
+                foreach (var element in (firstFeature.Geometry.Boundary as MultiLineString).Geometries)
+                {
+                    var newPolygon = Polygon.DefaultFactory.CreatePolygon(element.Coordinates);
+                    polygonsList.Add(newPolygon);
+                    if (largestPolygon == null || largestPolygon.Area < newPolygon.Area)
+                        largestPolygon = newPolygon;
+                }
+
+                polygonsList.Remove(largestPolygon);
+                var cuttingPolygons = new List<Polygon>();
+
+                foreach (var element in polygonsList)
+                {
+                    if (largestPolygon.Covers(element))
+                        cuttingPolygons.Add(element);
+                    else largestPolygon.Union(element);
+                }
+
+                if (largestPolygon.Intersects(secondFeature.Geometry))
+                {
+                    foreach (var element in cuttingPolygons)
+                    {
+                        if (secondFeature.Geometry.Intersection(element).Area / secondFeature.Geometry.Area > 0.1)
+                            return false;
+                    }
+                    if (secondFeature.Geometry.Intersection(largestPolygon).Area / secondFeature.Geometry.Area > 0.9)
+                        return true;
+                    return false;
+                }
+            }
+
+            else if (firstFeature.Geometry.Boundary.NumGeometries == 1 && secondFeature.Geometry.Boundary.NumGeometries > 1)
+            {
+                var polygonsList = new List<Polygon>();
+                Polygon largestPolygon = null;
+
+                foreach (var element in (secondFeature.Geometry.Boundary as MultiLineString).Geometries)
+                {
+                    var newPolygon = Polygon.DefaultFactory.CreatePolygon(element.Coordinates);
+                    polygonsList.Add(newPolygon);
+                    if (largestPolygon == null || largestPolygon.Area < newPolygon.Area)
+                        largestPolygon = newPolygon;
+                }
+
+                polygonsList.Remove(largestPolygon);
+                var cuttingPolygons = new List<Polygon>();
+
+                foreach (var element in polygonsList)
+                {
+                    if (largestPolygon.Covers(element))
+                        cuttingPolygons.Add(element);
+                    else largestPolygon.Union(element);
+                }
+
+                if (largestPolygon.Intersects(secondFeature.Geometry))
+                {
+                    foreach (var element in cuttingPolygons)
+                    {
+                        if (firstFeature.Geometry.Intersection(element).Area / secondFeature.Geometry.Area > 0.1)
+                            return false;
+                    }
+                    if (firstFeature.Geometry.Intersection(largestPolygon).Area / secondFeature.Geometry.Area > 0.9)
+                        return true;
+                    else return false;
+                }
             }
 
             return false;
