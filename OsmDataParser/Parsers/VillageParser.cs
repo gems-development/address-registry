@@ -27,7 +27,8 @@ public class VillageParser : IOsmParser<Village>
         var relations = osmData.Relations;
         var ways = osmData.Ways;
         var villages = new List<Village>();
-        
+        logger.LogDebug("OSM || Начат анализ сел");
+
         foreach (var way in ways)
         {
             if (way.Tags.ContainsKey(OsmKeywords.Place)
@@ -72,6 +73,7 @@ public class VillageParser : IOsmParser<Village>
                 logger.LogTrace("Объект {" + resultVillage.Name + "} добавлен в коллекцию сёл.");
             }
         }
+        logger.LogDebug("OSM || Завершен анализ сел");
 
         return villages;
     }

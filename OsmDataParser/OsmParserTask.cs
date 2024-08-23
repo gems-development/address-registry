@@ -9,7 +9,7 @@ public static class OsmParserTask
 {
 	public static async Task<IReadOnlyCollection<House>> Execute(string pathToPbf, string areaName, ILogger logger)
 	{
-		var osmData = await OsmDataReader.Read(pathToPbf);
+		var osmData = await OsmDataReader.Read(pathToPbf, logger);
 		var area = OsmParserFactory.Create<Area>().Parse(osmData, areaName, logger, default!);
 		IReadOnlyCollection<District>? districts = null;
 		IReadOnlyCollection<City>? cities = null;
@@ -25,7 +25,7 @@ public static class OsmParserTask
 			Task.Run(() => houses = OsmParserFactory.Create<House>().ParseAll(osmData, logger, string.Empty)));
 		await ObjectLinkBuilder.LinkAddressElements(area, districts!, cities!, villages!, streets!, houses!, logger);
 
-		var resultHouses = UnusedAddressesCleaner.Clean(houses!);
+		var resultHouses = UnusedAddressesCleaner.Clean(houses!, logger);
 
 		return resultHouses;
 	}

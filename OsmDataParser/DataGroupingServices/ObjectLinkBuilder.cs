@@ -14,6 +14,8 @@ public static class ObjectLinkBuilder
 		IReadOnlyCollection<House> houses,
 		ILogger logger)
 	{
+		logger.LogDebug("OSM || Начата сборка адресов");
+
 		foreach (var district in districts)
 		{
 			district.Area = area;
@@ -24,6 +26,8 @@ public static class ObjectLinkBuilder
 				Task.Run(() => LinkByCities(district, cities, streets, houses, logger)),
 				Task.Run(() => LinkByVillages(district, villages, streets, houses, logger)));
 		}
+
+		logger.LogDebug("OSM || Адреса собраны");
 	}
 
 	private static void LinkByCities(

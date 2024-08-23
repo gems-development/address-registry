@@ -13,6 +13,8 @@ public class AreaParser : IOsmParser<Area>
         var relations = osmData.Relations;
         var cleanedName = ObjectNameCleaner.Clean(areaName);
         var resultArea = new Area { Name = cleanedName };
+
+        logger.LogDebug("OSM || Начат анализ областей");
         
         foreach (var relation in relations)
         {
@@ -33,6 +35,8 @@ public class AreaParser : IOsmParser<Area>
             }
         }
         logger.LogTrace("Объект {" + resultArea.Name + "} успешно получен.");
+
+        logger.LogDebug("OSM || Завершен анализ областей");
 
         return resultArea;
     }

@@ -25,7 +25,8 @@ internal sealed class DistrictParser : IOsmParser<District>
     {
         var districtList = new List<District>();
         var districts = OsmParserCore.GetDistrictRelations(osmData, areaName);
-        
+        logger.LogDebug("OSM || Начат анализ районов");
+
         foreach (var district in districts)
         {
             var districtMemberIds = district.Members.Select(o => o.Id).ToHashSet();
@@ -44,7 +45,8 @@ internal sealed class DistrictParser : IOsmParser<District>
             districtList.Add(resultDistrict);
             logger.LogTrace("Объект {" + resultDistrict.Name + "} добавлен в коллекцию районов.");
         }
-            
+        logger.LogDebug("OSM || Завершен анализ районов");
+
         return districtList;
     }
 }

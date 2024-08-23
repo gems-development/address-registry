@@ -26,7 +26,8 @@ public class HouseParser : IOsmParser<House>
     {
         var ways = osmData.Ways;
         var housesList = new List<House>();
-        
+        logger.LogDebug("OSM || Начат анализ домов");
+
         foreach (var way in ways)
         {
             if (way.Tags.ContainsKey(OsmKeywords.Building) && 
@@ -47,6 +48,7 @@ public class HouseParser : IOsmParser<House>
                                 $"д. {resultHouse.Number} добавлен в коллекцию домов.");
             }
         }
+        logger.LogDebug("OSM || Завершен анализ домов");
 
         return housesList;
     }

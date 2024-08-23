@@ -79,11 +79,12 @@ public static class Client
             logger.LogInformation($"Слияние адресов завершено: {sw.Elapsed}");
 
             var appDbContextFactory = new AppDbContextFactory(connectionString);
-            var dataImportService = new DataImportService(appDbContextFactory);
+            var dataImportService = new DataImportService(appDbContextFactory, logger);
+            logger.LogInformation("Начат импорт адресов в БД");
 
             sw = Stopwatch.StartNew();
 
-            await dataImportService.ImportAddressesAsync(fiasTask.Result);
+            await dataImportService.ImportAddressesAsync(fiasTask.Result, logger: logger);
             logger.LogInformation($"Импорт адресов в БД завершён: {sw.Elapsed}");
             logger.LogInformation($"Общая продолжительность: {swTotal.Elapsed}");
         }

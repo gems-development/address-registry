@@ -30,7 +30,8 @@ internal sealed class StreetParser : IOsmParser<Street>
     {
         var ways = osmData.Ways;
         var streets = new List<Way>();
-        
+        logger.LogDebug("OSM || Начат анализ улиц");
+
         foreach (var way in ways)
         {
             if (way.Tags.ContainsKey(OsmKeywords.Highway) && way.Tags.ContainsKey(OsmKeywords.Name))
@@ -109,6 +110,8 @@ internal sealed class StreetParser : IOsmParser<Street>
                 }
             }
         }
+        logger.LogDebug("OSM || Завершен анализ улиц");
+
         return streetList;
     }
 

@@ -27,7 +27,7 @@ internal sealed class CityParser : IOsmParser<City>
         var relations = osmData.Relations;
         var ways = osmData.Ways;
         var cities = new List<City>();
-        
+        logger.LogDebug("OSM || Начат анализ городов");
         foreach (var way in ways)
         {
             if (way.Tags.ContainsKey(OsmKeywords.Place)
@@ -71,6 +71,7 @@ internal sealed class CityParser : IOsmParser<City>
                 logger.LogTrace("Объект {" + resultCity.Name + "} добавлен в коллекцию городов.");
             }
         }
+        logger.LogDebug("OSM || Завершен анализ городов");
 
         return cities;
     }

@@ -37,20 +37,24 @@ namespace Gems.DataMergeServices.Services
 		{
 			var normalizeOsmAddressesTask = Task.Run(() =>
 			{
+				logger.LogDebug("OSM || Начата нормализация адресов");
 				foreach (var addressOsm in addressesOsm)
 				{
 					var normalizedAddress = addressOsm.GetNormalizedAddress(logger);
 					NormalizedOsmAddresses[normalizedAddress] = addressOsm;
 				}
-			});
+                logger.LogDebug("OSM || Нормализация адресов завершена");
+            });
 			var normalizeFiasAddressesTask = Task.Run(() =>
 			{
-				foreach (var addressFias in addressesFias)
+                logger.LogDebug("ФИАС || Начата нормализация адресов");
+                foreach (var addressFias in addressesFias)
 				{
 					var normalizedAddress = addressFias.GetNormalizedAddress(logger);
 					NormalizedFiasAddresses[normalizedAddress] = addressFias;
 				}
-			});
+                logger.LogDebug("ФИАС || Нормализация адресов завершена");
+            });
 
 			await Task.WhenAll(
 				normalizeOsmAddressesTask,

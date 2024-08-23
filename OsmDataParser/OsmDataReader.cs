@@ -1,4 +1,5 @@
 using Gems.AddressRegistry.OsmDataParser.Support;
+using Microsoft.Extensions.Logging;
 using OsmSharp;
 using OsmSharp.Streams;
 
@@ -6,8 +7,10 @@ namespace Gems.AddressRegistry.OsmDataParser;
 
 public static class OsmDataReader
 {
-    public static async Task<OsmData> Read(string pathToPbf)
+    public static async Task<OsmData> Read(string pathToPbf, ILogger logger)
     {
+        logger.LogDebug("OSM || Начато чтение файла");
+
         var osmData = new OsmData();
         
         await using var fileStream = new FileInfo(pathToPbf).OpenRead();
@@ -22,6 +25,7 @@ public static class OsmDataReader
             else if (element.Type is OsmGeoType.Relation)
                 osmData.Relations.Add((Relation)element);
         }
+        logger.LogDebug("OSM || Завершено чтение файла");
 
         return osmData;
     }
