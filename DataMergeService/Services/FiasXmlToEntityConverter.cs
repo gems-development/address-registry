@@ -28,6 +28,8 @@ namespace Gems.DataMergeServices.Services
 
         List<Address> addresses = new List<Address>();
 
+        List<string> targetNameParts = new List<string>() { "ЗАТО", "ПОСЕЛОК"};
+
     public FiasXmlToEntityConverter()
         {
             country.Name = "Russia";
@@ -121,7 +123,7 @@ namespace Gems.DataMergeServices.Services
                                     break;
                                 case ("3"):
                                     MunicipalArea municipalArea = new MunicipalArea();
-                                    municipalArea.Name = reader.GetAttribute("NAME")!;
+                                    municipalArea.Name = CheckAndCleanName(reader.GetAttribute("NAME")!);
                                     MunicipalAreaDataSource municipalAreaDataSource = new MunicipalAreaDataSource();
                                     municipalAreaDataSource.MunicipalArea = municipalArea;
                                     municipalAreaDataSource.AuxiliaryId = reader.GetAttribute("OBJECTID")!;
@@ -544,6 +546,22 @@ namespace Gems.DataMergeServices.Services
 
             if (address.MunicipalArea is not null)
                 address.MunicipalArea.Region = address.Region;
+        }
+
+        public string CheckAndCleanName(string name)
+        {
+            string newName = "";
+            var chanks = name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            foreach(var partName in chanks)
+            {
+                if (!targetNameParts.Contains(partName.ToUpper()))
+                {
+                    if (newName != "")
+                        newName = newName + " " + partName;
+                    else newName += partName;
+                } 
+            }
+            return newName;
         }
     }
 }
