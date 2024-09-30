@@ -1,5 +1,5 @@
-using System.Diagnostics;
 using System.Text;
+using Microsoft.Extensions.Logging;
 using Gems.AddressRegistry.OsmDataParser.Interfaces;
 
 namespace Gems.AddressRegistry.OsmDataParser.Model;
@@ -10,7 +10,7 @@ public class House : RealObject, INormalizable
 	public Street? Street { get; set; }
 	public string Address { get; set; } = null!;
 
-	public string GetNormalizedAddress()
+	public string GetNormalizedAddress(ILogger logger)
 	{
 		const string addressPartDivider = "#";
 		var normalizedAddress = new StringBuilder();
@@ -52,7 +52,7 @@ public class House : RealObject, INormalizable
 
 		var resultAddress = normalizedAddress.ToString().ToUpper();
 		Address = resultAddress;
-		Debug.WriteLine($"Построен адрес: {resultAddress}");
+		logger.LogTrace($"Построен адрес: {resultAddress}");
 
 		return Address;
 	}

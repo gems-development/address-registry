@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+﻿using Microsoft.Extensions.Logging;
 using Gems.AddressRegistry.Entities;
 using Gems.AddressRegistry.Entities.Common;
 using Gems.AddressRegistry.Entities.DataSources;
@@ -32,24 +32,29 @@ namespace Gems.DataMergeServices.Services
 
 		public static async Task MergeAddresses(
 			IReadOnlyCollection<House> addressesOsm,
-			IReadOnlyCollection<Address> addressesFias)
+			IReadOnlyCollection<Address> addressesFias,
+			ILogger logger)
 		{
 			var normalizeOsmAddressesTask = Task.Run(() =>
 			{
+				logger.LogDebug("OSM || Начата нормализация адресов");
 				foreach (var addressOsm in addressesOsm)
 				{
-					var normalizedAddress = addressOsm.GetNormalizedAddress();
+					var normalizedAddress = addressOsm.GetNormalizedAddress(logger);
 					NormalizedOsmAddresses[normalizedAddress] = addressOsm;
 				}
-			});
+                logger.LogDebug("OSM || Нормализация адресов завершена");
+            });
 			var normalizeFiasAddressesTask = Task.Run(() =>
 			{
-				foreach (var addressFias in addressesFias)
+                logger.LogDebug("ФИАС || Начата нормализация адресов");
+                foreach (var addressFias in addressesFias)
 				{
-					var normalizedAddress = addressFias.GetNormalizedAddress();
+					var normalizedAddress = addressFias.GetNormalizedAddress(logger);
 					NormalizedFiasAddresses[normalizedAddress] = addressFias;
 				}
-			});
+                logger.LogDebug("ФИАС || Нормализация адресов завершена");
+            });
 
 			await Task.WhenAll(
 				normalizeOsmAddressesTask,
@@ -60,12 +65,12 @@ namespace Gems.DataMergeServices.Services
 				if (NormalizedFiasAddresses.TryGetValue(normalizedAddress, out var correspondingFiasAddress))
 				{
 					var correspondingOsmAddress = NormalizedOsmAddresses[normalizedAddress];
-					AddGeometryToAddress(correspondingFiasAddress, correspondingOsmAddress);
+					AddGeometryToAddress(correspondingFiasAddress, correspondingOsmAddress, logger);
 				}
 			}
 		}
 
-		private static void AddGeometryToAddress(Address address, House house)
+		private static void AddGeometryToAddress(Address address, House house, ILogger logger)
 		{
 			var buildingDataSource = new BuildingDataSource();
 
@@ -80,10 +85,10 @@ namespace Gems.DataMergeServices.Services
 			if (foundDataSource == null)
 			{
 				OsmBuildingDataSources.Add(buildingDataSource.Id, buildingDataSource);
-				DataMergeHelper.TryAddOsmDataSource(address.Building, buildingDataSource);
+				DataMergeHelper.TryAddOsmDataSource(address.Building, buildingDataSource, logger);
 			}
 			else
-				DataMergeHelper.TryAddOsmDataSource(address.Building, (BuildingDataSource) foundDataSource);
+				DataMergeHelper.TryAddOsmDataSource(address.Building, (BuildingDataSource) foundDataSource, logger);
 
 			var roadNetworkElementDataSource = new ErnDataSource();
 			roadNetworkElementDataSource.Ern = address.RoadNetworkElement;
@@ -114,10 +119,10 @@ namespace Gems.DataMergeServices.Services
 					if (foundDataSource == null)
 					{
 						OsmCityDataSources.Add(cityDataSource.Id, cityDataSource);
-						DataMergeHelper.TryAddOsmDataSource(address.City, cityDataSource);
+						DataMergeHelper.TryAddOsmDataSource(address.City, cityDataSource, logger);
 					}
 					else
-						DataMergeHelper.TryAddOsmDataSource(address.City, (CityDataSource) foundDataSource);
+						DataMergeHelper.TryAddOsmDataSource(address.City, (CityDataSource) foundDataSource, logger);
 				}
 				else if (address.Settlement != null)
 				{
@@ -131,14 +136,14 @@ namespace Gems.DataMergeServices.Services
 					if (foundDataSource == null)
 					{
 						OsmSettlementDataSources.Add(settlementDataSource.Id, settlementDataSource);
-						DataMergeHelper.TryAddOsmDataSource(address.Settlement, settlementDataSource);
+						DataMergeHelper.TryAddOsmDataSource(address.Settlement, settlementDataSource, logger);
 					}
 					else
-						DataMergeHelper.TryAddOsmDataSource(address.Settlement, (SettlementDataSource) foundDataSource);
+						DataMergeHelper.TryAddOsmDataSource(address.Settlement, (SettlementDataSource) foundDataSource, logger);
 				}
 				else
 				{
-					Debug.WriteLine($"объект {house.Street.City.Name} не найден в системе ФИАС");
+					logger.LogDebug($"объект {house.Street.City.Name} не найден в системе ФИАС");
 					return;
 				}
 
@@ -152,10 +157,10 @@ namespace Gems.DataMergeServices.Services
 				if (foundDataSource == null)
 				{
 					OsmMunAreaDataSources.Add(municipalAreaDataSource.Id, municipalAreaDataSource);
-					DataMergeHelper.TryAddOsmDataSource(address.MunicipalArea, municipalAreaDataSource);
+					DataMergeHelper.TryAddOsmDataSource(address.MunicipalArea, municipalAreaDataSource, logger);
 				}
 				else
-					DataMergeHelper.TryAddOsmDataSource(address.MunicipalArea, (MunicipalAreaDataSource) foundDataSource);
+					DataMergeHelper.TryAddOsmDataSource(address.MunicipalArea, (MunicipalAreaDataSource) foundDataSource, logger);
 
 				var regionDataSource = new RegionDataSource();
 				regionDataSource.Region = address.Region;
@@ -167,10 +172,10 @@ namespace Gems.DataMergeServices.Services
 				if (foundDataSource == null)
 				{
 					OsmRegionDataSources.Add(regionDataSource.Id, regionDataSource);
-					DataMergeHelper.TryAddOsmDataSource(address.Region, regionDataSource);
+					DataMergeHelper.TryAddOsmDataSource(address.Region, regionDataSource, logger);
 				}
 				else
-					DataMergeHelper.TryAddOsmDataSource(address.Region, (RegionDataSource) foundDataSource);
+					DataMergeHelper.TryAddOsmDataSource(address.Region, (RegionDataSource) foundDataSource, logger);
 			}
 			else if (house.Street.Village != null)
 			{
@@ -186,10 +191,10 @@ namespace Gems.DataMergeServices.Services
 					if (foundDataSource == null)
 					{
 						OsmSettlementDataSources.Add(settlementDataSource.Id, settlementDataSource);
-						DataMergeHelper.TryAddOsmDataSource(address.Settlement, settlementDataSource);
+						DataMergeHelper.TryAddOsmDataSource(address.Settlement, settlementDataSource, logger);
 					}
 					else
-						DataMergeHelper.TryAddOsmDataSource(address.Settlement, (SettlementDataSource) foundDataSource);
+						DataMergeHelper.TryAddOsmDataSource(address.Settlement, (SettlementDataSource) foundDataSource, logger);
 				}
 				else if (address.City != null)
 				{
@@ -203,14 +208,14 @@ namespace Gems.DataMergeServices.Services
 					if (foundDataSource == null)
 					{
 						OsmCityDataSources.Add(cityDataSource.Id, cityDataSource);
-						DataMergeHelper.TryAddOsmDataSource(address.City, cityDataSource);
+						DataMergeHelper.TryAddOsmDataSource(address.City, cityDataSource, logger);
 					}
 					else
-						DataMergeHelper.TryAddOsmDataSource(address.City, (CityDataSource) foundDataSource);
+						DataMergeHelper.TryAddOsmDataSource(address.City, (CityDataSource) foundDataSource, logger);
 				}
 				else
 				{
-					Debug.WriteLine($"объект {house.Street.Village.Name} не найден в системе ФИАС");
+					logger.LogDebug($"объект {house.Street.Village.Name} не найден в системе ФИАС");
 					return;
 				}
 
@@ -224,10 +229,10 @@ namespace Gems.DataMergeServices.Services
 				if (foundDataSource == null)
 				{
 					OsmMunAreaDataSources.Add(municipalAreaDataSource.Id, municipalAreaDataSource);
-					DataMergeHelper.TryAddOsmDataSource(address.MunicipalArea, municipalAreaDataSource);
+					DataMergeHelper.TryAddOsmDataSource(address.MunicipalArea, municipalAreaDataSource, logger);
 				}
 				else
-					DataMergeHelper.TryAddOsmDataSource(address.MunicipalArea, (MunicipalAreaDataSource) foundDataSource);
+					DataMergeHelper.TryAddOsmDataSource(address.MunicipalArea, (MunicipalAreaDataSource) foundDataSource, logger);
 
 				var regionDataSource = new RegionDataSource();
 				regionDataSource.Region = address.Region;
@@ -239,10 +244,10 @@ namespace Gems.DataMergeServices.Services
 				if (foundDataSource == null)
 				{
 					OsmRegionDataSources.Add(regionDataSource.Id, regionDataSource);
-					DataMergeHelper.TryAddOsmDataSource(address.Region, regionDataSource);
+					DataMergeHelper.TryAddOsmDataSource(address.Region, regionDataSource, logger);
 				}
 				else
-					DataMergeHelper.TryAddOsmDataSource(address.Region, (RegionDataSource) foundDataSource);
+					DataMergeHelper.TryAddOsmDataSource(address.Region, (RegionDataSource) foundDataSource, logger);
 			}
 		}
 

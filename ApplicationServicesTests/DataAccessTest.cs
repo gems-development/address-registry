@@ -1,6 +1,8 @@
 using Gems.AddressRegistry.DataAccess;
 using Gems.AddressRegistry.Entities;
 using Gems.ApplicationServices.Services;
+using Microsoft.Extensions.Logging;
+using Moq;
 
 
 namespace ApplicationServices.Tests
@@ -8,12 +10,14 @@ namespace ApplicationServices.Tests
     public class DataAccessTest
     {
 
+        private readonly ILogger _logger = new Mock<ILogger>().Object;
+
         [RunnableInDebugOnlyFactAttribute]
         public async Task ErnImportTest()
         {
             const string connectionString = "Host=localhost;Port=5432;Database=addressdb;Username=postgres;Password=postgres";
             IAppDbContextFactory appDbContextFactory = new AppDbContextFactory(connectionString);
-            DataImportService dataImportService = new DataImportService(appDbContextFactory);
+            DataImportService dataImportService = new DataImportService(appDbContextFactory, _logger);
             Address address = new Address();
             
             address.Region = new Region();
@@ -26,8 +30,8 @@ namespace ApplicationServices.Tests
             address.Territory = new Territory();
             address.Territory.Name = "Terrytory";
             Address[] addresses = new Address[] { address };
-            await dataImportService.ImportAddressesAsync(addresses);
-            await dataImportService.ImportAddressesAsync(addresses);
+            await dataImportService.ImportAddressesAsync(addresses, _logger);
+            await dataImportService.ImportAddressesAsync(addresses, _logger);
 
         }
 

@@ -1,4 +1,4 @@
-using System.Diagnostics;
+using Microsoft.Extensions.Logging;
 using Gems.AddressRegistry.OsmDataParser.Model;
 
 namespace Gems.AddressRegistry.OsmDataParser.DataGroupingServices;
@@ -11,25 +11,31 @@ public static class ObjectLinkBuilder
 		IReadOnlyCollection<City> cities,
 		IReadOnlyCollection<Village> villages,
 		IReadOnlyCollection<Street> streets,
-		IReadOnlyCollection<House> houses)
+		IReadOnlyCollection<House> houses,
+		ILogger logger)
 	{
+		logger.LogDebug("OSM || Начата сборка адресов");
+
 		foreach (var district in districts)
 		{
 			district.Area = area;
 
-			Debug.WriteLine($"Району <{district.Name}> присвоена область <{area.Name}>");
+			logger.LogTrace($"Району <{district.Name}> присвоена область <{area.Name}>");
 
 			await Task.WhenAll(
-				Task.Run(() => LinkByCities(district, cities, streets, houses)),
-				Task.Run(() => LinkByVillages(district, villages, streets, houses)));
+				Task.Run(() => LinkByCities(district, cities, streets, houses, logger)),
+				Task.Run(() => LinkByVillages(district, villages, streets, houses, logger)));
 		}
+
+		logger.LogDebug("OSM || Адреса собраны");
 	}
 
 	private static void LinkByCities(
 		District district,
 		IReadOnlyCollection<City> cities,
 		IReadOnlyCollection<Street> streets,
-		IReadOnlyCollection<House> houses)
+		IReadOnlyCollection<House> houses,
+		ILogger logger)
 	{
 		foreach (var city in cities)
 		{
@@ -37,28 +43,28 @@ public static class ObjectLinkBuilder
 			{
 				city.District = district;
 
-				Debug.WriteLine($"Городу <{city.Name}> присвоен район <{district.Name}>");
-			}
+				logger.LogTrace($"Городу <{city.Name}> присвоен район <{district.Name}>");
 
-			foreach (var street in streets)
-			{
-				if (street.City is null && ObjectIntersector.Intersects(city, street))
-				{
-					street.City = city;
+                foreach (var street in streets)
+                {
+                    if (street.City is null && ObjectContainer.Contains(city, street))
+                    {
+                        street.City = city;
 
-					Debug.WriteLine($"Улице <{street.Name}> присвоен город <{city.Name}>");
-				}
+                        logger.LogTrace($"Улице <{street.Name}> присвоен город <{city.Name}>");
 
-				foreach (var house in houses
-					.Where(house => house.Street is null
-						&& house.Name == street.Name
-						&& ObjectIntersector.Intersects(city, house)))
-				{
-					house.Street = street;
+                        foreach (var house in houses
+							.Where(house => house.Street is null
+								&& house.Name == street.Name
+								&& ObjectIntersector.Intersects(city, house)))
+                        {
+                            house.Street = street;
 
-					Debug.WriteLine($"Дому <{house.Number}> присвоена улица <{street.Name}>");
-				}
-			}
+                            logger.LogTrace($"Дому <{house.Number}> присвоена улица <{street.Name}>");
+                        }
+                    }
+                }
+            }
 		}
 	}
 
@@ -66,7 +72,8 @@ public static class ObjectLinkBuilder
 		District district,
 		IReadOnlyCollection<Village> villages,
 		IReadOnlyCollection<Street> streets,
-		IReadOnlyCollection<House> houses)
+		IReadOnlyCollection<House> houses,
+		ILogger logger)
 	{
 		foreach (var village in villages)
 		{
@@ -74,28 +81,28 @@ public static class ObjectLinkBuilder
 			{
 				village.District = district;
 
-				Debug.WriteLine($"Селу <{village.Name}> присвоен район <{district.Name}>");
-			}
+				logger.LogTrace($"Селу <{village.Name}> присвоен район <{district.Name}>");
 
-			foreach (var street in streets)
-			{
-				if (street.Village is null && ObjectIntersector.Intersects(village, street))
-				{
-					street.Village = village;
+                foreach (var street in streets)
+                {
+                    if (street.Village is null && ObjectContainer.Contains(village, street))
+                    {
+                        street.Village = village;
 
-					Debug.WriteLine($"Улице <{street.Name}> присвоено село <{village.Name}>");
-				}
+                        logger.LogTrace($"Улице <{street.Name}> присвоено село <{village.Name}>");
 
-				foreach (var house in houses
-					.Where(house => house.Street is null
-						&& house.Name == street.Name 
-						&& ObjectIntersector.Intersects(village, house)))
-				{
-					house.Street = street;
+                        foreach (var house in houses
+							.Where(house => house.Street is null
+								&& house.Name == street.Name
+								&& ObjectIntersector.Intersects(village, house)))
+                        {
+                            house.Street = street;
 
-					Debug.WriteLine($"Дому <{house.Number}> присвоена улица <{street.Name}>");
-				}
-			}
+                            logger.LogTrace($"Дому <{house.Number}> присвоена улица <{street.Name}>");
+                        }
+                    }
+                }
+            }
 		}
 	}
 }

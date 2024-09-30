@@ -1,6 +1,8 @@
-﻿namespace Gems.AddressRegistry.OsmDataParser.Interfaces;
+﻿using Microsoft.Extensions.Logging;
+
+namespace Gems.AddressRegistry.OsmDataParser.Interfaces;
 
 public interface INormalizable
 {
-    string GetNormalizedAddress();
+    string GetNormalizedAddress(ILogger logger);
 }

@@ -1,4 +1,4 @@
-using System.Diagnostics;
+using Microsoft.Extensions.Logging;
 using Gems.AddressRegistry.OsmDataParser.Factories;
 using Gems.AddressRegistry.OsmDataParser.Interfaces;
 using Gems.AddressRegistry.OsmDataParser.Model;
@@ -9,7 +9,7 @@ namespace Gems.AddressRegistry.OsmDataParser.Parsers;
 
 internal sealed class CityParser : IOsmParser<City>
 {
-    public City Parse(OsmData osmData, string cityName, string? districtName = null)
+    public City Parse(OsmData osmData, string cityName, ILogger logger, string? districtName = null)
     {
         var resultCity = new City();
         var cities = ParseAll(osmData, default);
@@ -22,12 +22,12 @@ internal sealed class CityParser : IOsmParser<City>
         return resultCity;
     }
     
-    public IReadOnlyCollection<City> ParseAll(OsmData osmData, string? areaName = null)
+    public IReadOnlyCollection<City> ParseAll(OsmData osmData, ILogger logger, string? areaName = null)
     {
         var relations = osmData.Relations;
         var ways = osmData.Ways;
         var cities = new List<City>();
-        
+        logger.LogDebug("OSM || Начат анализ городов");
         foreach (var way in ways)
         {
             if (way.Tags.ContainsKey(OsmKeywords.Place)
@@ -43,7 +43,7 @@ internal sealed class CityParser : IOsmParser<City>
                     GeoJson = converter.Serialize(new List<Way> { way }, cleanedName, osmData)
                 };
                 cities.Add(resultTown);
-                Debug.WriteLine("Объект {" + resultTown.Name + "} добавлен в коллекцию городов.");
+                logger.LogTrace("Объект {" + resultTown.Name + "} добавлен в коллекцию городов.");
             }
         }
         
@@ -68,9 +68,10 @@ internal sealed class CityParser : IOsmParser<City>
                 };
                 
                 cities.Add(resultCity);
-                Debug.WriteLine("Объект {" + resultCity.Name + "} добавлен в коллекцию городов.");
+                logger.LogTrace("Объект {" + resultCity.Name + "} добавлен в коллекцию городов.");
             }
         }
+        logger.LogDebug("OSM || Завершен анализ городов");
 
         return cities;
     }

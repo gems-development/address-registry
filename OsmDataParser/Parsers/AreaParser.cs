@@ -1,4 +1,4 @@
-using System.Diagnostics;
+using Microsoft.Extensions.Logging;
 using Gems.AddressRegistry.OsmDataParser.Factories;
 using Gems.AddressRegistry.OsmDataParser.Interfaces;
 using Gems.AddressRegistry.OsmDataParser.Model;
@@ -8,11 +8,13 @@ namespace Gems.AddressRegistry.OsmDataParser.Parsers;
 
 public class AreaParser : IOsmParser<Area>
 {
-    public Area Parse(OsmData osmData, string areaName, string districtName = null!)
+    public Area Parse(OsmData osmData, string areaName, ILogger logger, string districtName = null!)
     {
         var relations = osmData.Relations;
         var cleanedName = ObjectNameCleaner.Clean(areaName);
         var resultArea = new Area { Name = cleanedName };
+
+        logger.LogDebug("OSM || Начат анализ областей");
         
         foreach (var relation in relations)
         {
@@ -32,12 +34,14 @@ public class AreaParser : IOsmParser<Area>
                 resultArea.GeoJson = converter.Serialize(components, cleanedName, osmData);
             }
         }
-        Debug.WriteLine("Объект {" + resultArea.Name + "} успешно получен.");
+        logger.LogTrace("Объект {" + resultArea.Name + "} успешно получен.");
+
+        logger.LogDebug("OSM || Завершен анализ областей");
 
         return resultArea;
     }
 
-    public IReadOnlyCollection<Area> ParseAll(OsmData osmData, string areaName = null!)
+    public IReadOnlyCollection<Area> ParseAll(OsmData osmData, ILogger logger, string areaName = null!)
     {
         throw new NotImplementedException();
     }

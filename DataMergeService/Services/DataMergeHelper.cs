@@ -1,12 +1,12 @@
-﻿using Gems.AddressRegistry.Entities;
+﻿using Microsoft.Extensions.Logging;
+using Gems.AddressRegistry.Entities;
 using Gems.AddressRegistry.Entities.DataSources;
-using System.Diagnostics;
 
 namespace Gems.DataMergeServices.Services
 {
     public static class DataMergeHelper
     {
-        public static void TryAddOsmDataSource(Building building, BuildingDataSource newBuildingDataSource)
+        public static void TryAddOsmDataSource(Building building, BuildingDataSource newBuildingDataSource, ILogger logger)
         {
             try
             {
@@ -19,7 +19,7 @@ namespace Gems.DataMergeServices.Services
                 building.DataSources.Add(newBuildingDataSource);
             }catch (Exception ex)
             {
-                Debug.WriteLine($"Не удалось добавить источник данных, вызвано исключение: {ex}"); 
+                logger.LogError($"Не удалось добавить источник данных, вызвано исключение: {ex}"); 
             }
         }
         public static void TryAddOsmDataSource(RoadNetworkElement roadNetworkElement, ErnDataSource newErnDataSource)
@@ -32,7 +32,7 @@ namespace Gems.DataMergeServices.Services
                     roadNetworkElement.DataSources.Add(newErnDataSource);  
                 }
         }
-        public static void TryAddOsmDataSource(Settlement settlement, SettlementDataSource newSettelmentDataSource)
+        public static void TryAddOsmDataSource(Settlement settlement, SettlementDataSource newSettelmentDataSource, ILogger logger)
         {
             try
             {
@@ -46,10 +46,10 @@ namespace Gems.DataMergeServices.Services
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Не удалось добавить источник данных, вызвано исключение: {ex}");
+                logger.LogError($"Не удалось добавить источник данных, вызвано исключение: {ex}");
             }
         }
-        public static void TryAddOsmDataSource(City city, CityDataSource newCityDataSource)
+        public static void TryAddOsmDataSource(City city, CityDataSource newCityDataSource, ILogger logger)
         {
             try
             {
@@ -63,10 +63,10 @@ namespace Gems.DataMergeServices.Services
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Не удалось добавить источник данных, вызвано исключение: {ex}");
+                logger.LogError($"Не удалось добавить источник данных, вызвано исключение: {ex}");
             }
         }
-        public static void TryAddOsmDataSource(MunicipalArea municipalArea, MunicipalAreaDataSource newMunicipalAreaDataSource)
+        public static void TryAddOsmDataSource(MunicipalArea municipalArea, MunicipalAreaDataSource newMunicipalAreaDataSource, ILogger logger)
         {
             try
             {
@@ -80,10 +80,10 @@ namespace Gems.DataMergeServices.Services
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Не удалось добавить источник данных, вызвано исключение: {ex}");
+                logger.LogError($"Не удалось добавить источник данных, вызвано исключение: {ex}");
             }
         }
-        public static void TryAddOsmDataSource(Region region, RegionDataSource newRegionDataSource)
+        public static void TryAddOsmDataSource(Region region, RegionDataSource newRegionDataSource, ILogger logger)
         {
             try
             {
@@ -97,7 +97,7 @@ namespace Gems.DataMergeServices.Services
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Не удалось добавить источник данных, вызвано исключение: {ex}");
+                logger.LogError($"Не удалось добавить источник данных, вызвано исключение: {ex}");
             }
         }
     }

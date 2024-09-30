@@ -1,12 +1,15 @@
 ﻿using Gems.AddressRegistry.Entities;
-using Gems.AddressRegistry.Entities.DataSources;
 using Gems.AddressRegistry.OsmDataParser.Model;
+using Microsoft.Extensions.Logging;
+using Moq;
 using City = Gems.AddressRegistry.OsmDataParser.Model.City;
 
 namespace Gems.DataMergeServices.Tests;
 
 public class DataMergeServiceTest
 {
+    private readonly ILogger _logger = new Mock<ILogger>().Object;
+
     [Fact]
     public async void MergeDataTest_Success()
     {
@@ -57,7 +60,7 @@ public class DataMergeServiceTest
         addressesFias.Add(addressFias1);
         
         // Act
-        DataMergeServices.Services.DataMergeService.MergeAddresses(addressesOsm,addressesFias);
+        DataMergeServices.Services.DataMergeService.MergeAddresses(addressesOsm,addressesFias, _logger);
         
         // Assert
         Assert.Equal(addressesFias.First().Building!.GeoJson, addressesOsm.First().GeoJson);
@@ -117,7 +120,7 @@ public class DataMergeServiceTest
         addressesFias.Add(addressFias1);
 
         // Act
-        DataMergeServices.Services.DataMergeService.MergeAddresses(addressesOsm, addressesFias);
+        DataMergeServices.Services.DataMergeService.MergeAddresses(addressesOsm, addressesFias, _logger);
 
         // Assert
         Assert.NotEqual(addressesFias.First().Building!.GeoJson, addressesOsm.First().GeoJson);

@@ -1,4 +1,3 @@
-using Gems.AddressRegistry.OsmDataParser.Model;
 using Gems.AddressRegistry.OsmDataParser.Support;
 using OsmSharp;
 

@@ -1,6 +1,6 @@
-﻿using Gems.AddressRegistry.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Gems.AddressRegistry.Entities;
 using Gems.AddressRegistry.Entities.Common;
-using Microsoft.EntityFrameworkCore;
 
 namespace Gems.AddressRegistry.DataAccess
 {
@@ -17,9 +17,14 @@ namespace Gems.AddressRegistry.DataAccess
 		public DbSet<PlaningStructureElement> PlaningStructureElements { get; set; }
 		public DbSet<RoadNetworkElement> RoadNetworkElements { get; set; }
 		public DbSet<Building> Buildings { get; set; }
+		public DbSet<DataSourceBase> DataSource {  get; set; }
 
 		private readonly string _connectionString = "Host=localhost;Port=5432;Database=addressdb;Username=postgres;Password=admin";
 		private readonly bool _asNoTracking;
+
+#if DEBUG
+		private readonly StreamWriter _logWriter = new StreamWriter(@"C:\Users\Artur\Desktop\sql_logs.txt", true);
+#endif
 
 		public AppDbContext()
 		{ }
@@ -51,6 +56,7 @@ namespace Gems.AddressRegistry.DataAccess
 			modelBuilder.Entity<DataSourceBase>().HasDiscriminator();
 			modelBuilder.Entity<DataSourceBase>().ToTable("DataSource");
 			modelBuilder.Entity<DataSourceBase>().HasKey(nameof(DataSourceBase.Id), nameof(DataSourceBase.SourceType));
+			modelBuilder.Entity<DataSourceBase>().Property(o => o.SourceType).HasConversion<string>();
 		}
 
 		public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

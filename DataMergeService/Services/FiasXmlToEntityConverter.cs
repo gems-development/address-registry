@@ -1,16 +1,14 @@
-﻿using Gems.AddressRegistry.Entities;
+﻿using System.Xml;
+using Microsoft.Extensions.Logging;
+using Gems.AddressRegistry.Entities;
 using Gems.AddressRegistry.Entities.Common;
 using Gems.AddressRegistry.Entities.DataSources;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Xml;
 
 namespace Gems.DataMergeServices.Services
 {
     public class FiasXmlToEntityConverter
     {
         Country country = new Country();
-        
         
         Region region = new Region();
         Dictionary<int, AdministrativeArea> administrativeAreaDictionary = new Dictionary<int, AdministrativeArea>();
@@ -30,10 +28,11 @@ namespace Gems.DataMergeServices.Services
 
         List<Address> addresses = new List<Address>();
 
+        List<string> targetNameParts = new List<string>() { "ЗАТО", "ПОСЕЛОК"};
+
     public FiasXmlToEntityConverter()
         {
             country.Name = "Russia";
-
 
             levelToParentMap.Add(
                 9,
@@ -80,12 +79,10 @@ namespace Gems.DataMergeServices.Services
                     key => municipalAreaDictionary.TryGetValue(key, out var result) ? (result, 3) : null,
                });
             // 3 и 2 уровень всегда ссылаются на единственный элемент первого уровня
-
         }
 
-        public async Task ConvertRegion(String uri)
+        public async Task ConvertRegion(String uri, ILogger logger)
         {
-
             XmlReaderSettings settings = new XmlReaderSettings();
             settings.Async = true;
 
@@ -94,7 +91,6 @@ namespace Gems.DataMergeServices.Services
                 reader.MoveToContent();
                 while (await reader.ReadAsync())
                 {
-
                     switch (reader.NodeType)
                     {
                         case XmlNodeType.Element:
@@ -107,112 +103,116 @@ namespace Gems.DataMergeServices.Services
                                     region.Name = reader.GetAttribute("NAME")!;
                                     RegionDataSource regionDataSource = new RegionDataSource();
                                     regionDataSource.Region = region;
-                                    regionDataSource.Id = reader.GetAttribute("OBJECTID")!;
+                                    regionDataSource.AuxiliaryId = reader.GetAttribute("OBJECTID")!;
+                                    regionDataSource.Id = reader.GetAttribute("OBJECTGUID")!;
                                     regionDataSource.SourceType = AddressRegistry.Entities.Enums.SourceType.Fias;
                                     region.DataSources.Add(regionDataSource);
-                                    Debug.WriteLine($"ФИАС || Считана область: {region.Name}");
+                                    logger.LogTrace($"ФИАС || Считана область: {region.Name}");
                                     break;
-
                                 case ("2"):
                                     AdministrativeArea administrativeArea = new AdministrativeArea();
                                     administrativeArea.Name = reader.GetAttribute("NAME")!;
                                     AdministrativeAreaDataSource administrativeAreaDataSource = new AdministrativeAreaDataSource();
                                     administrativeAreaDataSource.AdministrativeArea = administrativeArea;
-                                    administrativeAreaDataSource.Id = reader.GetAttribute("OBJECTID")!;
+                                    administrativeAreaDataSource.AuxiliaryId = reader.GetAttribute("OBJECTID")!;
+                                    administrativeAreaDataSource.Id = reader.GetAttribute("OBJECTGUID")!;
                                     administrativeAreaDataSource.SourceType = AddressRegistry.Entities.Enums.SourceType.Fias;
                                     administrativeArea.DataSources.Add(administrativeAreaDataSource);
-                                    administrativeAreaDictionary.Add(int.Parse(administrativeAreaDataSource.Id), administrativeArea);
-                                    Debug.WriteLine($"ФИАС || Считана административная область: {administrativeArea.Name}");
+                                    administrativeAreaDictionary.Add(int.Parse(administrativeAreaDataSource.AuxiliaryId), administrativeArea);
+                                    logger.LogTrace($"ФИАС || Считана административная область: {administrativeArea.Name}");
                                     break;
-
                                 case ("3"):
                                     MunicipalArea municipalArea = new MunicipalArea();
-                                    municipalArea.Name = reader.GetAttribute("NAME")!;
+                                    municipalArea.Name = CheckAndCleanName(reader.GetAttribute("NAME")!);
                                     MunicipalAreaDataSource municipalAreaDataSource = new MunicipalAreaDataSource();
                                     municipalAreaDataSource.MunicipalArea = municipalArea;
-                                    municipalAreaDataSource.Id = reader.GetAttribute("OBJECTID")!;
+                                    municipalAreaDataSource.AuxiliaryId = reader.GetAttribute("OBJECTID")!;
+                                    municipalAreaDataSource.Id = reader.GetAttribute("OBJECTGUID")!;
                                     municipalAreaDataSource.SourceType = AddressRegistry.Entities.Enums.SourceType.Fias;
                                     municipalArea.DataSources.Add(municipalAreaDataSource);
-                                    municipalAreaDictionary.Add(int.Parse(municipalAreaDataSource.Id), municipalArea);
-                                    Debug.WriteLine($"ФИАС || Считана муниципальная бласть: {municipalArea.Name}");
+                                    municipalAreaDictionary.Add(int.Parse(municipalAreaDataSource.AuxiliaryId), municipalArea);
+                                    logger.LogTrace($"ФИАС || Считана муниципальная бласть: {municipalArea.Name}");
                                     break;
                                 case ("4"):
                                     Territory territory = new Territory();
                                     territory.Name = reader.GetAttribute("NAME")!;
                                     TerritoryDataSource terrytoryDataSource = new TerritoryDataSource();
                                     terrytoryDataSource.Territory = territory;
-                                    terrytoryDataSource.Id = reader.GetAttribute("OBJECTID")!;
+                                    terrytoryDataSource.AuxiliaryId = reader.GetAttribute("OBJECTID")!;
+                                    terrytoryDataSource.Id = reader.GetAttribute("OBJECTGUID")!;
                                     terrytoryDataSource.SourceType = AddressRegistry.Entities.Enums.SourceType.Fias;
                                     territory.DataSources.Add(terrytoryDataSource);
-                                    territoryDictionary.Add(int.Parse(terrytoryDataSource.Id), territory);
-                                    Debug.WriteLine($"ФИАС || Считана территория: {territory.Name}");
+                                    territoryDictionary.Add(int.Parse(terrytoryDataSource.AuxiliaryId), territory);
+                                    logger.LogTrace($"ФИАС || Считана территория: {territory.Name}");
                                     break;
                                 case ("5"):
                                     City city = new City();
                                     city.Name = reader.GetAttribute("NAME")!;
                                     CityDataSource cityDataSource = new CityDataSource();
                                     cityDataSource.City = city;
-                                    cityDataSource.Id = reader.GetAttribute("OBJECTID")!;
+                                    cityDataSource.AuxiliaryId = reader.GetAttribute("OBJECTID")!;
+                                    cityDataSource.Id = reader.GetAttribute("OBJECTGUID")!;
                                     cityDataSource.SourceType = AddressRegistry.Entities.Enums.SourceType.Fias;
                                     city.DataSources.Add(cityDataSource);
-                                    cityDictionary.Add(int.Parse(cityDataSource.Id), city);
-                                    Debug.WriteLine($"ФИАС || Считан город: {city.Name}");
+                                    cityDictionary.Add(int.Parse(cityDataSource.AuxiliaryId), city);
+                                    logger.LogTrace($"ФИАС || Считан город: {city.Name}");
                                     break;
                                 case ("6"):
                                     Settlement settlement = new Settlement();
                                     settlement.Name = reader.GetAttribute("NAME")!;
                                     SettlementDataSource settlementDataSource = new SettlementDataSource();
                                     settlementDataSource.Settlement = settlement;
-                                    settlementDataSource.Id = reader.GetAttribute("OBJECTID")!;
+                                    settlementDataSource.AuxiliaryId = reader.GetAttribute("OBJECTID")!;
+                                    settlementDataSource.Id = reader.GetAttribute("OBJECTGUID")!;
                                     settlementDataSource.SourceType = AddressRegistry.Entities.Enums.SourceType.Fias;
                                     settlement.DataSources.Add(settlementDataSource);
-                                    settlementDictionary.Add(int.Parse(settlementDataSource.Id), settlement);
-                                    Debug.WriteLine($"ФИАС || Считано поселение: {settlement.Name}");
+                                    settlementDictionary.Add(int.Parse(settlementDataSource.AuxiliaryId), settlement);
+                                    logger.LogTrace($"ФИАС || Считано поселение: {settlement.Name}");
                                     break;
                                 case ("7"):
                                     PlaningStructureElement planingStructure = new PlaningStructureElement();
                                     planingStructure.Name = reader.GetAttribute("NAME")!;
                                     EpsDataSource epsDataSource = new EpsDataSource();
                                     epsDataSource.Eps = planingStructure;
-                                    epsDataSource.Id = reader.GetAttribute("OBJECTID")!;
+                                    epsDataSource.AuxiliaryId = reader.GetAttribute("OBJECTID")!;
+                                    epsDataSource.Id = reader.GetAttribute("OBJECTGUID")!;
                                     epsDataSource.SourceType = AddressRegistry.Entities.Enums.SourceType.Fias;
                                     planingStructure.DataSources.Add(epsDataSource);
-                                    planingStructureElementDictionary.Add(int.Parse(epsDataSource.Id), planingStructure);
-                                    Debug.WriteLine($"ФИАС || Считан элемент планировочной структуры {planingStructure.Name}");
+                                    planingStructureElementDictionary.Add(int.Parse(epsDataSource.AuxiliaryId), planingStructure);
+                                    logger.LogTrace($"ФИАС || Считан элемент планировочной структуры {planingStructure.Name}");
                                     break;
                                 case ("8"):
                                     RoadNetworkElement roadNetworkElement = new RoadNetworkElement();
                                     roadNetworkElement.Name = reader.GetAttribute("NAME")!;
                                     ErnDataSource ernDataSource = new ErnDataSource();
                                     ernDataSource.Ern = roadNetworkElement;
-                                    ernDataSource.Id = reader.GetAttribute("OBJECTID")!;
+                                    ernDataSource.AuxiliaryId = reader.GetAttribute("OBJECTID")!;
+                                    ernDataSource.Id = reader.GetAttribute("OBJECTGUID")!;
                                     ernDataSource.SourceType = AddressRegistry.Entities.Enums.SourceType.Fias;
                                     roadNetworkElement.DataSources.Add(ernDataSource);
-                                    roadNetworkElementDictionary.Add(int.Parse(ernDataSource.Id), roadNetworkElement);
-                                    Debug.WriteLine($"ФИАС || Считан элемент улично-дорожной сети {roadNetworkElement.Name}");
+                                    roadNetworkElementDictionary.Add(int.Parse(ernDataSource.AuxiliaryId), roadNetworkElement);
+                                    logger.LogTrace($"ФИАС || Считан элемент улично-дорожной сети {roadNetworkElement.Name}");
                                     break;
                             }
                             break;
                         case XmlNodeType.Text:
-                            Console.WriteLine("Text Node: {0}",
+                            logger.LogDebug("Text Node: {0}",
                                      await reader.GetValueAsync());
                             break;
                         case XmlNodeType.EndElement:
-                            Console.WriteLine("End Element {0}", reader.Name);
+                            logger.LogDebug("End Element {0}", reader.Name);
                             break;
                         default:
-                            Console.WriteLine("Other node {0} with value {1}",
+                            logger.LogDebug("Other node {0} with value {1}",
                                             reader.NodeType, reader.Value);
                             break;
-
-
                     }
                 }
             }
-            Debug.WriteLine("ФИАС || Завершено считывание файла региона");
+            logger.LogDebug("ФИАС || Завершено считывание файла региона");
         }
 
-        public async Task ConvertBuildings(String uri)
+        public async Task ConvertBuildings(String uri, ILogger logger)
         {
             XmlReaderSettings settings = new XmlReaderSettings();
             settings.Async = true;
@@ -222,44 +222,41 @@ namespace Gems.DataMergeServices.Services
                 reader.MoveToContent();
                 while (await reader.ReadAsync())
                 {
-
                     switch (reader.NodeType)
                     {
                         case XmlNodeType.Element:
-
                             if (reader.GetAttribute("ISACTUAL") != "1" || reader.GetAttribute("ISACTIVE") != "1")
                                 break;
                             Building building = new Building();
                             building.Number = reader.GetAttribute("HOUSENUM")!;
                             BuildingDataSource buildingDataSource = new BuildingDataSource();
                             buildingDataSource.Building = building;
-                            buildingDataSource.Id = reader.GetAttribute("OBJECTID")!;
+                            buildingDataSource.AuxiliaryId = reader.GetAttribute("OBJECTID")!;
+                            buildingDataSource.Id = reader.GetAttribute("OBJECTGUID")!;
                             buildingDataSource.SourceType = AddressRegistry.Entities.Enums.SourceType.Fias;
                             building.DataSources.Add(buildingDataSource);
-                            if (!buildingDictionary.TryAdd(int.Parse(buildingDataSource.Id), building))
-                                Debug.WriteLine($"ФИАС ||Не удалось добавить здание с id: {int.Parse(buildingDataSource.Id)}" );
-                            Debug.WriteLine($"ФИАС || Добавлен дом № {building.Number}");
-
+                            if (!buildingDictionary.TryAdd(int.Parse(buildingDataSource.AuxiliaryId), building))
+                                logger.LogTrace($"ФИАС ||Не удалось добавить здание с id: {int.Parse(buildingDataSource.AuxiliaryId)}" );
+                            logger.LogTrace($"ФИАС || Добавлен дом № {building.Number}");
                             break;
                         case XmlNodeType.Text:
-                            Console.WriteLine("Text Node: {0}",
+                            logger.LogDebug("Text Node: {0}",
                                      await reader.GetValueAsync());
                             break;
                         case XmlNodeType.EndElement:
-                            Console.WriteLine("End Element {0}", reader.Name);
+                            logger.LogDebug("End Element {0}", reader.Name);
                             break;
                         default:
-                            Console.WriteLine("Other node {0} with value {1}",
+                            logger.LogDebug("Other node {0} with value {1}",
                                             reader.NodeType, reader.Value);
                             break;
-
                     }
                 }
             }
-            Debug.WriteLine("ФИАС || Завершено считывание файла с зданиями");
+            logger.LogDebug("ФИАС || Завершено считывание файла с зданиями");
         }
 
-        public async Task ReadAdmHierarchy(String uri)
+        public async Task ReadAdmHierarchy(String uri, ILogger logger)
         {
             XmlReaderSettings settings = new XmlReaderSettings();
             settings.Async = true;
@@ -269,11 +266,9 @@ namespace Gems.DataMergeServices.Services
                 reader.MoveToContent();
                 while (await reader.ReadAsync())
                 {
-
                     switch (reader.NodeType)
                     {
                         case XmlNodeType.Element:
-
                             if (reader.GetAttribute("ISACTIVE") != "1")
                                 break;
                             var objId = reader.GetAttribute("OBJECTID");
@@ -284,23 +279,22 @@ namespace Gems.DataMergeServices.Services
                             region.Code = reader.GetAttribute("REGIONCODE")!;//TODO как вытащить код региона не выполняя этот код каждую итерацию
                             break;
                         case XmlNodeType.Text:
-                            Console.WriteLine("Text Node: {0}",
+                            logger.LogDebug("Text Node: {0}",
                                      await reader.GetValueAsync());
                             break;
                         case XmlNodeType.EndElement:
-                            Console.WriteLine("End Element {0}", reader.Name);
+                            logger.LogDebug("End Element {0}", reader.Name);
                             break;
                         default:
-                            Console.WriteLine("Other node {0} with value {1}",
+                            logger.LogDebug("Other node {0} with value {1}",
                                             reader.NodeType, reader.Value);
                             break;
-
                     }
                 }
             }
-            Debug.WriteLine("ФИАС || Завершено считывание файла административной иерархии");
+            logger.LogDebug("ФИАС || Завершено считывание файла административной иерархии");
         }
-        public async Task ReadMunHierarchy(String uri)
+        public async Task ReadMunHierarchy(String uri, ILogger logger)
         {
             XmlReaderSettings settings = new XmlReaderSettings();
             settings.Async = true;
@@ -310,11 +304,9 @@ namespace Gems.DataMergeServices.Services
                 reader.MoveToContent();
                 while (await reader.ReadAsync())
                 {
-
                     switch (reader.NodeType)
                     {
                         case XmlNodeType.Element:
-
                             if (reader.GetAttribute("ISACTIVE") != "1")
                                 break;
                             var objId = reader.GetAttribute("OBJECTID");
@@ -323,30 +315,29 @@ namespace Gems.DataMergeServices.Services
                                 MunHierarchy.Add(int.Parse(objId), int.Parse(parentObjId));
                            break;
                         case XmlNodeType.Text:
-                            Console.WriteLine("Text Node: {0}",
+                            logger.LogDebug("Text Node: {0}",
                                      await reader.GetValueAsync());
                             break;
                         case XmlNodeType.EndElement:
-                            Console.WriteLine("End Element {0}", reader.Name);
+                            logger.LogDebug("End Element {0}", reader.Name);
                             break;
                         default:
-                            Console.WriteLine("Other node {0} with value {1}",
+                            logger.LogDebug("Other node {0} with value {1}",
                                             reader.NodeType, reader.Value);
                             break;
-
                     }
                 }
             }
-            Debug.WriteLine("ФИАС || Завершено считывание файла муниципальной иерархии");
+            logger.LogDebug("ФИАС || Завершено считывание файла муниципальной иерархии");
         }
 
 
-        public async Task<IReadOnlyCollection<Address>> ReadAndBuildAddresses(String pathAdm, String pathMun, String pathBuildings, String pathReg)
+        public async Task<IReadOnlyCollection<Address>> ReadAndBuildAddresses(String pathAdm, String pathMun, String pathBuildings, String pathReg, ILogger logger)
         {
-            await ReadAdmHierarchy(pathAdm);
-            await ReadMunHierarchy(pathMun);
-            await ConvertRegion(pathReg);
-            await ConvertBuildings(pathBuildings);
+            await ReadAdmHierarchy(pathAdm, logger);
+            await ReadMunHierarchy(pathMun, logger);
+            await ConvertRegion(pathReg, logger);
+            await ConvertBuildings(pathBuildings, logger);
             var addresses = new List<Address>();
             foreach(var item in buildingDictionary)
             {
@@ -355,7 +346,7 @@ namespace Gems.DataMergeServices.Services
                 
                 address.Region = region;
                 FindParents(9, address);
-                Debug.WriteLine($"ФИАС || Собрана иерархия адреса: {address.GetNormalizedAddress()}");
+                logger.LogTrace($"ФИАС || Собрана иерархия адреса: {address.GetNormalizedAddress(logger)}");
                 addresses.Add(address);
             }
             return addresses;
@@ -371,7 +362,7 @@ namespace Gems.DataMergeServices.Services
             switch (level)
             {
                 case (9):
-                    objId = int.Parse(address.Building!.DataSources.First().Id);
+                    objId = int.Parse(address.Building!.DataSources.First().AuxiliaryId);
                     AdmHierarchy.TryGetValue(objId, out parentObjId);
                     if (parentObjId != 0)
                     {
@@ -379,7 +370,6 @@ namespace Gems.DataMergeServices.Services
                         foreach (var mapper in levelEntryParentMappings)
                         {
                             var entry = mapper(parentObjId);
-                            
 
                             if (entry is not null)
                             {
@@ -389,7 +379,6 @@ namespace Gems.DataMergeServices.Services
                                     address.RoadNetworkElement = (RoadNetworkElement)entry.Value.BaseEntity;
                                     address.Building.RoadNetworkElement = address.RoadNetworkElement;
                                 }
-
                                 else if (levelNumber == 7)
                                 {
                                     address.PlaningStructureElement = (PlaningStructureElement)entry.Value.BaseEntity;
@@ -402,7 +391,7 @@ namespace Gems.DataMergeServices.Services
                     }
                     break;
                 case (8):
-                    objId = int.Parse(address.RoadNetworkElement!.DataSources.First().Id);
+                    objId = int.Parse(address.RoadNetworkElement!.DataSources.First().AuxiliaryId);
                     AdmHierarchy.TryGetValue(objId, out parentObjId);
                     levelEntryParentMappings = levelToParentMap[8];
                     foreach (var mapper in levelEntryParentMappings)
@@ -432,7 +421,7 @@ namespace Gems.DataMergeServices.Services
                     }
                     break;
                 case (7):
-                    objId = int.Parse(address.PlaningStructureElement!.DataSources.First().Id);
+                    objId = int.Parse(address.PlaningStructureElement!.DataSources.First().AuxiliaryId);
                     AdmHierarchy.TryGetValue(objId, out parentObjId);
                     levelEntryParentMappings = levelToParentMap[7];
                     foreach (var mapper in levelEntryParentMappings)
@@ -452,13 +441,12 @@ namespace Gems.DataMergeServices.Services
                                 address.City = (City)entry.Value.BaseEntity;
                                 address.PlaningStructureElement.City = address.City;
                             }
-                                
                             FindParents(levelNumber, address);
                         }
                     }
                     break;
                 case (6):
-                    objId = int.Parse(address.Settlement!.DataSources.First().Id);
+                    objId = int.Parse(address.Settlement!.DataSources.First().AuxiliaryId);
                     AdmHierarchy.TryGetValue(objId, out parentObjId);
                     MunHierarchy.TryGetValue(objId, out parentMunicipalityObjId);
                     levelEntryParentMappings = levelToParentMap[6];
@@ -492,12 +480,11 @@ namespace Gems.DataMergeServices.Services
                                 address.MunicipalArea = (MunicipalArea)entryMunicipal.Value.BaseEntity;
                                 address.Settlement.MunicipalArea = address.MunicipalArea;
                             }
-                            
                         }
                     }
                     break;
                 case (5):
-                    objId = int.Parse(address.City!.DataSources.First().Id);
+                    objId = int.Parse(address.City!.DataSources.First().AuxiliaryId);
                     AdmHierarchy.TryGetValue(objId, out parentObjId);
                     MunHierarchy.TryGetValue(objId, out parentMunicipalityObjId);
                     levelEntryParentMappings = levelToParentMap[5];
@@ -530,12 +517,11 @@ namespace Gems.DataMergeServices.Services
                                 address.MunicipalArea = (MunicipalArea)entryMunicipal.Value.BaseEntity;
                                 address.City.MunicipalArea = address.MunicipalArea;
                             }
-
                         }
                     }
                     break;
                 case (4):
-                    objId = int.Parse(address.Territory!.DataSources.First().Id);
+                    objId = int.Parse(address.Territory!.DataSources.First().AuxiliaryId);
                     MunHierarchy.TryGetValue(objId, out parentMunicipalityObjId);
                     levelEntryParentMappings = levelToParentMap[4];
                     foreach (var mapper in levelEntryParentMappings)
@@ -562,5 +548,20 @@ namespace Gems.DataMergeServices.Services
                 address.MunicipalArea.Region = address.Region;
         }
 
+        public string CheckAndCleanName(string name)
+        {
+            string newName = "";
+            var chanks = name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            foreach(var partName in chanks)
+            {
+                if (!targetNameParts.Contains(partName.ToUpper()))
+                {
+                    if (newName != "")
+                        newName = newName + " " + partName;
+                    else newName += partName;
+                } 
+            }
+            return newName;
+        }
     }
 }
