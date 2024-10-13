@@ -22,13 +22,9 @@ public static class Client
 #endif
             .Build();
         var swTotal = Stopwatch.StartNew();
-
         var serilog = new LoggerConfiguration().ReadFrom.Configuration(configuration).CreateLogger();
-
-        var loggerFactory = new LoggerFactory()
-            .AddSerilog(serilog);
-
-        Microsoft.Extensions.Logging.ILogger logger = loggerFactory.CreateLogger("Logger");
+        var loggerFactory = new LoggerFactory().AddSerilog(serilog);
+        var logger = loggerFactory.CreateLogger("Logger");
 
         try
         {

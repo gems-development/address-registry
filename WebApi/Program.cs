@@ -1,3 +1,4 @@
+using Serilog;
 using MediatR;
 using WebApi.Dto;
 using WebApi.Helpers;
@@ -16,9 +17,9 @@ builder
 	.Services
 	.AddEndpointsApiExplorer()
 	.AddSwaggerGen()
+	.AddSerilogServices()
 	.AddApplicationServices()
-	.AddDataAccess(builder.Configuration.GetConnectionString("DefaultConnection")!, false)
-	.AddSerilogServices();
+	.AddDataAccess(builder.Configuration.GetConnectionString("DefaultConnection")!);
 
 builder.Services.AddMediatR(cfg =>
 {
@@ -28,6 +29,8 @@ builder.Services.AddMediatR(cfg =>
 builder.Services.AddScoped<IRequestHandler<GetAddressByIdRequest, AddressDtoResponse>, GetAddressByIdRequestHandler>();
 builder.Services.AddScoped<IRequestHandler<GetAddressByLocationRequest, AddressDtoResponse>, GetAddressByLocationRequestHandler>();
 builder.Services.AddScoped<IRequestHandler<GetAddressByNameRequest, AddressDtoResponse>, GetAddressByNameRequestHandler>();
+
+builder.Host.ConfigureLogging(logging => logging.AddSerilog());
 
 var app = builder.Build();
 

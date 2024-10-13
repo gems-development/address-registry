@@ -4,7 +4,7 @@ using Gems.AddressRegistry.Entities.Common;
 
 namespace Gems.AddressRegistry.DataAccess
 {
-	internal class AppDbContext : DbContext, IAppDbContext
+	public class AppDbContext : DbContext, IAppDbContext
 	{
 		public DbSet<Address> Addresses { get; set; }
 		public DbSet<InvalidAddress> InvalidAddresses { get; set; }
@@ -19,12 +19,8 @@ namespace Gems.AddressRegistry.DataAccess
 		public DbSet<Building> Buildings { get; set; }
 		public DbSet<DataSourceBase> DataSource {  get; set; }
 
-		private readonly string _connectionString = "Host=localhost;Port=5432;Database=addressdb;Username=postgres;Password=admin";
+		private readonly string _connectionString = "Host=localhost;Port=5442;Database=addressdb;Username=postgres;Password=admin";
 		private readonly bool _asNoTracking;
-
-#if DEBUG
-		private readonly StreamWriter _logWriter = new StreamWriter(@"C:\Users\Artur\Desktop\sql_logs.txt", true);
-#endif
 
 		public AppDbContext()
 		{ }

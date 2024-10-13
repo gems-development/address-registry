@@ -1,11 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Gems.AddressRegistry.Entities.Common;
 using Gems.AddressRegistry.DataAccess;
 using Gems.AddressRegistry.Entities;
-using Microsoft.Extensions.Logging;
-using OsmSharp.Logging;
-using Gems.AddressRegistry.Entities.Common;
-using Gems.AddressRegistry.Entities.DataSources;
-using System.Security.Cryptography;
 
 namespace Gems.ApplicationServices.Services
 {
@@ -26,7 +23,6 @@ namespace Gems.ApplicationServices.Services
 		private List<DataSourceBase> dataSources;
 		private List<DataSourceBase> attachedDataSource;
 
-
         public DataImportService(IAppDbContextFactory appDbContextFactory, ILogger logger)
 		{
 			_appDbContext = appDbContextFactory.Create(true);
@@ -44,7 +40,7 @@ namespace Gems.ApplicationServices.Services
 			attachedDataSource = new List<DataSourceBase>();
 
 			GettingDataTromTheDatabase(logger);
-        }
+		}
 
 		public void ImportBuildingAsync(Building buildingImport, CancellationToken cancellationToken = default)
 		{
