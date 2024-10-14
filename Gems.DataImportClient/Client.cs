@@ -2,14 +2,14 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Gems.AddressRegistry.DataAccess;
-using Gems.AddressRegistry.OsmClient.Helpers;
-using Gems.AddressRegistry.OsmClient.Options;
 using Gems.AddressRegistry.OsmDataParser;
 using Gems.ApplicationServices.Services;
 using Gems.DataMergeServices.Services;
 using Serilog;
+using Gems.AddressRegistry.DataImportTool.Helpers;
+using Gems.AddressRegistry.DataImportTool.Options;
 
-namespace Gems.AddressRegistry.OsmClient;
+namespace Gems.AddressRegistry.DataImportTool;
 
 public static class Client
 {

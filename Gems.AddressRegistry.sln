@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApplicationServices.Tests",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApi", "WebApi\WebApi.csproj", "{EC6BDCAC-BE0C-41FF-A3A5-16390EA6B32B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gems.DataImportClient", "Gems.DataImportClient\Gems.DataImportClient.csproj", "{A19B3C08-BA26-4C27-A18F-33B18115119A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gems.DataImportTool", "Gems.DataImportClient\Gems.DataImportTool.csproj", "{A19B3C08-BA26-4C27-A18F-33B18115119A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OsmDataParser", "OsmDataParser\OsmDataParser.csproj", "{396DD623-4323-4604-B960-82862C628A9B}"
 EndProject
@@ -21,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OsmDataParser.Tests", "OsmD
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gems.DataMergeServices", "DataMergeService\Gems.DataMergeServices.csproj", "{BFAAFAF4-3472-4429-8E71-6837A12A7E83}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gems.DataMergeServices.Tests", "Gems.DataMergeServices.Tests\Gems.DataMergeServices.Tests.csproj", "{20DE2F1E-B74E-471F-B6E6-BA5A4B30D8A2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gems.DataMergeServices.Tests", "Gems.DataMergeServices.Tests\Gems.DataMergeServices.Tests.csproj", "{20DE2F1E-B74E-471F-B6E6-BA5A4B30D8A2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

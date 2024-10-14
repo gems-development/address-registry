@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace Gems.AddressRegistry.OsmClient.Helpers;
+namespace Gems.AddressRegistry.DataImportTool.Helpers;
 
 internal static class InputFileNameHelper
 {

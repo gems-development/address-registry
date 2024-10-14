@@ -1,4 +1,4 @@
-﻿namespace Gems.AddressRegistry.OsmClient.Options;
+﻿namespace Gems.AddressRegistry.DataImportTool.Options;
 
 internal sealed class OsmOptions
 {
