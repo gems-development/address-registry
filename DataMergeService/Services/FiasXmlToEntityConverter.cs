@@ -8,7 +8,6 @@ namespace Gems.DataMergeServices.Services
 {
     public class FiasXmlToEntityConverter
     {
-        Country country = new Country();
         
         Region region = new Region();
         Dictionary<int, AdministrativeArea> administrativeAreaDictionary = new Dictionary<int, AdministrativeArea>();
@@ -32,7 +31,6 @@ namespace Gems.DataMergeServices.Services
 
     public FiasXmlToEntityConverter()
         {
-            country.Name = "Russia";
 
             levelToParentMap.Add(
                 9,
