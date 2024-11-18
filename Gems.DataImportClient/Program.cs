@@ -11,7 +11,7 @@ using Gems.AddressRegistry.DataImportTool.Options;
 
 namespace Gems.AddressRegistry.DataImportTool;
 
-public static class Client
+public static class Program
 {
     public static async Task Main(string[] args)
     {

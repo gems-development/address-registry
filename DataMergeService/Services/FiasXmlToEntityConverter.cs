@@ -28,7 +28,7 @@ namespace Gems.DataMergeServices.Services
 
         List<Address> addresses = new List<Address>();
 
-        List<string> targetNameParts = new List<string>() { "ЗАТО", "ПОСЕЛОК"};
+        List<string> targetNameParts = new List<string>() { "ЗАТО", "ПОСЕЛОК", "СЕЛО"};
 
     public FiasXmlToEntityConverter()
         {
@@ -135,8 +135,9 @@ namespace Gems.DataMergeServices.Services
                                     break;
                                 case ("4"):
                                     Territory territory = new Territory();
-                                    territory.Name = reader.GetAttribute("NAME")!;
-                                    TerritoryDataSource terrytoryDataSource = new TerritoryDataSource();
+									//territory.Name = reader.GetAttribute("NAME")!;
+									territory.Name = CheckAndCleanName(reader.GetAttribute("NAME")!);
+									TerritoryDataSource terrytoryDataSource = new TerritoryDataSource();
                                     terrytoryDataSource.Territory = territory;
                                     terrytoryDataSource.AuxiliaryId = reader.GetAttribute("OBJECTID")!;
                                     terrytoryDataSource.Id = reader.GetAttribute("OBJECTGUID")!;

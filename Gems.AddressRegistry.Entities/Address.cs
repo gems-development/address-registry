@@ -40,16 +40,8 @@ namespace Gems.AddressRegistry.Entities
             return builder.ToString().ToUpper();
         }
 
-        public bool IsCorrect()
-        {
-            if ((City != null || Settlement != null) && RoadNetworkElement != null && MunicipalArea != null && Building != null )
-            {
-                return true;
-            } else
-            {
-                return false; 
-            }
-        }
+        public bool IsCorrect() =>
+            ((City != null || Settlement != null) && RoadNetworkElement != null && MunicipalArea != null && Building != null);
 
         public void ClearNames()
         {
