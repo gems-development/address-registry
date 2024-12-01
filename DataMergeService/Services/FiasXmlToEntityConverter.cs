@@ -27,7 +27,7 @@ namespace Gems.DataMergeServices.Services
 
         List<Address> addresses = new List<Address>();
 
-        List<string> targetNameParts = new List<string>() { "ЗАТО", "ПОСЕЛОК", "СЕЛО"};
+        List<string> targetNameParts = new List<string>() { "ЗАТО", "ПОСЕЛОК", "СЕЛО", "САДОВОДСТВА", "АВТОДОРОГИ"};
 
     public FiasXmlToEntityConverter()
         {
@@ -171,6 +171,7 @@ namespace Gems.DataMergeServices.Services
                                 case ("7"):
                                     PlaningStructureElement planingStructure = new PlaningStructureElement();
                                     planingStructure.Name = reader.GetAttribute("NAME")!;
+                                    planingStructure.Name = CheckAndCleanName(reader.GetAttribute("NAME")!);
                                     EpsDataSource epsDataSource = new EpsDataSource();
                                     epsDataSource.Eps = planingStructure;
                                     epsDataSource.AuxiliaryId = reader.GetAttribute("OBJECTID")!;
