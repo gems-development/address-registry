@@ -8,7 +8,6 @@ namespace Gems.DataMergeServices.Services
 {
     public class FiasXmlToEntityConverter
     {
-        Country country = new Country();
         
         Region region = new Region();
         Dictionary<int, AdministrativeArea> administrativeAreaDictionary = new Dictionary<int, AdministrativeArea>();
@@ -28,11 +27,10 @@ namespace Gems.DataMergeServices.Services
 
         List<Address> addresses = new List<Address>();
 
-        List<string> targetNameParts = new List<string>() { "ЗАТО", "ПОСЕЛОК"};
+        List<string> targetNameParts = new List<string>() { "ЗАТО", "ПОСЕЛОК", "СЕЛО", "САДОВОДСТВА", "АВТОДОРОГИ"};
 
     public FiasXmlToEntityConverter()
         {
-            country.Name = "Russia";
 
             levelToParentMap.Add(
                 9,
@@ -135,8 +133,9 @@ namespace Gems.DataMergeServices.Services
                                     break;
                                 case ("4"):
                                     Territory territory = new Territory();
-                                    territory.Name = reader.GetAttribute("NAME")!;
-                                    TerritoryDataSource terrytoryDataSource = new TerritoryDataSource();
+									//territory.Name = reader.GetAttribute("NAME")!;
+									territory.Name = CheckAndCleanName(reader.GetAttribute("NAME")!);
+									TerritoryDataSource terrytoryDataSource = new TerritoryDataSource();
                                     terrytoryDataSource.Territory = territory;
                                     terrytoryDataSource.AuxiliaryId = reader.GetAttribute("OBJECTID")!;
                                     terrytoryDataSource.Id = reader.GetAttribute("OBJECTGUID")!;
@@ -172,6 +171,7 @@ namespace Gems.DataMergeServices.Services
                                 case ("7"):
                                     PlaningStructureElement planingStructure = new PlaningStructureElement();
                                     planingStructure.Name = reader.GetAttribute("NAME")!;
+                                    planingStructure.Name = CheckAndCleanName(reader.GetAttribute("NAME")!);
                                     EpsDataSource epsDataSource = new EpsDataSource();
                                     epsDataSource.Eps = planingStructure;
                                     epsDataSource.AuxiliaryId = reader.GetAttribute("OBJECTID")!;

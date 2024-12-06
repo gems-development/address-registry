@@ -41,9 +41,5 @@ namespace Gems.ApplicationServices.Services
         {
             target.Name = source.Name;
         }
-        public static void Map(Country source, Country target)
-        {
-            target.Name = source.Name;
-        }
     }
 }
