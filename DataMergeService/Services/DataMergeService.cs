@@ -47,7 +47,7 @@ namespace Gems.DataMergeServices.Services
             });
 			var normalizeFiasAddressesTask = Task.Run(() =>
 			{
-                logger.LogDebug("ФИАС || Начата нормализация адресов");
+				logger.LogDebug("ФИАС || Начата нормализация адресов");
                 foreach (var addressFias in addressesFias)
 				{
 					var normalizedAddress = addressFias.GetNormalizedAddress(logger);
@@ -60,6 +60,8 @@ namespace Gems.DataMergeServices.Services
 				normalizeOsmAddressesTask,
 				normalizeFiasAddressesTask);
 
+			SearchDuplicatesByUpdateDate(NormalizedFiasAddresses, logger);
+
 			foreach (var normalizedAddress in NormalizedOsmAddresses.Keys)
 			{
 				if (NormalizedFiasAddresses.TryGetValue(normalizedAddress, out var correspondingFiasAddress))
@@ -69,6 +71,35 @@ namespace Gems.DataMergeServices.Services
 				}
 			}
 		}
+
+		public static void SearchDuplicatesByUpdateDate(Dictionary<string, Address> NormalizedFiasAddresses, ILogger logger)
+		{
+			var keys = NormalizedFiasAddresses.Keys.ToList();
+
+			for (var i = 0 ; i < NormalizedFiasAddresses.Count-1; i++) {
+				for(var j = i+1 ; j < NormalizedFiasAddresses.Count; j++) {
+					var normalizedAddress_1 = keys[i];
+					var normalizedAddress_2 = keys[j];
+					if (СheckForDuplicates(normalizedAddress_1, normalizedAddress_2))
+					{
+						var date1 = NormalizedFiasAddresses[normalizedAddress_1].Building.FiasDateUpdated;
+						var date2 = NormalizedFiasAddresses[normalizedAddress_2].Building.FiasDateUpdated;
+						if (DateTime.Compare(date1, date2) >= 0)
+						{
+							logger.LogTrace($"ФИАС || Найден дубликат адреса: {normalizedAddress_2} + дата обновления: {date2}");
+						}
+						else
+						{
+							logger.LogTrace($"ФИАС || Найден дубликат адреса: {normalizedAddress_1} + дата обновления: {date1}");
+						}
+						break;
+					}			
+				}	
+			}
+		}
+
+		public static bool СheckForDuplicates(string normalizedAddress_1, string normalizedAddress_2) =>
+			normalizedAddress_1.Equals(normalizedAddress_2);
 
 		private static void AddGeometryToAddress(Address address, House house, ILogger logger)
 		{

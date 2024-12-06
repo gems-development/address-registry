@@ -9,5 +9,6 @@ namespace Gems.AddressRegistry.Entities.Common
         [NotMapped]
         public string? AuxiliaryId { get; set; }
         public SourceType SourceType { get; set; }
-    }
+		public DateTime UpdateDate { get; set; }
+	}
 }

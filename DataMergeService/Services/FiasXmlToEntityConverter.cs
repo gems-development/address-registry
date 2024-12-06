@@ -234,9 +234,10 @@ namespace Gems.DataMergeServices.Services
                             buildingDataSource.AuxiliaryId = reader.GetAttribute("OBJECTID")!;
                             buildingDataSource.Id = reader.GetAttribute("OBJECTGUID")!;
                             buildingDataSource.SourceType = AddressRegistry.Entities.Enums.SourceType.Fias;
+                            buildingDataSource.UpdateDate = ConvertStringToDate(reader.GetAttribute("UPDATEDATE"));                        
                             building.DataSources.Add(buildingDataSource);
                             if (!buildingDictionary.TryAdd(int.Parse(buildingDataSource.AuxiliaryId), building))
-                                logger.LogTrace($"ФИАС ||Не удалось добавить здание с id: {int.Parse(buildingDataSource.AuxiliaryId)}" );
+                                logger.LogTrace($"ФИАС ||Не удалось добавить здание с id: {int.Parse(buildingDataSource.AuxiliaryId)}" );	
                             logger.LogTrace($"ФИАС || Добавлен дом № {building.Number}");
                             break;
                         case XmlNodeType.Text:
@@ -294,7 +295,18 @@ namespace Gems.DataMergeServices.Services
             }
             logger.LogDebug("ФИАС || Завершено считывание файла административной иерархии");
         }
-        public async Task ReadMunHierarchy(String uri, ILogger logger)
+
+		public static DateTime ConvertStringToDate(String strDate)
+		{
+			List<int> date = new List<int>();
+
+			foreach (var i in strDate.Split('-'))
+				date.Add(int.Parse(i));
+
+			return new DateTime(date[0], date[1], date[2]);
+		}
+
+		public async Task ReadMunHierarchy(String uri, ILogger logger)
         {
             XmlReaderSettings settings = new XmlReaderSettings();
             settings.Async = true;

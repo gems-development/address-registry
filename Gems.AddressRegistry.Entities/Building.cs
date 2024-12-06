@@ -12,5 +12,6 @@ namespace Gems.AddressRegistry.Entities
         public virtual RoadNetworkElement? RoadNetworkElement { get; set; }
         public virtual PlaningStructureElement? PlaningStructureElement { get; set; }
         public BuildingType BuildingType { get; set; }
-    }
+		public DateTime FiasDateUpdated => DataSources.FirstOrDefault(o => o.SourceType == SourceType.Fias).UpdateDate;
+	}
 }
