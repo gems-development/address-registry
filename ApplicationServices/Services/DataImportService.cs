@@ -266,12 +266,15 @@ namespace Gems.ApplicationServices.Services
 				else
 				{
 					if (addressImport.IsCorrect())
-                        _appDbContext.Addresses.Add(addressImport);
-                    else
+						_appDbContext.Addresses.Add(addressImport);
+					else if (!addressImport.IsCriticallyInvalidAddress())
 					{
 						var invalidAddress = new InvalidAddress(addressImport);
 						_appDbContext.InvalidAddresses.Add(invalidAddress);
 					}
+					else {
+                        logger.LogTrace($"Адрес - {addressImport} пропущен, не записан в БД: отсутствуют ключевые элементы адреса.");
+                    }
 				}
 			}
 			try

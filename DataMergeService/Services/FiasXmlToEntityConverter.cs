@@ -133,7 +133,6 @@ namespace Gems.DataMergeServices.Services
                                     break;
                                 case ("4"):
                                     Territory territory = new Territory();
-									//territory.Name = reader.GetAttribute("NAME")!;
 									territory.Name = CheckAndCleanName(reader.GetAttribute("NAME")!);
 									TerritoryDataSource terrytoryDataSource = new TerritoryDataSource();
                                     terrytoryDataSource.Territory = territory;

@@ -1,6 +1,7 @@
 ﻿using Gems.AddressRegistry.Entities.Common;
 using Gems.AddressRegistry.Entities.DataSources;
 using Gems.AddressRegistry.Entities.Enums;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Gems.AddressRegistry.Entities
 {
@@ -12,6 +13,7 @@ namespace Gems.AddressRegistry.Entities
         public virtual RoadNetworkElement? RoadNetworkElement { get; set; }
         public virtual PlaningStructureElement? PlaningStructureElement { get; set; }
         public BuildingType BuildingType { get; set; }
-		public DateTime FiasDateUpdated => DataSources.FirstOrDefault(o => o.SourceType == SourceType.Fias).UpdateDate;
+        [NotMapped]
+        public DateTime FiasDateUpdated => DataSources.FirstOrDefault(o => o.SourceType == SourceType.Fias).UpdateDate;
 	}
 }

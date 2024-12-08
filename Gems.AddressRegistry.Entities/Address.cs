@@ -43,6 +43,9 @@ namespace Gems.AddressRegistry.Entities
         public bool IsCorrect() =>
             ((City != null || Settlement != null) && RoadNetworkElement != null && MunicipalArea != null && Building != null);
 
+        public bool IsCriticallyInvalidAddress() =>
+            ((City == null && Settlement == null && PlaningStructureElement == null) || Building == null);
+
         public void ClearNames()
         {
             if (MunicipalArea != null)
@@ -50,5 +53,7 @@ namespace Gems.AddressRegistry.Entities
                 MunicipalArea.Name = MunicipalArea.Name.ToUpper().Replace("ГОРОД ", "");
             }
         }
+        public override string ToString() => 
+            $"{Region.Name}#{MunicipalArea?.Name}#{City?.Name}#{Settlement?.Name}#{RoadNetworkElement?.Name}#{Building?.Number}";
     }
 }
