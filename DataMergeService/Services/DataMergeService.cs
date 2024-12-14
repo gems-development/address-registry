@@ -4,6 +4,7 @@ using Gems.AddressRegistry.Entities.Common;
 using Gems.AddressRegistry.Entities.DataSources;
 using Gems.AddressRegistry.Entities.Enums;
 using Gems.AddressRegistry.OsmDataParser.Model;
+using Gems.DataMergeServices.Common;
 
 namespace Gems.DataMergeServices.Services
 {
@@ -70,9 +71,56 @@ namespace Gems.DataMergeServices.Services
 					AddGeometryToAddress(correspondingFiasAddress, correspondingOsmAddress, logger);
 				}
 			}
-		}
 
-		public static void SearchDuplicatesByUpdateDate(Dictionary<string, Address> NormalizedFiasAddresses, ILogger logger)
+			LogEfficiencies(logger);
+        }
+
+        private static void LogEfficiencies(ILogger logger)
+        {
+            try
+            {
+                var results = CalculateEfficiencies(NormalizedFiasAddresses, NormalizedOsmAddresses);
+
+                using (var loggerScope = logger.BeginScope("Результативность программы"))
+                {
+                    logger.LogDebug("====== Начало блока результативности ======");
+                    logger.LogDebug($"Кол-во адресов OSM: {results.CountOsmAddresses}");
+                    logger.LogDebug($"Кол-во адресов FIAS: {results.CountFiasAddresses}");
+                    logger.LogDebug($"Кол-во адресов с геометрией: {results.CountAddressesWithGeometry}");
+                    logger.LogDebug($"Результативность алгоритма(Отражает качество, без учета качества исходных данных): {results.AlgorithmEfficiency:F2}%");
+                    logger.LogDebug($"Результативность общая: {results.OverallEfficiency:F2}%");
+                    logger.LogDebug($"Покрытие адресов FIAS, адресами из OSM: {results.OsmToFiasCoverage:F2}%");
+                    logger.LogDebug("====== Конец блока результативности ======");
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Произошла ошибка при вычислении результативности.");
+            }
+        }
+
+        private static EfficiencyResults CalculateEfficiencies(
+			Dictionary<string, Address> normalizedFiasAddresses,
+			Dictionary<string, House> normalizedOsmAddresses)
+        {
+            int countOsmAddresses = normalizedOsmAddresses.Count;
+            int countFiasAddresses = normalizedFiasAddresses.Count;
+
+            if (countOsmAddresses == 0 || countFiasAddresses == 0)
+            {
+                throw new InvalidOperationException("Недостаточно данных для вычисления результативности: количество адресов OSM или FIAS равно нулю.");
+            }
+
+            int countAddressesWithGeometry = normalizedFiasAddresses.Count(o => o.Value?.Building?.GeoJson != null);
+
+            double algorithmEfficiency = (double)countAddressesWithGeometry / countOsmAddresses * 100;
+            double overallEfficiency = (double)countAddressesWithGeometry / countFiasAddresses * 100;
+            double osmToFiasCoverage = (double)countOsmAddresses / countFiasAddresses * 100;
+
+            return new EfficiencyResults(countOsmAddresses, countFiasAddresses, countAddressesWithGeometry, algorithmEfficiency, overallEfficiency, osmToFiasCoverage);
+        }
+
+        public static void SearchDuplicatesByUpdateDate(Dictionary<string, Address> NormalizedFiasAddresses, ILogger logger)
 		{
 			var keys = NormalizedFiasAddresses.Keys.ToList();
 
